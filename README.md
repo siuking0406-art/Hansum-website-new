@@ -1,19 +1,12 @@
-# Hansum Shisha Lounge — New Website
+# HANSUM Website V2
 
-A clean, mobile-first static website for hansumshisha.com.
+This version is a more visual, photo-led redesign.
 
-## Files
-- `index.html` — main website
-- `style.css` — design and responsive layout
-- `script.js` — small interactions
-- `images/` — put Hansum logos/photos here
+## Important
+The photo URLs currently use publicly indexed Hansum venue photos as temporary preview assets. Before the final production launch, replace them with your original Hansum photos/logo in `images/` so the site is fully self-contained.
 
-## GitHub
-Create a new repository, upload all files in this folder, and enable GitHub Pages or connect the repository to Cloudflare Pages.
+## Upload
+Upload `index.html`, `style.css`, `script.js` and the `images` folder to the GitHub repository.
 
-## Before launch
-1. Replace the location `href="#"` links with each branch's Google Maps URL.
-2. Add the final Hansum logo to `images/` if desired.
-3. Add real hero/venue photography if available.
-4. Update social links and contact details.
-5. Connect `hansumshisha.com` in Cloudflare Pages.
+## Branch links
+The location links are placeholders (`#`). Replace each with the correct Google Maps URL for Seoul, Taipei, Hong Kong, Ho Chi Minh City and Da Nang.

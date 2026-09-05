@@ -69,3 +69,15 @@
 .story .story-head{padding-bottom:24px}
 .story .story-copy{max-width:720px}
 .story .story-copy p{margin-bottom:22px}
+
+
+/* V5 FIX: hero uses the real lounge photo, not the old screenshot mockup.
+   Keep the headline as live HTML text so it appears only once. */
+.hero-single .hero-content{position:absolute!important;left:7vw!important;bottom:14vh!important;max-width:620px!important;z-index:3!important;}
+.hero-single h1{font-size:clamp(64px,9vw,132px)!important;line-height:.88!important;margin:20px 0 24px!important;}
+.hero-single .hero-main-image{object-position:center 50%!important;}
+@media(max-width:800px){
+  .hero-single .hero-content{left:6vw!important;bottom:125px!important;max-width:88%!important;}
+  .hero-single h1{font-size:clamp(54px,15vw,82px)!important;}
+  .hero-single .hero-main-image{object-position:center center!important;}
+}

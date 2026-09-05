@@ -58,3 +58,6 @@ Connect the GitHub repository and use:
 ## Latest story update
 - Replaced the Story heading and copy with the supplied brand statement.
 - Removed the Story-section photo grid; this section is text-only.
+
+
+V5 FIX: hero image now uses images/hero-smoke.jpeg (real HANSUM lounge photo) so the TAKE A BREATH headline is rendered once as HTML.

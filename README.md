@@ -33,3 +33,8 @@ Connect the GitHub repository and use:
 - Bowl showcase uses a clean product image without ordering UI text/buttons.
 - No prices are displayed.
 - Locations remain linked to Google Maps.
+
+## V5 Gallery update
+- Added 9 newly uploaded HANSUM photos to the local `images/` folder.
+- Replaced the simple social image block with a full visual Gallery.
+- Gallery photos are local assets and do not rely on external image hosting.

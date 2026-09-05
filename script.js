@@ -1,4 +1,1 @@
-document.getElementById("year").textContent = new Date().getFullYear();
-const btn=document.querySelector(".hamburger"), nav=document.querySelector(".header nav");
-btn?.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open"); if(open){nav.style.display="flex";nav.style.position="absolute";nav.style.top="70px";nav.style.left="0";nav.style.right="0";nav.style.padding="25px";nav.style.background="rgba(7,8,12,.98)";nav.style.flexDirection="column"}else nav.removeAttribute("style")});
-document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{if(innerWidth<=800){nav.classList.remove("mobile-open");nav.removeAttribute("style")}}));
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{const el=document.querySelector(a.getAttribute("href"));if(el){e.preventDefault();el.scrollIntoView({behavior:"smooth"})}}));

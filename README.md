@@ -1,12 +1,29 @@
-# HANSUM Website V2
+# HANSUM Website V3
 
-This version is a more visual, photo-led redesign.
+Static HTML/CSS/JS website for GitHub Pages / Cloudflare Pages.
 
 ## Important
-The photo URLs currently use publicly indexed Hansum venue photos as temporary preview assets. Before the final production launch, replace them with your original Hansum photos/logo in `images/` so the site is fully self-contained.
+All website images are stored locally in `images/` so GitHub Pages does not depend on third-party image hotlinks.
 
-## Upload
-Upload `index.html`, `style.css`, `script.js` and the `images` folder to the GitHub repository.
+### Files
+- `index.html`
+- `style.css`
+- `script.js`
+- `images/`
 
-## Branch links
-The location links are placeholders (`#`). Replace each with the correct Google Maps URL for Seoul, Taipei, Hong Kong, Ho Chi Minh City and Da Nang.
+### GitHub Pages
+Upload/replace these files in the `main` branch and keep Pages set to:
+`Deploy from a branch` → `main` → `/ (root)`
+
+### Cloudflare Pages
+Connect the GitHub repository and use:
+- Production branch: `main`
+- Framework: None
+- Build command: blank
+- Output directory: `/`
+
+## V4 changes
+- No prices shown anywhere on the website.
+- Original uploaded HANSUM photos are retained locally.
+- Each location is clickable and opens Google Maps.
+- Da Nang location links to the HANSUM Da Nang Google Maps listing.

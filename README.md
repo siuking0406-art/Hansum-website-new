@@ -27,3 +27,9 @@ Connect the GitHub repository and use:
 - Original uploaded HANSUM photos are retained locally.
 - Each location is clickable and opens Google Maps.
 - Da Nang location links to the HANSUM Da Nang Google Maps listing.
+
+## V5 changes
+- Replaced the -86°C Coffee image with the latest uploaded HANSUM -86°C Coffee photo.
+- Bowl showcase uses a clean product image without ordering UI text/buttons.
+- No prices are displayed.
+- Locations remain linked to Google Maps.

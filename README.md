@@ -49,3 +49,12 @@ Connect the GitHub repository and use:
 - Story heading changed from “NOT JUST A SHISHA BAR” to “NOT JUST A SHISHA LOUNGE”.
 - Added the coconut shisha photo visibly to the Story photo section.
 - Hero photo is stored locally as `images/hero-main.jpeg`.
+
+## V5 latest hero update
+- Hero now uses the real HANSUM lounge photo (IMG_6887) as one full-screen image.
+- Removed the accidental laptop/split-image hero asset.
+- Gallery remains one-photo-at-a-time with automatic fading.
+
+## Latest story update
+- Replaced the Story heading and copy with the supplied brand statement.
+- Removed the Story-section photo grid; this section is text-only.

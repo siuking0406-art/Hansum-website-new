@@ -59,3 +59,13 @@
 .hero-single .hero-content,.hero-single .hero-meta{z-index:3}
 .coconut-photo{grid-column:span 1}
 @media(max-width:800px){.hero-main-image{object-position:center center}.coconut-photo{grid-column:span 1}}
+
+/* V5 latest: use the real HANSUM lounge photo as one full-width hero image. */
+.hero-single-panel{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;overflow:hidden}
+.hero-main-image{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important}
+@media(max-width:800px){.hero-main-image{object-position:52% center!important}}
+
+/* Story copy-only layout */
+.story .story-head{padding-bottom:24px}
+.story .story-copy{max-width:720px}
+.story .story-copy p{margin-bottom:22px}

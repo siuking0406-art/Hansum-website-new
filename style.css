@@ -81,3 +81,17 @@
   .hero-single h1{font-size:clamp(54px,15vw,82px)!important;}
   .hero-single .hero-main-image{object-position:center center!important;}
 }
+
+/* V5 FINAL HERO — match reference image 2 */
+.hero-single .hero-content{position:absolute!important;left:5.2vw!important;bottom:15.5vh!important;width:min(560px,42vw)!important;max-width:none!important;z-index:3!important}
+.hero-single .hero-main-image{object-position:center 50%!important;filter:saturate(.86) contrast(1.04) brightness(.92)!important}
+.hero-single .hero-shade{z-index:2!important;background:linear-gradient(90deg,rgba(3,4,9,.94) 0%,rgba(3,4,9,.84) 23%,rgba(3,4,9,.52) 43%,rgba(3,4,9,.10) 68%,rgba(3,4,9,.16) 100%),linear-gradient(0deg,rgba(3,4,9,.55) 0%,transparent 34%,rgba(3,4,9,.40) 100%)!important}
+.hero-single h1{font-size:clamp(64px,8.2vw,126px)!important;line-height:.88!important;letter-spacing:-.045em!important;margin:22px 0 28px!important}
+.hero-single .hero-copy{font-size:15px!important;line-height:1.65!important}
+.hero-single .hero-actions{margin-top:28px!important}
+.hero-single .hero-meta{bottom:34px!important;left:5.2vw!important;right:4.6vw!important}
+@media(max-width:800px){
+.hero-single .hero-content{left:6vw!important;bottom:125px!important;width:auto!important;max-width:88%!important}
+.hero-single h1{font-size:clamp(54px,15vw,82px)!important;letter-spacing:-.04em!important}
+.hero-single .hero-shade{background:linear-gradient(90deg,rgba(3,4,9,.91) 0%,rgba(3,4,9,.64) 58%,rgba(3,4,9,.20) 100%),linear-gradient(0deg,rgba(3,4,9,.70) 0%,transparent 55%,rgba(3,4,9,.38) 100%)!important}
+}

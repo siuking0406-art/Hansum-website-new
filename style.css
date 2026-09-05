@@ -50,3 +50,12 @@
   .gallery-slideshow{height:62vh;min-height:360px;margin-top:35px}
   .gallery-arrow{width:40px;height:40px;font-size:30px}.gallery-prev{left:10px}.gallery-next{right:10px}
 }
+
+/* V5 final update: single-photo hero + visible coconut feature */
+.hero-single{position:relative;display:block;min-height:100svh;overflow:hidden}
+.hero-single-panel{position:absolute;inset:0;width:100%;height:100%}
+.hero-main-image{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+.hero-single .hero-shade{z-index:2}
+.hero-single .hero-content,.hero-single .hero-meta{z-index:3}
+.coconut-photo{grid-column:span 1}
+@media(max-width:800px){.hero-main-image{object-position:center center}.coconut-photo{grid-column:span 1}}

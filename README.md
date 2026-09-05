@@ -43,3 +43,9 @@ Connect the GitHub repository and use:
 - Cinematic split hero uses the new pink-smoke photo and the new shisha photo.
 - Gallery is now a one-photo-at-a-time fading slideshow with arrows/dots.
 - Added local -86°C coffee photo.
+
+## Latest V5 update
+- Hero is now a single full-screen HANSUM photo instead of a split two-photo layout.
+- Story heading changed from “NOT JUST A SHISHA BAR” to “NOT JUST A SHISHA LOUNGE”.
+- Added the coconut shisha photo visibly to the Story photo section.
+- Hero photo is stored locally as `images/hero-main.jpeg`.

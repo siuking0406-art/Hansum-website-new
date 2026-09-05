@@ -38,3 +38,8 @@ Connect the GitHub repository and use:
 - Added 9 newly uploaded HANSUM photos to the local `images/` folder.
 - Replaced the simple social image block with a full visual Gallery.
 - Gallery photos are local assets and do not rely on external image hosting.
+
+## V5 final update
+- Cinematic split hero uses the new pink-smoke photo and the new shisha photo.
+- Gallery is now a one-photo-at-a-time fading slideshow with arrows/dots.
+- Added local -86°C coffee photo.

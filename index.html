@@ -37,7 +37,18 @@
 
 <main>
 <section id="home" class="hero">
-  <img class="hero-bg" src="images/hero.jpg" alt="HANSUM shisha lounge">
+  <div class="hero-panel hero-left">
+    <div class="hero-slides hero-left-slides">
+      <img class="hero-slide active" src="images/hero-smoke.jpeg" alt="HANSUM shisha lounge atmosphere">
+      <img class="hero-slide" src="images/gallery-08.jpeg" alt="HANSUM shisha lounge">
+    </div>
+  </div>
+  <div class="hero-panel hero-right">
+    <div class="hero-slides hero-right-slides">
+      <img class="hero-slide active" src="images/hero-shisha.jpeg" alt="HANSUM shisha">
+      <img class="hero-slide" src="images/gallery-08.jpeg" alt="HANSUM shisha lounge">
+    </div>
+  </div>
   <div class="hero-shade"></div>
   <div class="hero-content">
     <p class="eyebrow">KOREAN-INSPIRED SHISHA LOUNGE</p>
@@ -100,7 +111,7 @@
 
 <section id="coffee" class="coffee">
   <div class="coffee-image-wrap">
-    <img src="images/coffee.jpg" alt="HANSUM -86°C Coffee">
+    <img src="images/coffee-86.jpeg" alt="HANSUM -86°C Coffee">
     <div class="degree">−86<span>°C</span></div>
   </div>
   <div class="coffee-copy section">
@@ -136,16 +147,23 @@
 
 <section class="instagram">
   <div class="section-top"><span>05 / GALLERY</span><span>THE HANSUM NIGHT</span></div>
-  <div class="gallery-grid">
-    <figure class="g-wide"><img src="images/gallery-01.jpeg" alt="HANSUM lounge atmosphere"></figure>
-    <figure><img src="images/gallery-02.jpeg" alt="HANSUM shisha and drinks"></figure>
-    <figure><img src="images/gallery-03.jpeg" alt="HANSUM lounge interior"></figure>
-    <figure><img src="images/gallery-04.jpeg" alt="HANSUM shisha lounge"></figure>
-    <figure class="g-tall"><img src="images/gallery-05.jpeg" alt="HANSUM shisha experience"></figure>
-    <figure><img src="images/gallery-06.jpeg" alt="HANSUM interior"></figure>
-    <figure><img src="images/gallery-07.jpeg" alt="HANSUM lounge"></figure>
-    <figure class="g-wide"><img src="images/gallery-08.jpeg" alt="HANSUM atmosphere"></figure>
-    <figure><img src="images/gallery-09.jpeg" alt="HANSUM shisha"></figure>
+  <div class="gallery-slideshow" aria-label="HANSUM gallery">
+    <button class="gallery-arrow gallery-prev" aria-label="Previous photo">‹</button>
+    <div class="gallery-stage">
+      <img class="gallery-slide active" src="images/gallery-01.jpeg" alt="HANSUM lounge atmosphere">
+      <img class="gallery-slide" src="images/gallery-02.jpeg" alt="HANSUM shisha and drinks">
+      <img class="gallery-slide" src="images/gallery-03.jpeg" alt="HANSUM lounge interior">
+      <img class="gallery-slide" src="images/gallery-04.jpeg" alt="HANSUM shisha lounge">
+      <img class="gallery-slide" src="images/gallery-05.jpeg" alt="HANSUM shisha experience">
+      <img class="gallery-slide" src="images/gallery-06.jpeg" alt="HANSUM interior">
+      <img class="gallery-slide" src="images/gallery-07.jpeg" alt="HANSUM lounge">
+      <img class="gallery-slide" src="images/gallery-08.jpeg" alt="HANSUM atmosphere">
+      <img class="gallery-slide" src="images/gallery-09.jpeg" alt="HANSUM shisha">
+    </div>
+    <button class="gallery-arrow gallery-next" aria-label="Next photo">›</button>
+    <div class="gallery-dots" aria-hidden="true">
+      <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
   </div>
   <a class="insta-link" href="https://www.instagram.com/hansumshisha/" target="_blank" rel="noopener">FOLLOW @HANSUMSHISHA ↗</a>
 </section>

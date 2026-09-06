@@ -61,3 +61,7 @@ Connect the GitHub repository and use:
 
 
 V5 FIX: hero image now uses images/hero-smoke.jpeg (real HANSUM lounge photo) so the TAKE A BREATH headline is rendered once as HTML.
+
+
+### QR Ordering
+The Shisha Order System is bundled as `hansum.html` for table QR-code access. It is intentionally not linked from the public homepage/navigation.

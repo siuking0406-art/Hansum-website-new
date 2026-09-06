@@ -645,7 +645,7 @@ initializeQrTable(){
     this.persistState();
   }catch(e){this.order.table=qrTable;this.step=1;}
 },
-}
+},
 mounted(){
   if(hasQrTable)this.initializeQrTable();
   else this.restoreState();

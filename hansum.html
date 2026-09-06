@@ -311,7 +311,7 @@ button{font-family:inherit}
   <div class="space-y-5">
     <div v-for="cat in moreCategories" :key="cat.name" class="glass rounded-3xl p-5">
       <div class="flex items-end justify-between mb-4">
-        <div><div class="text-[9px] tracking-[.3em] text-white/40">{{cat.label}}</div><div class="serif text-2xl mt-1">{{cat.name}}</div></div>
+        <div><div class="text-[9px] tracking-[.3em] text-white/40">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1">{{cat.name}}</div></div>
       </div>
       <div class="space-y-2">
         <button v-for="item in cat.items" :key="item.name" @click="addMoreItem(item)" class="w-full flex items-center justify-between gap-4 rounded-2xl border border-white/10 px-4 py-4 text-left card active:border-[#d9b86c]">
@@ -351,6 +351,7 @@ button{font-family:inherit}
     </div>
 
     <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Estimated Total</span><span class="gold text-xl font-semibold">{{formatPrice(grandTotal)}} VND</span></div>
+    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/35">VAT 8% / 10% NOT INCLUDED</div>
   </div>
 
   <button @click="sendFinalOrder" :disabled="sending" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'SEND ORDER TO HANSUM'}}</button>
@@ -401,6 +402,24 @@ moreCategories:[
   {name:'Frozen Coconut Coffee',price:168000},{name:'Frozen Mango Colada',price:168000},{name:'Frozen Lychee Yakult',price:158000},{name:'Frozen Yuzu Lemon',price:158000}]},
  {label:'COFFEE',name:'-86°C Collection',items:[
   {name:'-86° Espresso',price:88000},{name:'-86° Dirty Coffee',price:98000},{name:'-86° Saigon Coffee',price:98000},{name:'-86° Spanish Latte',price:108000},{name:'-86° Coconut Coffee',price:108000}]},
+ {label:'COFFEE',name:'Coffee',items:[
+  {name:'Espresso',price:55000},
+  {name:'Americano',price:65000},
+  {name:'Latte',price:75000},
+  {name:'Cappuccino',price:75000},
+  {name:'Flat White',price:75000},
+  {name:'Mocha',price:85000},
+  {name:'Caramel Macchiato',price:85000},
+  {name:'Iced Americano',price:75000},
+  {name:'Iced Latte',price:85000},
+  {name:'Iced Cappuccino',price:85000},
+  {name:'Iced Flat White',price:85000},
+  {name:'Iced Mocha',price:95000},
+  {name:'Iced Caramel Macchiato',price:95000},
+  {name:'Vietnamese Black Coffee — Hot',price:55000},
+  {name:'Vietnamese Black Coffee — Iced',price:65000},
+  {name:'Vietnamese Milk Coffee — Hot',price:65000},
+  {name:'Vietnamese Milk Coffee — Iced',price:75000}]},
  {label:'SHOTS',name:'Shooters',items:[
   {name:'Green Tea Shot',price:148000},{name:'Baby Guinness',price:118000},{name:'B52',price:138000},{name:'Duck Fart',price:148000},{name:'Jelly Fish',price:158000}]},
  {label:'REFRESH',name:'Mocktails & Soft Drinks',items:[

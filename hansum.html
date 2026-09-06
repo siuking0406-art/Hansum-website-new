@@ -29,6 +29,12 @@ button{font-family:inherit}
 .category-title{line-height:1.05;letter-spacing:.01em}
 .category-label{line-height:1.1;letter-spacing:.16em;color:#d9b86c}
 .order-note{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.4);text-align:center}
+.cart-float{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(5,5,5,.94);border-top:1px solid rgba(217,184,108,.25);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.qty-control{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:4px;background:rgba(255,255,255,.03)}
+.qty-control button{width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.07);color:#fff;font-size:18px;line-height:1}
+.qty-control span{min-width:18px;text-align:center;font-size:13px;font-weight:700}
+.error-box{border:1px solid rgba(255,100,100,.28);background:rgba(255,70,70,.06);color:rgba(255,210,210,.85);border-radius:16px;padding:13px 15px;font-size:11px;line-height:1.5}
+.success-box{border:1px solid rgba(217,184,108,.3);background:rgba(217,184,108,.05);border-radius:18px;padding:16px}
 </style>
 </head>
 <body>
@@ -47,7 +53,7 @@ button{font-family:inherit}
 
     <div class="text-right">
       <div class="text-[8px] tracking-[.25em] text-white/35">TABLE</div>
-      <div class="text-sm font-semibold">{{order.table||'—'}}</div>
+      <div class="text-sm font-semibold">{{order.table||'—'}}</div><div v-if="tableLocked" class="text-[7px] tracking-[.14em] text-[#d9b86c] mt-1">QR TABLE</div>
     </div>
   </div>
   <div class="flex gap-1 mt-5">
@@ -62,7 +68,7 @@ button{font-family:inherit}
   <div class="pt-8 mb-8">
     <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">WELCOME TO HANSUM</div>
     <h1 class="serif text-3xl">Choose your table</h1>
-    <p class="text-sm text-white/45 mt-3">Begin your Hansum experience.</p>
+    <p class="text-sm text-white/45 mt-3">Select your table to begin your Hansum experience.</p>
   </div>
   <div class="grid grid-cols-3 gap-3">
     <button v-for="table in tables" :key="table" @click="order.table=table"
@@ -276,20 +282,25 @@ button{font-family:inherit}
     </div>
 
     <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Subtotal</span><span class="gold text-xl font-semibold">{{formatPrice(totalPrice)}} VND</span></div>
-    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/40">10% VAT NOT INCLUDED</div>
+    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/40">8/10% VAT NOT INCLUDED</div>
   </div>
 
+  <div v-if="sendMessage" class="error-box mt-4">{{sendMessage}}</div>
   <button @click="confirmOrder" :disabled="sending" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'CONFIRM SHISHA ORDER'}}</button>
-  <p class="text-center text-[10px] tracking-[.08em] text-white/40 mt-3">10% VAT NOT INCLUDED</p>
+  <p class="text-center text-[10px] tracking-[.08em] text-white/40 mt-3">Prices are exclusive of 8/10% VAT.</p>
   <button @click="back" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">BACK</button>
 </section>
 
 <section v-if="step===8" class="min-h-[70vh] flex flex-col items-center justify-center text-center">
   <img src="images/hansum-logo-gold.jpg" class="logo mb-5" alt="HANSUM">
-  <div class="text-[9px] tracking-[.4em] text-white/40">ORDER RECEIVED</div>
+  <div class="text-[9px] tracking-[.4em] gold">SHISHA ORDER SENT ✓</div>
   <h1 class="serif text-4xl mt-4">Thank You</h1>
-  <p class="text-sm text-white/45 mt-4 max-w-xs leading-6">Your Hansum shisha order has been confirmed and sent to our team.</p>
-  <div class="mt-8 text-[9px] tracking-[.3em] text-white/30">TABLE {{order.table}}</div>
+  <p class="text-sm text-white/45 mt-4 max-w-xs leading-6">Your shisha order has been confirmed and sent to our team.</p>
+  <div class="success-box mt-7 w-full max-w-xs">
+    <div class="text-[9px] tracking-[.25em] text-white/35">ORDER REFERENCE</div>
+    <div class="serif text-xl mt-2">{{shishaOrderRef}}</div>
+    <div class="text-[9px] tracking-[.18em] text-white/35 mt-2">TABLE {{order.table}}</div>
+  </div>
   <div class="w-full mt-10 space-y-3">
     <button @click="startMoreOrder" class="w-full py-4 rounded-2xl cta">ORDER DRINKS &amp; MORE</button>
     <button @click="finish" class="w-full py-4 rounded-2xl border border-white/15 text-sm text-white/65">FINISH</button>
@@ -300,7 +311,7 @@ button{font-family:inherit}
   <div class="pt-7 mb-7">
     <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">ORDER MORE</div>
     <h1 class="serif text-3xl">Add to your order</h1>
-    <p class="text-sm text-white/45 mt-3">Add drinks and other items. Your shisha order has already been sent to our team.</p><div class="mt-4 text-center text-[10px] tracking-[.08em] text-white/40">10% VAT NOT INCLUDED</div>
+    <p class="text-sm text-white/45 mt-3">Add drinks and other items. Your shisha order has already been sent to our team.</p><div class="mt-4 text-center text-[10px] tracking-[.08em] text-white/40">8/10% VAT NOT INCLUDED</div>
   </div>
 
   <div class="space-y-5">
@@ -309,16 +320,35 @@ button{font-family:inherit}
         <div><div class="serif text-xl md:text-2xl category-label">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1 category-title">{{cat.name}}</div></div>
       </div>
       <div class="space-y-2">
-        <button v-for="item in cat.items" :key="item.name" @click="addMoreItem(item)" class="w-full flex items-center justify-between gap-4 rounded-2xl border border-white/10 px-4 py-4 text-left card active:border-[#d9b86c]">
-          <div><div class="text-sm font-semibold">{{item.name}}</div><div v-if="item.note" class="text-[10px] text-white/35 mt-1">{{item.note}}</div></div>
-          <div class="gold text-sm shrink-0">{{formatPrice(item.price)}} VND</div>
-        </button>
+        <div v-for="item in cat.items" :key="item.name" class="w-full flex items-center justify-between gap-3 rounded-2xl border border-white/10 px-4 py-4 card">
+          <button @click="addMoreItem(item)" class="min-w-0 flex-1 text-left">
+            <div class="text-sm font-semibold">{{item.name}}</div>
+            <div v-if="item.note" class="text-[10px] text-white/35 mt-1">{{item.note}}</div>
+            <div class="gold text-sm mt-2">{{formatPrice(item.price)}} VND</div>
+          </button>
+          <div v-if="itemQty(item.name)" class="qty-control shrink-0">
+            <button @click.stop="changeQty(item,-1)" aria-label="Decrease quantity">−</button>
+            <span>{{itemQty(item.name)}}</span>
+            <button @click.stop="changeQty(item,1)" aria-label="Increase quantity">+</button>
+          </div>
+          <button v-else @click="addMoreItem(item)" class="shrink-0 border border-[#d9b86c]/50 rounded-xl px-3 py-2 text-[10px] tracking-[.12em] gold">ADD</button>
+        </div>
       </div>
     </div>
   </div>
 
   <button @click="step=10" :disabled="!basketCount" class="w-full mt-6 py-4 rounded-2xl cta disabled:opacity-30">REVIEW DRINK ORDER <span v-if="basketCount">({{basketCount}})</span></button>
   <button @click="finish" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">FINISH</button>
+
+  <div v-if="basketCount" class="cart-float">
+    <div class="max-w-xl mx-auto px-5 py-3 flex items-center gap-3">
+      <div class="flex-1 min-w-0">
+        <div class="text-[9px] tracking-[.18em] text-white/40">ADDITIONAL ORDER</div>
+        <div class="text-sm font-semibold truncate">{{basketCount}} {{basketCount===1?'ITEM':'ITEMS'}} · {{formatPrice(basketTotal)}} VND</div>
+      </div>
+      <button @click="step=10" class="cta rounded-xl px-5 py-3 text-[10px] tracking-[.1em] shrink-0">REVIEW ORDER</button>
+    </div>
+  </div>
 </section>
 
 <section v-if="step===10">
@@ -340,12 +370,25 @@ button{font-family:inherit}
     </div>
 
     <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Subtotal</span><span class="gold text-xl font-semibold">{{formatPrice(basketTotal)}} VND</span></div>
-    <div class="mt-3 pt-3 border-t border-white/5 order-note">10% VAT NOT INCLUDED</div>
+    <div class="mt-3 pt-3 border-t border-white/5 order-note">Prices are exclusive of 8/10% VAT.</div>
   </div>
 
-  <button @click="sendFinalOrder" :disabled="sending || !basketCount" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'CONFIRM &amp; SEND DRINK ORDER'}}</button>
+  <div v-if="sendMessage" class="error-box mt-4">{{sendMessage}}</div>
+  <button @click="sendFinalOrder" :disabled="sending || !basketCount" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'CONFIRM &amp; SEND ADDITIONAL ORDER'}}</button>
   <button @click="step=9" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">+ ADD MORE</button>
-  <p v-if="sendMessage" class="text-center text-xs text-white/45 mt-4">{{sendMessage}}</p>
+</section>
+
+<section v-if="step===11" class="min-h-[70vh] flex flex-col items-center justify-center text-center">
+  <img src="images/hansum-logo-gold.jpg" class="logo mb-5" alt="HANSUM">
+  <div class="text-[9px] tracking-[.4em] gold">ADDITIONAL ORDER SENT ✓</div>
+  <h1 class="serif text-4xl mt-4">Order Confirmed</h1>
+  <p class="text-sm text-white/45 mt-4 max-w-xs leading-6">Your additional order has been sent to our team.</p>
+  <div class="success-box mt-7 w-full max-w-xs">
+    <div class="text-[9px] tracking-[.25em] text-white/35">ORDER REFERENCE</div>
+    <div class="serif text-xl mt-2">{{drinkOrderRef}}</div>
+    <div class="text-[9px] tracking-[.18em] text-white/35 mt-2">TABLE {{order.table}}</div>
+  </div>
+  <button @click="finish" class="w-full max-w-xs mt-8 py-4 rounded-2xl cta">DONE</button>
 </section>
 
 </main>
@@ -358,11 +401,15 @@ button{font-family:inherit}
 
 <script>
 const {createApp}=Vue;
+const urlParams=new URLSearchParams(window.location.search);
+const qrTable=(urlParams.get('table')||'').trim().toUpperCase();
+const allowedTables=['01','02','03','05','06','07','08','09','VIP 1','VIP 2','BAR 1','BAR 2'];
+const hasQrTable=allowedTables.includes(qrTable);
 createApp({
 data(){return{
-step:0,
+step:hasQrTable?1:0,
 tables:['01','02','03','05','06','07','08','09','VIP 1','VIP 2','BAR 1','BAR 2'],
-order:{table:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''},
+order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''},
 selectedDirections:[],
 flavorDirections:[],
 specificFlavors:[
@@ -376,7 +423,7 @@ addonOptions:[
 {icon:'☕',name:'Coffee Base',price:50000}
 ],
 otherAddonEnabled:false,
-basket:[],sending:false,sendMessage:'',shishaSent:false,drinkSent:false,
+basket:[],sending:false,sendMessage:'',shishaSent:false,drinkSent:false,sessionRef:'',shishaOrderRef:'',drinkOrderRef:'',
 moreCategories:[
  {label:'SIGNATURE',name:'Cocktails',items:[
   {name:'Fly to the Moon',price:228000,note:'Floral · Lychee · Rose'},
@@ -419,6 +466,11 @@ moreCategories:[
   {name:'Belvedere',price:3280000},{name:'Grey Goose',price:3280000},{name:'Ciroc',price:3080000},{name:'Absolut Blue',price:2280000},{name:'Johnnie Walker Blue Label',price:6880000},{name:'Chivas Regal 18 Years',price:3880000},{name:'Moët & Chandon Imperial',price:3980000},{name:'Veuve Clicquot Brut',price:4280000},{name:'Dom Pérignon',price:12800000}]},
 ]
 }},
+watch:{
+  order:{deep:true,handler(){this.persistState()}},
+  basket:{deep:true,handler(){this.persistState()}},
+  step(){this.persistState()}
+},
 computed:{
 showSpecific(){return this.order.shishaType==='Classic'||this.order.shishaType==='Refill Blonde'},
 canContinueFlavor(){
@@ -436,7 +488,9 @@ addonTotal(){return this.order.addons.reduce((s,a)=>s+a.price,0)},
 totalPrice(){return this.order.price+this.addonTotal},
 grandTotal(){return this.order.price+this.addonTotal+this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
 basketTotal(){return this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
-basketCount(){return this.basket.reduce((s,i)=>s+i.qty,0)}
+basketCount(){return this.basket.reduce((s,i)=>s+i.qty,0)},
+  tableLocked(){return hasQrTable},
+  vatLabel(){return '8/10% VAT NOT INCLUDED'}
 },
 methods:{
 next(){if(this.step<8)this.step++},
@@ -482,17 +536,60 @@ if(i>-1)this.order.addons.splice(i,1);else this.order.addons.push({name:a.name,p
 },
 isAddonSelected(n){return this.order.addons.some(a=>a.name===n)},
 toggleOtherAddon(){this.otherAddonEnabled=!this.otherAddonEnabled;if(!this.otherAddonEnabled)this.order.otherAddon=''},
+itemQty(name){const item=this.basket.find(x=>x.name===name);return item?item.qty:0},
+changeQty(item,delta){
+  const i=this.basket.findIndex(x=>x.name===item.name);
+  if(i<0 && delta>0){this.basket.push({...item,qty:1});return}
+  if(i<0)return;
+  this.basket[i].qty+=delta;
+  if(this.basket[i].qty<=0)this.basket.splice(i,1);
+},
+generateRef(prefix){
+  if(this.sessionRef)return `${prefix}-${this.sessionRef}`;
+  const d=new Date();
+  const stamp=`${String(d.getFullYear()).slice(-2)}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+  this.sessionRef=`${stamp}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+  this.persistState();
+  return `${prefix}-${this.sessionRef}`;
+},
+persistState(){
+  try{localStorage.setItem('hansumOrderV53',JSON.stringify({step:this.step,order:this.order,selectedDirections:this.selectedDirections,basket:this.basket,shishaSent:this.shishaSent,drinkSent:this.drinkSent,sessionRef:this.sessionRef,shishaOrderRef:this.shishaOrderRef,drinkOrderRef:this.drinkOrderRef,otherAddonEnabled:this.otherAddonEnabled}));}catch(e){}
+},
+restoreState(){
+  try{
+    const raw=localStorage.getItem('hansumOrderV53'); if(!raw)return;
+    const saved=JSON.parse(raw);
+    if(saved.order)Object.assign(this.order,saved.order);
+    if(Array.isArray(saved.selectedDirections))this.selectedDirections=saved.selectedDirections;
+    if(Array.isArray(saved.basket))this.basket=saved.basket;
+    this.shishaSent=!!saved.shishaSent; this.drinkSent=!!saved.drinkSent;
+    this.sessionRef=saved.sessionRef||''; this.shishaOrderRef=saved.shishaOrderRef||''; this.drinkOrderRef=saved.drinkOrderRef||'';
+    this.otherAddonEnabled=!!saved.otherAddonEnabled;
+    if(this.shishaSent && !this.drinkSent && Number(saved.step)>=8)this.step=8;
+    else if(this.drinkSent)this.step=11;
+    else if(Number.isInteger(saved.step))this.step=Math.min(saved.step,10);
+    if(this.order.shishaType)this.setDirections(this.order.shishaType!=='Classic');
+  }catch(e){console.warn('Could not restore order',e)}
+},
+clearSavedOrder(){try{localStorage.removeItem('hansumOrderV53')}catch(e){}},
 formatPrice(n){return Number(n).toLocaleString('en-US')},
 back(){
 if(this.step<=0)return;
+if(this.tableLocked && this.step===1)return;
 if(this.step===3&&(this.order.shishaType==='Fruit Head'||this.order.shishaType==='Refill Blonde'||this.order.shishaType==='Refill Dark')){this.step=1;return}
 this.step--
 },
 async confirmOrder(){
   if(this.shishaSent)return;
   this.sending=true; this.sendMessage='';
-  const payload={type:'shisha',table:this.order.table,order:this.order,total:this.totalPrice,vatNote:'10% VAT NOT INCLUDED',createdAt:new Date().toISOString()};
-  try{await this.sendToTelegram(payload);this.shishaSent=true;this.step=8}catch(e){console.error(e);this.step=8;this.sendMessage='Order saved on this device. Telegram is not connected yet.'}finally{this.sending=false}
+  this.shishaOrderRef=this.generateRef('SH');
+  const payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:this.order,subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  try{
+    await this.sendToTelegram(payload);
+    this.shishaSent=true;this.sendMessage='';this.step=8;this.persistState();
+  }catch(e){
+    console.error(e);this.sendMessage='We could not send the order to our team. Please try again. Your selection is saved on this device.';
+  }finally{this.sending=false}
 },
 startMoreOrder(){this.sendMessage='';this.step=9},
 addMoreItem(item){
@@ -502,8 +599,14 @@ addMoreItem(item){
 async sendFinalOrder(){
   if(!this.basketCount || this.drinkSent)return;
   this.sending=true;this.sendMessage='';
-  const payload={type:'additional-order',table:this.order.table,basket:this.basket,total:this.basketTotal,vatNote:'10% VAT NOT INCLUDED',createdAt:new Date().toISOString()};
-  try{await this.sendToTelegram(payload);this.drinkSent=true;this.sendMessage='Drink order confirmed and sent to Hansum.';setTimeout(()=>this.finish(),900)}catch(e){console.error(e);this.sendMessage='Telegram is not connected yet. Please contact staff to complete the order.'}finally{this.sending=false}
+  this.drinkOrderRef=this.generateRef('AD');
+  const payload={type:'additional-order',orderRef:this.drinkOrderRef,parentOrderRef:this.shishaOrderRef,table:this.order.table,basket:this.basket,subtotal:this.basketTotal,total:this.basketTotal,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  try{
+    await this.sendToTelegram(payload);
+    this.drinkSent=true;this.sendMessage='';this.step=11;this.persistState();
+  }catch(e){
+    console.error(e);this.sendMessage='We could not send the additional order to our team. Please try again. Your items are saved on this device.';
+  }finally{this.sending=false}
 },
 async sendToTelegram(payload){
   const TELEGRAM_ENDPOINT=window.HANSUM_TELEGRAM_ENDPOINT||'';
@@ -511,7 +614,30 @@ async sendToTelegram(payload){
   const res=await fetch(TELEGRAM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   if(!res.ok)throw new Error('Telegram endpoint error');
 },
-finish(){window.location.href='index.html'}
+finish(){this.clearSavedOrder();window.location.href='index.html'},
+initializeQrTable(){
+  if(!hasQrTable)return;
+  try{
+    const raw=localStorage.getItem('hansumOrderV53');
+    if(raw){
+      const saved=JSON.parse(raw);
+      if(saved.order && saved.order.table && String(saved.order.table).toUpperCase()!==qrTable){
+        localStorage.removeItem('hansumOrderV53');
+        this.order={table:qrTable,shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''};
+        this.basket=[];this.shishaSent=false;this.drinkSent=false;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.step=1;
+      } else {
+        this.restoreState();
+        this.order.table=qrTable;
+        if(this.step===0)this.step=1;
+      }
+    } else {this.order.table=qrTable;this.step=1;}
+    this.persistState();
+  }catch(e){this.order.table=qrTable;this.step=1;}
+}
+}
+mounted(){
+  if(hasQrTable)this.initializeQrTable();
+  else this.restoreState();
 }
 }).mount('#app');
 </script>

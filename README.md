@@ -27,3 +27,27 @@ Do not put the Telegram bot token directly into the HTML. Keep it as a Cloudflar
 
 
 Order flow: Shisha is confirmed and sent to Telegram first. Drinks & More are a separate second order and are sent only when the customer confirms the second order. All order review screens show 10% VAT NOT INCLUDED.
+
+## V5.2 Order Flow Optimization
+- Shisha confirmation is sent as Order #1 before drinks.
+- Additional drinks/items are sent as Order #2.
+- 10% VAT is clearly shown as not included.
+- Telegram failures no longer show a false success screen; the customer can retry.
+- Order references are generated for both orders.
+- Additional-order items support + / − quantity controls.
+- A floating cart/review bar is shown while browsing drinks.
+- Order selections are saved in localStorage so refreshes do not lose the order.
+- Separate success screens are used for the shisha order and additional order.
+
+
+## V5.3 QR Table Setup
+
+Each table can use its own QR code while all tables share the same `hansum.html`. Add the table number as a URL parameter:
+
+- Table 01: `hansum.html?table=01`
+- Table 02: `hansum.html?table=02`
+- VIP 1: `hansum.html?table=VIP%201`
+
+When a valid table parameter is present, the table is detected automatically, the table-selection screen is skipped, and the table is locked for the order. If a different table QR is opened on the same device, the previous saved order is cleared to prevent cross-table orders.
+
+VAT wording is standardized to **8/10% VAT NOT INCLUDED** / **Prices are exclusive of 8/10% VAT.**

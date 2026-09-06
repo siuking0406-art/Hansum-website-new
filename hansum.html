@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<title>HANSUM — Shisha Omakase</title>
+<title>HANSUM — Shisha Omakase · v5.5</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="js/vue.global.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,7 @@
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_TELEGRAM_ENDPOINT='';</script>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;background:#050505}
+html,body{margin:0;background:#050505}html{scroll-behavior:smooth}body{padding-bottom:env(safe-area-inset-bottom)}
 body{color:#fff;font-family:Montserrat,sans-serif;-webkit-tap-highlight-color:transparent;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(182,136,48,.18),transparent 65%),#050505}
 [v-cloak]{display:none}
 button{font-family:inherit;cursor:pointer}
@@ -36,7 +36,7 @@ button{font-family:inherit;cursor:pointer}
 .qty-control span{min-width:18px;text-align:center;font-size:13px;font-weight:700}
 .error-box{border:1px solid rgba(255,100,100,.28);background:rgba(255,70,70,.06);color:rgba(255,210,210,.85);border-radius:16px;padding:13px 15px;font-size:11px;line-height:1.5}
 .success-box{border:1px solid rgba(217,184,108,.3);background:rgba(217,184,108,.05);border-radius:18px;padding:16px}
-.language-switch{display:inline-flex;padding:3px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(255,255,255,.035)}.language-switch button{padding:5px 7px;border-radius:999px;font-size:8px;letter-spacing:.08em;color:rgba(255,255,255,.45)}.language-switch button.active{background:#d9b86c;color:#080808;font-weight:700}.welcome-card{position:relative;overflow:hidden;border:1px solid rgba(217,184,108,.25);background:linear-gradient(110deg,rgba(10,8,5,.88),rgba(10,8,5,.47)),url('images/hero-smoke.jpeg') center/cover}.quick-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.quick-nav::-webkit-scrollbar{display:none}.quick-nav button{white-space:nowrap;border:1px solid rgba(217,184,108,.25);border-radius:999px;padding:9px 13px;font-size:9px;letter-spacing:.09em;color:#d9b86c;background:rgba(217,184,108,.06)}.staff-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;padding:20px;background:rgba(0,0,0,.66);backdrop-filter:blur(7px)}.staff-sheet{width:min(100%,480px);border:1px solid rgba(217,184,108,.28);border-radius:28px;background:linear-gradient(145deg,#1b160d,#080808);box-shadow:0 22px 60px rgba(0,0,0,.55)}
+.table-grid button{min-height:64px}.table-grid button:first-child{border-color:rgba(217,184,108,.22)}.table-number{font-family:Cinzel,serif;font-size:17px;letter-spacing:.08em}.language-switch{display:inline-flex;padding:3px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(255,255,255,.035)}.language-switch button{padding:5px 7px;border-radius:999px;font-size:8px;letter-spacing:.08em;color:rgba(255,255,255,.45)}.language-switch button.active{background:#d9b86c;color:#080808;font-weight:700}.welcome-card{position:relative;overflow:hidden;border:1px solid rgba(217,184,108,.25);background:linear-gradient(110deg,rgba(10,8,5,.88),rgba(10,8,5,.47)),url('images/hero-smoke.jpeg') center/cover}.quick-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.quick-nav::-webkit-scrollbar{display:none}.quick-nav button{white-space:nowrap;border:1px solid rgba(217,184,108,.25);border-radius:999px;padding:9px 13px;font-size:9px;letter-spacing:.09em;color:#d9b86c;background:rgba(217,184,108,.06)}.staff-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;padding:20px;background:rgba(0,0,0,.66);backdrop-filter:blur(7px)}.staff-sheet{width:min(100%,480px);border:1px solid rgba(217,184,108,.28);border-radius:28px;background:linear-gradient(145deg,#1b160d,#080808);box-shadow:0 22px 60px rgba(0,0,0,.55)}
 </style>
 </head>
 <body>
@@ -77,10 +77,12 @@ button{font-family:inherit;cursor:pointer}
     <h1 class="serif text-3xl">{{t('chooseTable')}}</h1>
     <p class="text-sm text-white/45 mt-3">{{t('chooseTableHint')}}</p>
   </div>
-  <div class="grid grid-cols-3 gap-3">
+  <div class="table-grid grid grid-cols-3 gap-3">
     <button v-for="table in tables" :key="table" @click="order.table=table"
       class="glass rounded-2xl py-5 card" :class="{selected:order.table===table}">
-      <div class="text-sm font-semibold">{{table}}</div>
+      <div class="text-[8px] tracking-[.22em] text-white/30 mb-1">TABLE</div>
+      <div class="table-number">{{table}}</div>
+      <div v-if="order.table===table" class="text-[7px] tracking-[.16em] text-[#d9b86c] mt-2">SELECTED</div>
     </button>
   </div>
   <button @click="next" :disabled="!order.table" class="w-full mt-7 py-4 rounded-2xl cta disabled:opacity-20">{{t('continue')}} <span class="ml-2">→</span></button>
@@ -427,7 +429,15 @@ button{font-family:inherit;cursor:pointer}
 <script>
 const {createApp}=Vue;
 const urlParams=new URLSearchParams(window.location.search);
-const qrTable=(urlParams.get('table')||'').trim().toUpperCase();
+const rawQrTable=(urlParams.get('table')||'').trim().toUpperCase();
+const normalizeTable=(value)=>{
+  if(/^\d+$/.test(value)){
+    const n=Number(value);
+    if(n>=1&&n<=12)return String(n).padStart(2,'0');
+  }
+  return value;
+};
+const qrTable=normalizeTable(rawQrTable);
 const allowedTables=['01','02','03','04','05','06','07','08','09','10','11','12'];
 const hasQrTable=allowedTables.includes(qrTable);
 createApp({
@@ -593,11 +603,11 @@ generateRef(prefix){
   return `${prefix}-${this.sessionRef}`;
 },
 persistState(){
-  try{localStorage.setItem('hansumOrderV53',JSON.stringify({step:this.step,order:this.order,selectedDirections:this.selectedDirections,basket:this.basket,shishaSent:this.shishaSent,drinkSent:this.drinkSent,sessionRef:this.sessionRef,shishaOrderRef:this.shishaOrderRef,drinkOrderRef:this.drinkOrderRef,otherAddonEnabled:this.otherAddonEnabled}));}catch(e){}
+  try{localStorage.setItem('hansumOrderV55',JSON.stringify({step:this.step,order:this.order,selectedDirections:this.selectedDirections,basket:this.basket,shishaSent:this.shishaSent,drinkSent:this.drinkSent,sessionRef:this.sessionRef,shishaOrderRef:this.shishaOrderRef,drinkOrderRef:this.drinkOrderRef,otherAddonEnabled:this.otherAddonEnabled}));}catch(e){}
 },
 restoreState(){
   try{
-    const raw=localStorage.getItem('hansumOrderV53'); if(!raw)return;
+    const raw=localStorage.getItem('hansumOrderV55') || localStorage.getItem('hansumOrderV53'); if(!raw)return;
     const saved=JSON.parse(raw);
     if(saved.order)Object.assign(this.order,saved.order);
     if(Array.isArray(saved.selectedDirections))this.selectedDirections=saved.selectedDirections;
@@ -611,7 +621,7 @@ restoreState(){
     if(this.order.shishaType)this.setDirections(this.order.shishaType!=='Classic');
   }catch(e){console.warn('Could not restore order',e)}
 },
-clearSavedOrder(){try{localStorage.removeItem('hansumOrderV53')}catch(e){}},
+clearSavedOrder(){try{localStorage.removeItem('hansumOrderV55')}catch(e){}},
 formatPrice(n){return Number(n).toLocaleString('en-US')},
 back(){
 if(this.step<=0)return;
@@ -658,11 +668,11 @@ finish(){this.clearSavedOrder();window.location.href='index.html'},
 initializeQrTable(){
   if(!hasQrTable)return;
   try{
-    const raw=localStorage.getItem('hansumOrderV53');
+    const raw=localStorage.getItem('hansumOrderV55');
     if(raw){
       const saved=JSON.parse(raw);
       if(saved.order && saved.order.table && String(saved.order.table).toUpperCase()!==qrTable){
-        localStorage.removeItem('hansumOrderV53');
+        localStorage.removeItem('hansumOrderV55');
         this.order={table:qrTable,shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''};
         this.basket=[];this.shishaSent=false;this.drinkSent=false;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.step=1;
       } else {

@@ -1,24 +1,24 @@
-# HANSUM V5.1
+# HANSUM V5.2 Optimized
 
-## Website
-- `index.html` — main Hansum website
-- `hansum.html` — QR order page
-- `images/` — local image assets
+## Included updates
+- Bowl selection now uses the supplied Cosmo and Oblako images only; no extra bowl text/card labels.
+- Category titles use a consistent heading size.
+- Regular coffee is placed directly after the **-86°C Frozen Coffee** section.
+- Final shisha review and final order review both show **VAT 8% / 10% NOT INCLUDED**.
+- Shisha review no longer sends a duplicate Telegram order. Customers can continue to order drinks/items, then send one final complete order.
+- Final order prices are displayed in VND consistently.
+- Telegram sending is wired through `telegram-worker.js` and will work after the Cloudflare Worker URL is entered in `hansum.html`.
 
-## QR Order flow
-Table → Shisha → Bowl → Flavor → Strength → Cooling → Add-ons → Confirm → Order Received → Order More → Final Order.
+## GitHub Pages
+Upload/replace the files in the repository root and commit to `main`.
 
-The customer can order a shisha first, then use **ORDER MORE** to add cocktails, frozen drinks, -86°C coffee, shots, soft drinks, beer/soju/wine, or bottle service without losing the original shisha order.
+## Telegram setup
+1. Deploy `telegram-worker.js` as a Cloudflare Worker.
+2. Add Worker secrets:
+   - `TELEGRAM_BOT_TOKEN`
+   - `TELEGRAM_CHAT_ID`
+3. Copy the Worker URL.
+4. In `hansum.html`, replace the empty value in `window.HANSUM_TELEGRAM_ENDPOINT=''` with your Worker URL.
+5. Commit the updated `hansum.html` to GitHub.
 
-## Telegram
-The HTML deliberately does **not** contain a Telegram bot token. `hansum.html` supports a Cloudflare Worker endpoint via:
-
-```js
-window.HANSUM_TELEGRAM_ENDPOINT = 'https://YOUR-WORKER.workers.dev';
-```
-
-For production, deploy `telegram-worker.js` as a Cloudflare Worker and add these Worker secrets:
-- `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`
-
-Then put the Worker URL in the HTML before publishing. Never put the Bot Token directly into GitHub HTML/JS.
+Do not put the Telegram bot token directly into the HTML. Keep it as a Cloudflare Worker secret.

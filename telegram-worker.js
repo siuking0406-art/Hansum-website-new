@@ -32,7 +32,7 @@ function esc(s){return String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;
 function formatOrder(p){
   const o=p.order||p.shisha||{};
   const lines=[];
-  lines.push(`<b>HANSUM NEW ORDER</b>`);
+  lines.push(`<b>${p.type==='additional-order'?'HANSUM ADDITIONAL ORDER':'HANSUM SHISHA ORDER'}</b>`);
   lines.push(`Table: <b>${esc(p.table||o.table||'-')}</b>`);
   lines.push(`Time: ${new Date(p.createdAt||Date.now()).toLocaleString('en-GB',{timeZone:'Asia/Ho_Chi_Minh'})}`);
   lines.push('');
@@ -48,6 +48,8 @@ function formatOrder(p){
     lines.push(''); lines.push('<b>ADDITIONAL ITEMS</b>');
     p.basket.forEach(i=>lines.push(`${esc(i.name)} ×${i.qty} — ${money(i.price*i.qty)}`));
   }
-  lines.push(''); lines.push(`<b>TOTAL: ${money(p.total)}</b>`);
+  lines.push('');
+  lines.push(`<b>SUBTOTAL: ${money(p.total)}</b>`);
+  lines.push(`<i>10% VAT NOT INCLUDED</i>`);
   return lines.join('\n');
 }

@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>window.HANSUM_TELEGRAM_ENDPOINT='';</script>
+<script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_TELEGRAM_ENDPOINT='';</script>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;background:#050505}
@@ -26,6 +26,8 @@ button{font-family:inherit}
 .logo{width:62px;height:62px;object-fit:cover;border-radius:50%;mix-blend-mode:screen}
 .bowl-img{width:100%;height:auto;object-fit:contain;display:block}
 .range{width:100%;accent-color:#d9b86c}
+.category-title{line-height:1.05;letter-spacing:.01em}
+.order-note{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.4);text-align:center}
 </style>
 </head>
 <body>
@@ -141,27 +143,17 @@ button{font-family:inherit}
 
   <div class="space-y-5">
     <button @click="selectBowl('Egyptian Bowl — Cosmo')"
-      class="glass rounded-3xl overflow-hidden w-full text-left card"
+      class="glass rounded-3xl overflow-hidden w-full text-left card relative"
       :class="{selected:order.bowl==='Egyptian Bowl — Cosmo'}">
       <img src="images/cosmo-bowl.jpg" alt="Cosmo Bowl" class="bowl-img">
-      <div class="p-6">
-        <div class="text-[9px] tracking-[.3em] text-white/40">EGYPTIAN BOWL</div>
-        <div class="serif text-2xl mt-2">COSMO</div>
-        <div class="text-[10px] tracking-[.2em] text-white/40 mt-4">CLASSIC · SMOOTH</div>
-        <div class="mt-5 border border-white/30 rounded-xl py-3 text-center text-xs tracking-[.28em]">SELECT</div>
-      </div>
+      <div v-if="order.bowl==='Egyptian Bowl — Cosmo'" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#d9b86c] text-black flex items-center justify-center font-bold">✓</div>
     </button>
 
     <button @click="selectBowl('Phunnel Bowl — Oblako')"
-      class="glass rounded-3xl overflow-hidden w-full text-left card"
+      class="glass rounded-3xl overflow-hidden w-full text-left card relative"
       :class="{selected:order.bowl==='Phunnel Bowl — Oblako'}">
       <img src="images/oblako-bowl.jpg" alt="Oblako Bowl" class="bowl-img">
-      <div class="p-6">
-        <div class="text-[9px] tracking-[.3em] text-white/40">PHUNNEL BOWL</div>
-        <div class="serif text-2xl mt-2">OBLAKO</div>
-        <div class="text-[10px] tracking-[.2em] text-white/40 mt-4">RICH · STRONG INTENSITY</div>
-        <div class="mt-5 border border-white/30 rounded-xl py-3 text-center text-xs tracking-[.28em]">SELECT</div>
-      </div>
+      <div v-if="order.bowl==='Phunnel Bowl — Oblako'" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#d9b86c] text-black flex items-center justify-center font-bold">✓</div>
     </button>
   </div>
 </section>
@@ -265,7 +257,7 @@ button{font-family:inherit}
 <section v-if="step===7">
   <div class="pt-7 mb-8">
     <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">FINAL STEP</div>
-    <h1 class="serif text-3xl">Your Hansum</h1><p class="text-sm text-white/45 mt-3">Please review your selection.</p>
+    <h1 class="serif text-3xl">Your Hansum</h1><p class="text-sm text-white/45 mt-3">Review your shisha selection. Once confirmed, it will be sent to our team before you order drinks.</p>
   </div>
 
   <div class="glass rounded-3xl p-6">
@@ -282,10 +274,12 @@ button{font-family:inherit}
       <div v-if="order.otherAddon" class="text-sm mt-2">✎ {{order.otherAddon}}</div>
     </div>
 
-    <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Total</span><span class="gold text-xl font-semibold">{{formatPrice(totalPrice)}} VND</span></div>
+    <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Subtotal</span><span class="gold text-xl font-semibold">{{formatPrice(totalPrice)}} VND</span></div>
+    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/40">VAT 8% / 10% NOT INCLUDED</div>
   </div>
 
-  <button @click="confirmOrder" class="w-full mt-6 py-4 rounded-2xl cta">CONFIRM ORDER</button>
+  <button @click="confirmOrder" :disabled="sending" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'CONFIRM SHISHA ORDER'}}</button>
+  <p class="text-center text-[10px] tracking-[.08em] text-white/40 mt-3">10% VAT NOT INCLUDED</p>
   <button @click="back" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">BACK</button>
 </section>
 
@@ -293,10 +287,10 @@ button{font-family:inherit}
   <img src="images/hansum-logo-gold.jpg" class="logo mb-5" alt="HANSUM">
   <div class="text-[9px] tracking-[.4em] text-white/40">ORDER RECEIVED</div>
   <h1 class="serif text-4xl mt-4">Thank You</h1>
-  <p class="text-sm text-white/45 mt-4 max-w-xs leading-6">Your Hansum shisha order has been sent to our team.</p>
+  <p class="text-sm text-white/45 mt-4 max-w-xs leading-6">Your Hansum shisha order has been confirmed and sent to our team.</p>
   <div class="mt-8 text-[9px] tracking-[.3em] text-white/30">TABLE {{order.table}}</div>
   <div class="w-full mt-10 space-y-3">
-    <button @click="startMoreOrder" class="w-full py-4 rounded-2xl cta">ORDER MORE</button>
+    <button @click="startMoreOrder" class="w-full py-4 rounded-2xl cta">ORDER DRINKS &amp; MORE</button>
     <button @click="finish" class="w-full py-4 rounded-2xl border border-white/15 text-sm text-white/65">FINISH</button>
   </div>
 </section>
@@ -305,13 +299,13 @@ button{font-family:inherit}
   <div class="pt-7 mb-7">
     <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">ORDER MORE</div>
     <h1 class="serif text-3xl">Add to your order</h1>
-    <p class="text-sm text-white/45 mt-3">Cocktails, coffee, shots and more. Your shisha order stays saved.</p>
+    <p class="text-sm text-white/45 mt-3">Add drinks and other items. Your shisha order has already been sent to our team.</p>
   </div>
 
   <div class="space-y-5">
     <div v-for="cat in moreCategories" :key="cat.name" class="glass rounded-3xl p-5">
       <div class="flex items-end justify-between mb-4">
-        <div><div class="text-[9px] tracking-[.3em] text-white/40">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1">{{cat.name}}</div></div>
+        <div><div class="text-[9px] tracking-[.3em] text-white/40">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1 category-title">{{cat.name}}</div></div>
       </div>
       <div class="space-y-2">
         <button v-for="item in cat.items" :key="item.name" @click="addMoreItem(item)" class="w-full flex items-center justify-between gap-4 rounded-2xl border border-white/10 px-4 py-4 text-left card active:border-[#d9b86c]">
@@ -322,25 +316,19 @@ button{font-family:inherit}
     </div>
   </div>
 
-  <button @click="step=10" class="w-full mt-6 py-4 rounded-2xl cta">VIEW ORDER <span v-if="basketCount">({{basketCount}})</span></button>
+  <button @click="step=10" :disabled="!basketCount" class="w-full mt-6 py-4 rounded-2xl cta disabled:opacity-30">REVIEW DRINK ORDER <span v-if="basketCount">({{basketCount}})</span></button>
   <button @click="finish" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">FINISH</button>
 </section>
 
 <section v-if="step===10">
   <div class="pt-7 mb-7">
-    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">FINAL ORDER</div>
-    <h1 class="serif text-3xl">Your Order</h1>
-    <p class="text-sm text-white/45 mt-3">Review everything before sending it to our team.</p>
+    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">SECOND ORDER</div>
+    <h1 class="serif text-3xl">Drinks &amp; More</h1>
+    <p class="text-sm text-white/45 mt-3">Review your additional items. This order will be sent separately.</p>
   </div>
 
   <div class="glass rounded-3xl p-6">
     <div class="flex justify-between py-3 border-b border-white/10"><span class="text-white/40 text-sm">Table</span><span>{{order.table}}</span></div>
-    <div class="py-4 border-b border-white/10">
-      <div class="text-white/40 text-sm mb-2">Shisha</div>
-      <div class="flex justify-between gap-3 text-sm"><span>{{order.shishaName}} · {{order.bowl}}</span><span class="gold shrink-0">{{formatPrice(order.price)}}K</span></div>
-      <div class="text-xs text-white/50 mt-2">{{flavorSummary}} · Strength {{order.intensity}} · Cooling {{order.mint}}</div>
-      <div v-for="addon in order.addons" :key="addon.name" class="flex justify-between text-xs mt-2 text-white/65"><span>+ {{addon.name}}</span><span>+{{formatPrice(addon.price)}}K</span></div>
-    </div>
 
     <div v-if="basket.length" class="py-4 border-b border-white/10">
       <div class="text-white/40 text-sm mb-3">Additional Items</div>
@@ -350,12 +338,12 @@ button{font-family:inherit}
       </div>
     </div>
 
-    <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Estimated Total</span><span class="gold text-xl font-semibold">{{formatPrice(grandTotal)}} VND</span></div>
-    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/35">VAT 8% / 10% NOT INCLUDED</div>
+    <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Subtotal</span><span class="gold text-xl font-semibold">{{formatPrice(basketTotal)}} VND</span></div>
+    <div class="mt-3 pt-3 border-t border-white/5 order-note">10% VAT NOT INCLUDED</div>
   </div>
 
-  <button @click="sendFinalOrder" :disabled="sending" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'SEND ORDER TO HANSUM'}}</button>
-  <button @click="step=9" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">+ ORDER MORE</button>
+  <button @click="sendFinalOrder" :disabled="sending || !basketCount" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'CONFIRM &amp; SEND DRINK ORDER'}}</button>
+  <button @click="step=9" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">+ ADD MORE</button>
   <p v-if="sendMessage" class="text-center text-xs text-white/45 mt-4">{{sendMessage}}</p>
 </section>
 
@@ -400,7 +388,7 @@ moreCategories:[
   {name:'Mojito',price:188000},{name:'Negroni',price:188000},{name:'Old Fashioned',price:188000},{name:'Whiskey Sour',price:188000},{name:'Espresso Martini',price:188000},{name:'Margarita',price:188000}]},
  {label:'FROZEN',name:'Frozen Series',items:[
   {name:'Frozen Coconut Coffee',price:168000},{name:'Frozen Mango Colada',price:168000},{name:'Frozen Lychee Yakult',price:158000},{name:'Frozen Yuzu Lemon',price:158000}]},
- {label:'COFFEE',name:'-86°C Collection',items:[
+ {label:'COFFEE',name:'-86°C Frozen Coffee',items:[
   {name:'-86° Espresso',price:88000},{name:'-86° Dirty Coffee',price:98000},{name:'-86° Saigon Coffee',price:98000},{name:'-86° Spanish Latte',price:108000},{name:'-86° Coconut Coffee',price:108000}]},
  {label:'COFFEE',name:'Coffee',items:[
   {name:'Espresso',price:55000},
@@ -446,6 +434,7 @@ return this.selectedDirections.join(' · ')
 addonTotal(){return this.order.addons.reduce((s,a)=>s+a.price,0)},
 totalPrice(){return this.order.price+this.addonTotal},
 grandTotal(){return this.order.price+this.addonTotal+this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
+basketTotal(){return this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
 basketCount(){return this.basket.reduce((s,i)=>s+i.qty,0)}
 },
 methods:{
@@ -500,7 +489,7 @@ this.step--
 },
 async confirmOrder(){
   this.sending=true; this.sendMessage='';
-  const payload={type:'shisha',table:this.order.table,order:this.order,total:this.totalPrice,createdAt:new Date().toISOString()};
+  const payload={type:'shisha',table:this.order.table,order:this.order,total:this.totalPrice,vatNote:'10% VAT NOT INCLUDED',createdAt:new Date().toISOString()};
   try{await this.sendToTelegram(payload);this.step=8}catch(e){console.error(e);this.step=8;this.sendMessage='Order saved on this device. Telegram is not connected yet.'}finally{this.sending=false}
 },
 startMoreOrder(){this.sendMessage='';this.step=9},
@@ -509,14 +498,14 @@ addMoreItem(item){
   if(existing)existing.qty++;else this.basket.push({...item,qty:1});
 },
 async sendFinalOrder(){
+  if(!this.basketCount)return;
   this.sending=true;this.sendMessage='';
-  const payload={type:'full-order',table:this.order.table,shisha:this.order,basket:this.basket,total:this.grandTotal,createdAt:new Date().toISOString()};
-  try{await this.sendToTelegram(payload);this.sendMessage='Order sent to Hansum. Our team will take care of it.';setTimeout(()=>this.finish(),900)}catch(e){console.error(e);this.sendMessage='Telegram is not connected yet. The order remains on this device.'}finally{this.sending=false}
+  const payload={type:'additional-order',table:this.order.table,basket:this.basket,total:this.basketTotal,createdAt:new Date().toISOString()};
+  try{await this.sendToTelegram(payload);this.sendMessage='Drink order confirmed and sent to Hansum.';setTimeout(()=>this.finish(),900)}catch(e){console.error(e);this.sendMessage='Telegram is not connected yet. Please contact staff to complete the order.'}finally{this.sending=false}
 },
 async sendToTelegram(payload){
-  // Set your Cloudflare Worker URL here after the Telegram bot is created.
   const TELEGRAM_ENDPOINT=window.HANSUM_TELEGRAM_ENDPOINT||'';
-  if(!TELEGRAM_ENDPOINT) return;
+  if(!TELEGRAM_ENDPOINT) throw new Error('Telegram endpoint is not configured');
   const res=await fetch(TELEGRAM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   if(!res.ok)throw new Error('Telegram endpoint error');
 },

@@ -14,8 +14,9 @@
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;background:#050505}
-body{color:#fff;font-family:Montserrat,sans-serif;-webkit-tap-highlight-color:transparent}
-button{font-family:inherit}
+body{color:#fff;font-family:Montserrat,sans-serif;-webkit-tap-highlight-color:transparent;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(182,136,48,.18),transparent 65%),#050505}
+[v-cloak]{display:none}
+button{font-family:inherit;cursor:pointer}
 .serif{font-family:Cinzel,serif}
 .glass{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.11);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
 .card{transition:.22s ease;position:relative}.card:hover{border-color:rgba(217,184,108,.32)}
@@ -35,14 +36,15 @@ button{font-family:inherit}
 .qty-control span{min-width:18px;text-align:center;font-size:13px;font-weight:700}
 .error-box{border:1px solid rgba(255,100,100,.28);background:rgba(255,70,70,.06);color:rgba(255,210,210,.85);border-radius:16px;padding:13px 15px;font-size:11px;line-height:1.5}
 .success-box{border:1px solid rgba(217,184,108,.3);background:rgba(217,184,108,.05);border-radius:18px;padding:16px}
+.language-switch{display:inline-flex;padding:3px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(255,255,255,.035)}.language-switch button{padding:5px 7px;border-radius:999px;font-size:8px;letter-spacing:.08em;color:rgba(255,255,255,.45)}.language-switch button.active{background:#d9b86c;color:#080808;font-weight:700}.welcome-card{position:relative;overflow:hidden;border:1px solid rgba(217,184,108,.25);background:linear-gradient(110deg,rgba(10,8,5,.88),rgba(10,8,5,.47)),url('images/hero-smoke.jpeg') center/cover}.quick-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.quick-nav::-webkit-scrollbar{display:none}.quick-nav button{white-space:nowrap;border:1px solid rgba(217,184,108,.25);border-radius:999px;padding:9px 13px;font-size:9px;letter-spacing:.09em;color:#d9b86c;background:rgba(217,184,108,.06)}.staff-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;padding:20px;background:rgba(0,0,0,.66);backdrop-filter:blur(7px)}.staff-sheet{width:min(100%,480px);border:1px solid rgba(217,184,108,.28);border-radius:28px;background:linear-gradient(145deg,#1b160d,#080808);box-shadow:0 22px 60px rgba(0,0,0,.55)}
 </style>
 </head>
 <body>
-<div id="app" class="min-h-screen">
+<div id="app" v-cloak class="min-h-screen">
 
 <header class="max-w-xl mx-auto px-5 pt-4 pb-2">
   <div class="flex items-center justify-between">
-    <button v-if="step>0 && step<8" @click="back" class="text-white/55 text-sm">← BACK</button>
+    <button v-if="step>0 && step<8" @click="back" class="text-white/55 text-sm">← {{t('back')}}</button>
     <div v-else class="w-12"></div>
 
     <div class="text-center">
@@ -52,24 +54,28 @@ button{font-family:inherit}
     </div>
 
     <div class="text-right">
-      <div class="text-[8px] tracking-[.25em] text-white/35">TABLE</div>
-      <div class="text-sm font-semibold">{{order.table||'—'}}</div><div v-if="tableLocked" class="text-[7px] tracking-[.14em] text-[#d9b86c] mt-1">QR TABLE</div>
+      <div class="text-[8px] tracking-[.25em] text-white/35">{{t('table')}}</div>
+      <div class="text-sm font-semibold">{{order.table||'—'}}</div><div v-if="tableLocked" class="text-[7px] tracking-[.14em] text-[#d9b86c] mt-1">{{t('qrTable')}}</div>
     </div>
   </div>
   <div class="flex gap-1 mt-4">
     <div v-for="n in 8" :key="n" class="h-[2px] flex-1 rounded-full"
          :class="step>=n-1?'bg-[#d9b86c]':'bg-white/10'"></div>
   </div>
-  <div v-if="step>=1 && step<=7" class="step-caption">STEP {{String(step).padStart(2,'0')}} · {{stepNames[step]}}</div>
+  <div v-if="step>=1 && step<=7" class="step-caption">{{t('step')}} {{String(step).padStart(2,'0')}} · {{localizedStepNames[step]}}</div>
+  <div class="flex items-center justify-between mt-3">
+    <div class="language-switch"><button v-for="language in languages" :key="language.code" @click="setLocale(language.code)" :class="{active:locale===language.code}">{{language.label}}</button></div>
+    <button @click="showStaffHelp=true" class="text-[8px] tracking-[.14em] text-[#d9b86c]">{{t('needHelp')}}?</button>
+  </div>
 </header>
 
 <main class="max-w-xl mx-auto px-5 pb-28">
 
 <section v-if="step===0">
   <div class="pt-8 mb-8">
-    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">WELCOME TO HANSUM</div>
-    <h1 class="serif text-3xl">Choose your table</h1>
-    <p class="text-sm text-white/45 mt-3">Select your table to begin your Hansum experience.</p>
+    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">{{t('welcome')}}</div>
+    <h1 class="serif text-3xl">{{t('chooseTable')}}</h1>
+    <p class="text-sm text-white/45 mt-3">{{t('chooseTableHint')}}</p>
   </div>
   <div class="grid grid-cols-3 gap-3">
     <button v-for="table in tables" :key="table" @click="order.table=table"
@@ -77,14 +83,14 @@ button{font-family:inherit}
       <div class="text-sm font-semibold">{{table}}</div>
     </button>
   </div>
-  <button @click="next" :disabled="!order.table" class="w-full mt-7 py-4 rounded-2xl cta disabled:opacity-20">CONTINUE <span class="ml-2">→</span></button>
+  <button @click="next" :disabled="!order.table" class="w-full mt-7 py-4 rounded-2xl cta disabled:opacity-20">{{t('continue')}} <span class="ml-2">→</span></button>
 </section>
 
 <section v-if="step===1">
-  <div class="pt-7 mb-7">
-    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">STEP 01</div>
-    <h1 class="serif text-3xl">Shisha Selection</h1>
-    <p class="text-sm text-white/45 mt-3">Choose your leaf experience.</p>
+  <div class="welcome-card rounded-3xl p-6 pt-7 mb-7">
+    <div class="text-[9px] tracking-[.35em] text-[#efd58e] mb-3">{{t('welcome')}} · {{t('table')}} {{order.table}}</div>
+    <h1 class="serif text-3xl">{{t('shishaSelection')}}</h1>
+    <p class="text-sm text-white/65 mt-3">{{t('shishaHint')}}</p>
   </div>
 
   <div class="space-y-4">
@@ -220,7 +226,7 @@ button{font-family:inherit}
     <div class="text-xs text-white/40 mt-1">Let our shisha chef decide</div>
   </button>
 
-  <button @click="nextFromFlavor" :disabled="!canContinueFlavor" class="w-full mt-6 py-4 rounded-2xl cta disabled:opacity-20">CONTINUE <span class="ml-2">→</span></button>
+  <button @click="nextFromFlavor" :disabled="!canContinueFlavor" class="w-full mt-6 py-4 rounded-2xl cta disabled:opacity-20">{{t('continue')}} <span class="ml-2">→</span></button>
 </section>
 
 <section v-if="step===4">
@@ -231,7 +237,7 @@ button{font-family:inherit}
   <div class="text-center mb-10"><div class="text-7xl serif">{{order.intensity}}</div><div class="text-[9px] tracking-[.35em] text-white/35 mt-3">STRENGTH</div></div>
   <input v-model.number="order.intensity" type="range" min="1" max="10" class="range">
   <div class="flex justify-between text-[9px] text-white/30 mt-3"><span>LIGHT</span><span>BALANCED</span><span>STRONG</span></div>
-  <button @click="next" class="w-full mt-12 py-4 rounded-2xl cta">CONTINUE <span class="ml-2">→</span></button>
+  <button @click="next" class="w-full mt-12 py-4 rounded-2xl cta">{{t('continue')}} <span class="ml-2">→</span></button>
 </section>
 
 <section v-if="step===5">
@@ -242,7 +248,7 @@ button{font-family:inherit}
   <div class="text-center mb-10"><div class="text-7xl serif">{{order.mint}}</div><div class="text-[9px] tracking-[.35em] text-white/35 mt-3">MINT / COOLING</div></div>
   <input v-model.number="order.mint" type="range" min="0" max="10" class="range">
   <div class="flex justify-between text-[9px] text-white/30 mt-3"><span>NONE</span><span>SOFT</span><span>ICY</span></div>
-  <button @click="next" class="w-full mt-12 py-4 rounded-2xl cta">ADD-ONS</button>
+  <button @click="next" class="w-full mt-12 py-4 rounded-2xl cta">{{t('addons')}}</button>
 </section>
 
 <section v-if="step===6">
@@ -271,7 +277,7 @@ button{font-family:inherit}
         class="glass bg-transparent w-full rounded-xl mt-4 p-3 text-sm outline-none">
     </div>
   </div>
-  <button @click="next" class="w-full mt-6 py-4 rounded-2xl cta">REVIEW ORDER</button>
+  <button @click="next" class="w-full mt-6 py-4 rounded-2xl cta">{{t('reviewOrder')}}</button>
 </section>
 
 <section v-if="step===7">
@@ -281,7 +287,7 @@ button{font-family:inherit}
   </div>
 
   <div class="glass rounded-3xl p-6">
-    <div class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Table</span><span>{{order.table}}</span></div>
+    <div class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">{{t('table')}}</span><span>{{order.table}}</span></div>
     <div class="py-4 border-b border-white/10"><div class="text-white/40 text-sm">Shisha</div><div class="font-semibold mt-1">{{order.shishaName}}</div></div>
     <div v-if="order.bowl" class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Bowl</span><span class="font-semibold text-right">{{order.bowl}}</span></div>
     <div class="py-4 border-b border-white/10"><div class="text-white/40 text-sm">Flavor</div><div class="font-semibold mt-1">{{flavorSummary}}</div></div>
@@ -294,43 +300,45 @@ button{font-family:inherit}
       <div v-if="order.otherAddon" class="text-sm mt-2">✎ {{order.otherAddon}}</div>
     </div>
 
-    <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Subtotal</span><span class="gold text-xl font-semibold">{{formatPrice(totalPrice)}} VND</span></div>
-    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/40">8/10% VAT NOT INCLUDED</div>
+    <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">{{t('subtotal')}}</span><span class="gold text-xl font-semibold">{{formatPrice(totalPrice)}} VND</span></div>
+    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/40">{{t('vat')}}</div>
   </div>
 
   <div v-if="sendMessage" class="error-box mt-4">{{sendMessage}}</div>
-  <button @click="confirmOrder" :disabled="sending" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'CONFIRM SHISHA ORDER'}}</button>
-  <p class="text-center text-[10px] tracking-[.08em] text-white/40 mt-3">Prices are exclusive of 8/10% VAT.</p>
-  <button @click="back" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">BACK</button>
+  <button @click="confirmOrder" :disabled="sending" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?t('sending'):t('confirmShisha')}}</button>
+  <p class="text-center text-[10px] tracking-[.08em] text-white/40 mt-3">{{t('vatSentence')}}</p>
+  <button @click="back" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">{{t('back')}}</button>
 </section>
 
 <section v-if="step===8" class="min-h-[70vh] flex flex-col items-center justify-center text-center">
   <img src="images/hansum-logo-gold.jpg" class="logo mb-5" alt="HANSUM">
-  <div class="text-[9px] tracking-[.4em] gold">SHISHA ORDER SENT ✓</div>
-  <h1 class="serif text-4xl mt-4">Thank You</h1>
-  <p class="text-sm text-white/45 mt-4 max-w-xs leading-6">Your shisha order has been confirmed and sent to our team.</p>
+    <div class="text-[9px] tracking-[.4em] gold">{{t('shishaSent')}} ✓</div>
+    <h1 class="serif text-4xl mt-4">{{t('thankYou')}}</h1>
+    <p class="text-sm text-white/45 mt-4 max-w-xs leading-6">{{t('shishaSentHint')}}</p>
   <div class="success-box mt-7 w-full max-w-xs">
     <div class="text-[9px] tracking-[.25em] text-white/35">ORDER REFERENCE</div>
     <div class="serif text-xl mt-2">{{shishaOrderRef}}</div>
     <div class="text-[9px] tracking-[.18em] text-white/35 mt-2">TABLE {{order.table}}</div>
   </div>
   <div class="w-full mt-10 space-y-3">
-    <button @click="startMoreOrder" class="w-full py-4 rounded-2xl cta">ORDER DRINKS &amp; MORE</button>
-    <button @click="finish" class="w-full py-4 rounded-2xl border border-white/15 text-sm text-white/65">FINISH</button>
+    <button @click="startMoreOrder" class="w-full py-4 rounded-2xl cta">{{t('orderMore')}}</button>
+    <button @click="finish" class="w-full py-4 rounded-2xl border border-white/15 text-sm text-white/65">{{t('finish')}}</button>
   </div>
 </section>
 
 <section v-if="step===9">
   <div class="pt-7 mb-7">
-    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">ORDER MORE</div>
-    <h1 class="serif text-3xl">Add to your order</h1>
-    <p class="text-sm text-white/45 mt-3">Add drinks and other items. Your shisha order has already been sent to our team.</p><div class="mt-4 text-center text-[10px] tracking-[.08em] text-white/40">8/10% VAT NOT INCLUDED</div>
+    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">{{t('orderMore')}}</div>
+    <h1 class="serif text-3xl">{{t('addToOrder')}}</h1>
+    <p class="text-sm text-white/45 mt-3">{{t('addToOrderHint')}}</p><div class="mt-4 text-center text-[10px] tracking-[.08em] text-white/40">{{t('vat')}}</div>
   </div>
 
+  <nav class="quick-nav" :aria-label="t('drinkCategories')"><button v-for="(cat,index) in moreCategories" :key="'nav-'+index" @click="scrollToCategory(index)">{{categoryTitle(cat)}}</button></nav>
+
   <div class="space-y-5">
-    <div v-for="cat in moreCategories" :key="cat.name" class="glass rounded-3xl p-5">
+    <div v-for="(cat,index) in moreCategories" :id="'category-'+index" :key="cat.name+index" class="glass rounded-3xl p-5 scroll-mt-5">
       <div class="flex items-end justify-between mb-4">
-        <div><div class="serif text-xl md:text-2xl category-label">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1 category-title">{{cat.name}}</div></div>
+        <div><div class="serif text-xl md:text-2xl category-label">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1 category-title">{{categoryTitle(cat)}}</div></div>
       </div>
       <div class="space-y-2">
         <div v-for="item in cat.items" :key="item.name" class="w-full flex items-center justify-between gap-3 rounded-2xl border border-white/10 px-4 py-4 card">
@@ -344,22 +352,22 @@ button{font-family:inherit}
             <span>{{itemQty(item.name)}}</span>
             <button @click.stop="changeQty(item,1)" aria-label="Increase quantity">+</button>
           </div>
-          <button v-else @click="addMoreItem(item)" class="shrink-0 border border-[#d9b86c]/50 rounded-xl px-3 py-2 text-[10px] tracking-[.12em] gold">ADD</button>
+          <button v-else @click="addMoreItem(item)" class="shrink-0 border border-[#d9b86c]/50 rounded-xl px-3 py-2 text-[10px] tracking-[.12em] gold">{{t('add')}}</button>
         </div>
       </div>
     </div>
   </div>
 
-  <button @click="step=10" :disabled="!basketCount" class="w-full mt-6 py-4 rounded-2xl cta disabled:opacity-30">REVIEW DRINK ORDER <span v-if="basketCount">({{basketCount}})</span></button>
-  <button @click="finish" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">FINISH</button>
+  <button @click="step=10" :disabled="!basketCount" class="w-full mt-6 py-4 rounded-2xl cta disabled:opacity-30">{{t('reviewDrinkOrder')}} <span v-if="basketCount">({{basketCount}})</span></button>
+  <button @click="finish" class="w-full mt-3 py-4 rounded-2xl border border-white/10 text-sm text-white/60">{{t('finish')}}</button>
 
   <div v-if="basketCount" class="cart-float">
     <div class="max-w-xl mx-auto px-5 py-3 flex items-center gap-3">
       <div class="flex-1 min-w-0">
-        <div class="text-[9px] tracking-[.18em] text-white/40">ADDITIONAL ORDER</div>
+        <div class="text-[9px] tracking-[.18em] text-white/40">{{t('additionalOrder')}}</div>
         <div class="text-sm font-semibold truncate">{{basketCount}} {{basketCount===1?'ITEM':'ITEMS'}} · {{formatPrice(basketTotal)}} VND</div>
       </div>
-      <button @click="step=10" class="cta rounded-xl px-5 py-3 text-[10px] tracking-[.1em] shrink-0">REVIEW ORDER</button>
+      <button @click="step=10" class="cta rounded-xl px-5 py-3 text-[10px] tracking-[.1em] shrink-0">{{t('reviewOrder')}}</button>
     </div>
   </div>
 </section>
@@ -406,19 +414,33 @@ button{font-family:inherit}
 
 </main>
 
+<div v-if="showStaffHelp" class="staff-modal" @click.self="showStaffHelp=false">
+  <div class="staff-sheet p-7 text-center">
+    <div class="text-3xl">✦</div><h2 class="serif text-2xl mt-3">{{t('staffTitle')}}</h2>
+    <p class="text-sm text-white/55 leading-6 mt-3">{{t('staffMessage')}}</p>
+    <button @click="showStaffHelp=false" class="w-full mt-6 py-4 rounded-2xl cta">{{t('close')}}</button>
+  </div>
+</div>
+
 </div>
 
 <script>
 const {createApp}=Vue;
 const urlParams=new URLSearchParams(window.location.search);
 const qrTable=(urlParams.get('table')||'').trim().toUpperCase();
-const allowedTables=['01','02','03','05','06','07','08','09','VIP 1','VIP 2','BAR 1','BAR 2'];
+const allowedTables=['01','02','03','04','05','06','07','08','09','10','11','12'];
 const hasQrTable=allowedTables.includes(qrTable);
 createApp({
 data(){return{
 stepNames:{1:'SHISHA',2:'BOWL',3:'FLAVOR',4:'STRENGTH',5:'COOLING',6:'ADD-ONS',7:'REVIEW'},
 step:hasQrTable?1:0,
-tables:['01','02','03','05','06','07','08','09','VIP 1','VIP 2','BAR 1','BAR 2'],
+tables:['01','02','03','04','05','06','07','08','09','10','11','12'],
+locale:'en',languages:[{code:'en',label:'EN'},{code:'zh',label:'中文'},{code:'ko',label:'한국어'}],showStaffHelp:false,
+translations:{
+en:{back:'BACK',table:'TABLE',qrTable:'QR TABLE',step:'STEP',needHelp:'NEED HELP',welcome:'WELCOME TO HANSUM',chooseTable:'Choose your table',chooseTableHint:'Select your table to begin your Hansum experience.',continue:'CONTINUE',shishaSelection:'Shisha Selection',shishaHint:'Choose your leaf experience.',addons:'ADD-ONS',reviewOrder:'REVIEW ORDER',subtotal:'Subtotal',vat:'8/10% VAT NOT INCLUDED',vatSentence:'Prices are exclusive of 8/10% VAT.',sending:'SENDING…',confirmShisha:'CONFIRM SHISHA ORDER',shishaSent:'SHISHA ORDER SENT',thankYou:'Thank You',shishaSentHint:'Your shisha order has been confirmed and sent to our team.',orderMore:'ORDER DRINKS & MORE',finish:'FINISH',addToOrder:'Add to your order',addToOrderHint:'Add drinks and other items. Your shisha order has already been sent to our team.',drinkCategories:'Drink categories',add:'ADD',reviewDrinkOrder:'REVIEW DRINK ORDER',additionalOrder:'ADDITIONAL ORDER',staffTitle:'Need assistance?',staffMessage:'Please raise your hand and a Hansum team member will be with you shortly.',close:'CLOSE',cat_Cocktails:'Cocktails',cat_FrozenSeries:'Frozen Series',cat_86:'-86°C Frozen Coffee',cat_Coffee:'Coffee',cat_Shooters:'Shooters',cat_Mocktails:'Mocktails & Soft Drinks',cat_Beer:'Beer · Soju · Wine',cat_Bottle:'Bottle Service'},
+zh:{back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',needHelp:'需要協助',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',staffTitle:'需要協助？',staffMessage:'請舉手示意，Hansum 團隊成員將很快為您服務。',close:'關閉',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
+ko:{back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',needHelp:'도움이 필요하신가요',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',staffTitle:'도움이 필요하신가요?',staffMessage:'손을 들어 주시면 Hansum 팀원이 곧 도와드리겠습니다.',close:'닫기',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
+},
 order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''},
 selectedDirections:[],
 flavorDirections:[],
@@ -500,10 +522,18 @@ grandTotal(){return this.order.price+this.addonTotal+this.basket.reduce((s,i)=>s
 basketTotal(){return this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
 basketCount(){return this.basket.reduce((s,i)=>s+i.qty,0)},
   tableLocked(){return hasQrTable},
-  vatLabel(){return '8/10% VAT NOT INCLUDED'}
+  vatLabel(){return this.t('vat')},
+  localizedStepNames(){
+    const labels={en:{1:'SHISHA',2:'BOWL',3:'FLAVOR',4:'STRENGTH',5:'COOLING',6:'ADD-ONS',7:'REVIEW'},zh:{1:'水煙',2:'煙碗',3:'風味',4:'濃度',5:'涼感',6:'附加選項',7:'確認'},ko:{1:'시샤',2:'보울',3:'향',4:'강도',5:'쿨링',6:'추가 옵션',7:'확인'}};
+    return labels[this.locale]||labels.en
+  }
 },
 methods:{
-next(){if(this.step<8)this.step++},
+  t(key){return (this.translations[this.locale]&&this.translations[this.locale][key])||this.translations.en[key]||key},
+  setLocale(locale){this.locale=locale;try{localStorage.setItem('hansumLocale',locale)}catch(e){}},
+  categoryTitle(cat){const keys={'Cocktails':'cat_Cocktails','Frozen Series':'cat_FrozenSeries','-86°C Frozen Coffee':'cat_86','Coffee':'cat_Coffee','Shooters':'cat_Shooters','Mocktails & Soft Drinks':'cat_Mocktails','Beer · Soju · Wine':'cat_Beer','Bottle Service':'cat_Bottle'};return this.t(keys[cat.name]||cat.name)},
+  scrollToCategory(index){const target=document.getElementById('category-'+index);if(target)target.scrollIntoView({behavior:'smooth',block:'start'})},
+  next(){if(this.step<8)this.step++},
 setDirections(dark){
 this.flavorDirections=dark?[
 {icon:'🍓',name:'FRUITY',description:'Sweet and easy to enjoy.'},
@@ -646,6 +676,7 @@ initializeQrTable(){
 }
 },
 mounted(){
+  try{const savedLocale=localStorage.getItem('hansumLocale');if(['en','zh','ko'].includes(savedLocale))this.locale=savedLocale}catch(e){}
   if(hasQrTable)this.initializeQrTable();
   else this.restoreState();
 }

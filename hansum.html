@@ -644,7 +644,7 @@ initializeQrTable(){
     } else {this.order.table=qrTable;this.step=1;}
     this.persistState();
   }catch(e){this.order.table=qrTable;this.step=1;}
-}
+},
 }
 mounted(){
   if(hasQrTable)this.initializeQrTable();

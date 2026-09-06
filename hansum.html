@@ -27,6 +27,7 @@ button{font-family:inherit}
 .bowl-img{width:100%;height:auto;object-fit:contain;display:block}
 .range{width:100%;accent-color:#d9b86c}
 .category-title{line-height:1.05;letter-spacing:.01em}
+.category-label{line-height:1.1;letter-spacing:.16em;color:#d9b86c}
 .order-note{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.4);text-align:center}
 </style>
 </head>
@@ -275,7 +276,7 @@ button{font-family:inherit}
     </div>
 
     <div class="flex justify-between pt-5"><span class="text-white/40 text-sm">Subtotal</span><span class="gold text-xl font-semibold">{{formatPrice(totalPrice)}} VND</span></div>
-    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/40">VAT 8% / 10% NOT INCLUDED</div>
+    <div class="mt-3 pt-3 border-t border-white/5 text-center text-[10px] tracking-[.08em] text-white/40">10% VAT NOT INCLUDED</div>
   </div>
 
   <button @click="confirmOrder" :disabled="sending" class="w-full mt-6 py-4 rounded-2xl cta">{{sending?'SENDING…':'CONFIRM SHISHA ORDER'}}</button>
@@ -299,13 +300,13 @@ button{font-family:inherit}
   <div class="pt-7 mb-7">
     <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">ORDER MORE</div>
     <h1 class="serif text-3xl">Add to your order</h1>
-    <p class="text-sm text-white/45 mt-3">Add drinks and other items. Your shisha order has already been sent to our team.</p>
+    <p class="text-sm text-white/45 mt-3">Add drinks and other items. Your shisha order has already been sent to our team.</p><div class="mt-4 text-center text-[10px] tracking-[.08em] text-white/40">10% VAT NOT INCLUDED</div>
   </div>
 
   <div class="space-y-5">
     <div v-for="cat in moreCategories" :key="cat.name" class="glass rounded-3xl p-5">
       <div class="flex items-end justify-between mb-4">
-        <div><div class="text-[9px] tracking-[.3em] text-white/40">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1 category-title">{{cat.name}}</div></div>
+        <div><div class="serif text-xl md:text-2xl category-label">{{cat.label}}</div><div class="serif text-3xl md:text-4xl mt-1 category-title">{{cat.name}}</div></div>
       </div>
       <div class="space-y-2">
         <button v-for="item in cat.items" :key="item.name" @click="addMoreItem(item)" class="w-full flex items-center justify-between gap-4 rounded-2xl border border-white/10 px-4 py-4 text-left card active:border-[#d9b86c]">
@@ -375,7 +376,7 @@ addonOptions:[
 {icon:'☕',name:'Coffee Base',price:50000}
 ],
 otherAddonEnabled:false,
-basket:[],sending:false,sendMessage:'',
+basket:[],sending:false,sendMessage:'',shishaSent:false,drinkSent:false,
 moreCategories:[
  {label:'SIGNATURE',name:'Cocktails',items:[
   {name:'Fly to the Moon',price:228000,note:'Floral · Lychee · Rose'},
@@ -488,9 +489,10 @@ if(this.step===3&&(this.order.shishaType==='Fruit Head'||this.order.shishaType==
 this.step--
 },
 async confirmOrder(){
+  if(this.shishaSent)return;
   this.sending=true; this.sendMessage='';
   const payload={type:'shisha',table:this.order.table,order:this.order,total:this.totalPrice,vatNote:'10% VAT NOT INCLUDED',createdAt:new Date().toISOString()};
-  try{await this.sendToTelegram(payload);this.step=8}catch(e){console.error(e);this.step=8;this.sendMessage='Order saved on this device. Telegram is not connected yet.'}finally{this.sending=false}
+  try{await this.sendToTelegram(payload);this.shishaSent=true;this.step=8}catch(e){console.error(e);this.step=8;this.sendMessage='Order saved on this device. Telegram is not connected yet.'}finally{this.sending=false}
 },
 startMoreOrder(){this.sendMessage='';this.step=9},
 addMoreItem(item){
@@ -498,10 +500,10 @@ addMoreItem(item){
   if(existing)existing.qty++;else this.basket.push({...item,qty:1});
 },
 async sendFinalOrder(){
-  if(!this.basketCount)return;
+  if(!this.basketCount || this.drinkSent)return;
   this.sending=true;this.sendMessage='';
-  const payload={type:'additional-order',table:this.order.table,basket:this.basket,total:this.basketTotal,createdAt:new Date().toISOString()};
-  try{await this.sendToTelegram(payload);this.sendMessage='Drink order confirmed and sent to Hansum.';setTimeout(()=>this.finish(),900)}catch(e){console.error(e);this.sendMessage='Telegram is not connected yet. Please contact staff to complete the order.'}finally{this.sending=false}
+  const payload={type:'additional-order',table:this.order.table,basket:this.basket,total:this.basketTotal,vatNote:'10% VAT NOT INCLUDED',createdAt:new Date().toISOString()};
+  try{await this.sendToTelegram(payload);this.drinkSent=true;this.sendMessage='Drink order confirmed and sent to Hansum.';setTimeout(()=>this.finish(),900)}catch(e){console.error(e);this.sendMessage='Telegram is not connected yet. Please contact staff to complete the order.'}finally{this.sending=false}
 },
 async sendToTelegram(payload){
   const TELEGRAM_ENDPOINT=window.HANSUM_TELEGRAM_ENDPOINT||'';

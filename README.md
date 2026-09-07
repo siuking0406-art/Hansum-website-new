@@ -68,3 +68,9 @@ Updated v5.6.10: replaced Cosmo and Oblako bowl images in order bowl selection a
 - Uses the existing website imagery except for the new -86°C Coffee artwork (`images/coffee-86-v3.jpeg`).
 - Bowl showcase uses Cosmo and Oblako images.
 - Order pages (`hansum.html` and `hansum-saigon.html`) are included and remain separate.
+
+
+## v5.7.3 update
+- Restored the original Website hero image.
+- Updated only the “ONE MORE PUFF / ONE MORE DRINK / ONE MORE NIGHT” manifesto background to the newly supplied photo.
+- No Order page changes.

@@ -60,4 +60,4 @@ VAT wording is standardized to **8/10% VAT NOT INCLUDED** / **Prices are exclusi
 - Saigon can use the same table QR format, e.g. `hansum-saigon.html?table=01`.
 
 
-Updated v5.6.9: replaced Cosmo and Oblako bowl images in order bowl selection and standardized Phunnel Bowl naming.
+Updated v5.6.10: replaced Cosmo and Oblako bowl images in order bowl selection and standardized Phunnel Bowl naming.

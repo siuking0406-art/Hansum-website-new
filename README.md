@@ -58,3 +58,6 @@ VAT wording is standardized to **8/10% VAT NOT INCLUDED** / **Prices are exclusi
 - `hansum-saigon.html` is a separate Saigon order page with its own localStorage namespace and `window.HANSUM_SAIGON_TELEGRAM_ENDPOINT`.
 - Deploy a separate Saigon Telegram Worker/endpoint for Saigon orders so they are routed independently from Da Nang.
 - Saigon can use the same table QR format, e.g. `hansum-saigon.html?table=01`.
+
+
+Updated v5.6.9: replaced Cosmo and Oblako bowl images in order bowl selection and standardized Phunnel Bowl naming.

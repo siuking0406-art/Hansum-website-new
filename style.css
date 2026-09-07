@@ -13,3 +13,33 @@
 .website-bowls .bowl-info{padding:18px 0 10px;display:grid;grid-template-columns:1fr 1fr;column-gap:45px}
 .website-bowls .bowl-info .note{grid-column:1 / -1}
 @media(max-width:800px){.website-bowl-grid{grid-template-columns:1fr;gap:14px}.website-bowl-card,.website-bowl-card img{min-height:520px;height:520px}.website-bowl-overlay{left:22px;right:22px;bottom:22px}.website-bowls .bowl-info{display:flex;padding:5px 0 90px}.website-bowls .bowl-info .note{grid-column:auto}}
+
+/* v5.6.15 — clean duplicate bowl info and elevate HANSUM OMAKASE */
+.website-omakase-copy{display:block;padding:28px 0 80px}
+.website-omakase-copy .note{padding:0;border:0}
+.website-omakase-copy .note small{display:block;color:#d8b66a;letter-spacing:.28em;font-size:10px;margin-bottom:10px}
+.website-omakase-copy .note h3{font-size:clamp(42px,6vw,72px);margin:0 0 14px;line-height:1}
+.website-omakase-copy .note p{max-width:650px;font-size:14px;line-height:1.7}
+@media(max-width:800px){.website-omakase-copy{padding:22px 0 95px}.website-omakase-copy .note h3{font-size:42px}.website-omakase-copy .note p{font-size:13px;max-width:100%}}
+
+/* v5.7 preview — unified 01–07 section hierarchy */
+.section-top span:first-child{
+  font-size:clamp(18px,1.5vw,22px);
+  letter-spacing:.22em;
+}
+.section-top span:last-child{
+  font-size:clamp(15px,1.2vw,18px);
+  letter-spacing:.20em;
+}
+.section-top{margin-bottom:48px}
+.omakase-section .eyebrow{font-size:15px;letter-spacing:.28em;margin-bottom:18px}
+.omakase-section h2{font-size:clamp(48px,6vw,82px);line-height:.96}
+.omakase-section .story-copy{font-size:clamp(18px,1.5vw,21px);line-height:1.65}
+@media(max-width:800px){
+  .section-top{margin-bottom:34px}
+  .section-top span:first-child{font-size:17px;letter-spacing:.18em}
+  .section-top span:last-child{font-size:13px}
+  .omakase-section h2{font-size:52px}
+  .omakase-section .story-copy{font-size:18px}
+  .coffee-image-wrap img{width:100%;height:auto;object-fit:contain}
+}

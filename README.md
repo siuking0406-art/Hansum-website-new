@@ -61,3 +61,10 @@ VAT wording is standardized to **8/10% VAT NOT INCLUDED** / **Prices are exclusi
 
 
 Updated v5.6.10: replaced Cosmo and Oblako bowl images in order bowl selection and standardized Phunnel Bowl naming.
+
+
+## HANSUM v5.7 Release
+- Website redesigned with 01–07 section/category hierarchy.
+- Uses the existing website imagery except for the new -86°C Coffee artwork (`images/coffee-86-v3.jpeg`).
+- Bowl showcase uses Cosmo and Oblako images.
+- Order pages (`hansum.html` and `hansum-saigon.html`) are included and remain separate.

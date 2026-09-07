@@ -36,7 +36,9 @@ button{font-family:inherit;cursor:pointer}
 .qty-control span{min-width:18px;text-align:center;font-size:13px;font-weight:700}
 .error-box{border:1px solid rgba(255,100,100,.28);background:rgba(255,70,70,.06);color:rgba(255,210,210,.85);border-radius:16px;padding:13px 15px;font-size:11px;line-height:1.5}
 .success-box{border:1px solid rgba(217,184,108,.3);background:rgba(217,184,108,.05);border-radius:18px;padding:16px}
-.table-grid button{min-height:64px}.table-grid button:first-child{border-color:rgba(217,184,108,.22)}.table-number{font-family:Cinzel,serif;font-size:17px;letter-spacing:.08em}.language-switch{display:inline-flex;padding:3px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(255,255,255,.035)}.language-switch button{padding:5px 7px;border-radius:999px;font-size:8px;letter-spacing:.08em;color:rgba(255,255,255,.45)}.language-switch button.active{background:#d9b86c;color:#080808;font-weight:700}.welcome-card{position:relative;overflow:hidden;border:1px solid rgba(217,184,108,.25);background:linear-gradient(110deg,rgba(10,8,5,.88),rgba(10,8,5,.47)),url('images/hero-smoke.jpeg') center/cover}.quick-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.quick-nav::-webkit-scrollbar{display:none}.quick-nav button{white-space:nowrap;border:1px solid rgba(217,184,108,.25);border-radius:999px;padding:9px 13px;font-size:9px;letter-spacing:.09em;color:#d9b86c;background:rgba(217,184,108,.06)}.staff-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;padding:20px;background:rgba(0,0,0,.66);backdrop-filter:blur(7px)}.staff-sheet{width:min(100%,480px);border:1px solid rgba(217,184,108,.28);border-radius:28px;background:linear-gradient(145deg,#1b160d,#080808);box-shadow:0 22px 60px rgba(0,0,0,.55)}
+.table-grid button{min-height:64px}.table-grid button:first-child{border-color:rgba(217,184,108,.22)}.table-number{font-family:Cinzel,serif;font-size:17px;letter-spacing:.08em}.language-switch{display:inline-flex;padding:3px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(255,255,255,.035)}.language-switch button{padding:5px 7px;border-radius:999px;font-size:8px;letter-spacing:.08em;color:rgba(255,255,255,.45)}.language-switch button.active{background:#d9b86c;color:#080808;font-weight:700}.welcome-card{position:relative;overflow:hidden;border:1px solid rgba(217,184,108,.25);background:linear-gradient(110deg,rgba(10,8,5,.88),rgba(10,8,5,.47)),url('images/shisha-selection.jpeg') center/cover}.quick-nav{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.quick-nav::-webkit-scrollbar{display:none}.quick-nav button{white-space:nowrap;border:1px solid rgba(217,184,108,.25);border-radius:999px;padding:9px 13px;font-size:9px;letter-spacing:.09em;color:#d9b86c;background:rgba(217,184,108,.06)}.staff-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;padding:20px;background:rgba(0,0,0,.66);backdrop-filter:blur(7px)}.staff-sheet{width:min(100%,480px);border:1px solid rgba(217,184,108,.28);border-radius:28px;background:linear-gradient(145deg,#1b160d,#080808);box-shadow:0 22px 60px rgba(0,0,0,.55)}
+.shisha-product-image{width:100%;height:190px;object-fit:cover;display:block;filter:saturate(.9) contrast(1.02);border-bottom:1px solid rgba(255,255,255,.08)}
+@media(max-width:640px){.shisha-product-image{height:180px}}
 </style>
 </head>
 <body>
@@ -97,7 +99,9 @@ button{font-family:inherit;cursor:pointer}
 
   <div class="space-y-4">
     <button @click="selectShisha('Classic','Blonde Leaf',580000,false)"
-      class="glass rounded-3xl p-6 w-full text-left card" :class="{selected:order.shishaType==='Classic'}">
+      class="glass rounded-3xl p-0 w-full text-left card overflow-hidden" :class="{selected:order.shishaType==='Classic'}">
+      <img src="images/blonde-leaf.jpeg" alt="Blonde Leaf shisha tobacco" class="shisha-product-image">
+      <div class="p-6">
       <div class="flex justify-between gap-4">
         <div class="min-w-0">
           <div class="text-[9px] tracking-[.3em] text-white/40">CLASSIC</div>
@@ -110,10 +114,13 @@ button{font-family:inherit;cursor:pointer}
         <span v-if="order.shishaType==='Classic'" class="selected-badge">✓ SELECTED</span><span v-else></span>
         <span class="select-hint">{{order.shishaType==='Classic'?'SELECTED':'SELECT →'}}</span>
       </div>
+      </div>
     </button>
 
     <button @click="selectShisha('Premium','Dark Leaf',680000,false)"
-      class="glass rounded-3xl p-6 w-full text-left card" :class="{selected:order.shishaType==='Premium'}">
+      class="glass rounded-3xl p-0 w-full text-left card overflow-hidden" :class="{selected:order.shishaType==='Premium'}">
+      <img src="images/dark-leaf.jpeg" alt="Dark Leaf shisha tobacco" class="shisha-product-image">
+      <div class="p-6">
       <div class="flex justify-between gap-4">
         <div class="min-w-0">
           <div class="text-[9px] tracking-[.3em] text-white/40">PREMIUM</div>
@@ -125,6 +132,7 @@ button{font-family:inherit;cursor:pointer}
       <div class="flex justify-between items-center">
         <span v-if="order.shishaType==='Premium'" class="selected-badge">✓ SELECTED</span><span v-else></span>
         <span class="select-hint">{{order.shishaType==='Premium'?'SELECTED':'SELECT →'}}</span>
+      </div>
       </div>
     </button>
 

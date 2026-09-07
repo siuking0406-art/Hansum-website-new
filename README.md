@@ -51,3 +51,10 @@ Each table can use its own QR code while all tables share the same `hansum.html`
 When a valid table parameter is present, the table is detected automatically, the table-selection screen is skipped, and the table is locked for the order. If a different table QR is opened on the same device, the previous saved order is cleared to prevent cross-table orders.
 
 VAT wording is standardized to **8/10% VAT NOT INCLUDED** / **Prices are exclusive of 8/10% VAT.**
+
+
+## Separate Saigon order page
+- `hansum.html` remains the Da Nang order page and keeps `window.HANSUM_TELEGRAM_ENDPOINT`.
+- `hansum-saigon.html` is a separate Saigon order page with its own localStorage namespace and `window.HANSUM_SAIGON_TELEGRAM_ENDPOINT`.
+- Deploy a separate Saigon Telegram Worker/endpoint for Saigon orders so they are routed independently from Da Nang.
+- Saigon can use the same table QR format, e.g. `hansum-saigon.html?table=01`.

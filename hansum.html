@@ -47,7 +47,7 @@ button{font-family:inherit;cursor:pointer}
     .bowl-caption span{font-size:9px;letter-spacing:.28em;color:rgba(255,255,255,.48)}
     .bowl-caption strong{font-family:Georgia,serif;font-size:21px;font-weight:400;letter-spacing:.04em;color:#f5f1e8}
     @media(max-width:640px){.bowl-caption{padding:13px 16px 15px}.bowl-caption strong{font-size:19px}}
-</style>
+ .fruit-head-image{width:100%;height:auto!important;max-height:none;object-fit:contain;object-position:center top;display:block;background:#080706;border-bottom:1px solid rgba(255,255,255,.08)}</style>
 </head>
 <body>
 <div id="app" v-cloak class="min-h-screen">
@@ -146,6 +146,7 @@ button{font-family:inherit;cursor:pointer}
 
     <button @click="selectShisha('Fruit Head','Fresh Fruit',980000,true)"
       class="glass rounded-3xl p-6 w-full text-left card fruit-head-card" :class="{selected:order.shishaType==='Fruit Head'}">
+      <img src="images/fruit-head.jpeg" alt="Fruit Head shisha" class="shisha-product-image fruit-head-image">
       <div class="flex justify-between gap-4 fruit-copy">
         <div class="min-w-0">
           <div class="text-[9px] tracking-[.3em] text-white/40">SIGNATURE</div>

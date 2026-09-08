@@ -43,3 +43,21 @@
   .omakase-section .story-copy{font-size:18px}
   .coffee-image-wrap img{width:100%;height:auto;object-fit:contain}
 }
+
+/* v5.8.3 — editorial image placement: title first, image immediately below */
+.coffee{display:block}
+.coffee-copy{max-width:var(--max);margin:auto}
+.coffee-image-below-title{margin-top:42px;min-height:560px}
+.coffee-image-below-title img{width:100%;height:100%;object-fit:cover;display:block}
+.cocktail-title-block{max-width:var(--max);margin:55px auto 0}
+.cocktail-title-block h2{margin:0 0 42px}
+.cocktail-image-below-title{min-height:620px;margin:0 0 38px;overflow:hidden}
+.cocktail-image-below-title img{width:100%;height:100%;object-fit:cover;display:block}
+.cocktail-title-block p{max-width:520px}
+@media(max-width:800px){
+  .coffee-copy{padding-top:78px;padding-bottom:100px}
+  .coffee-image-below-title{min-height:520px;margin-top:32px}
+  .cocktail-title-block{margin-top:42px}
+  .cocktail-title-block h2{margin-bottom:32px}
+  .cocktail-image-below-title{min-height:480px;margin-bottom:30px}
+}

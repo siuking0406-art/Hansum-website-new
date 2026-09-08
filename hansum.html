@@ -58,15 +58,16 @@ button{font-family:inherit;cursor:pointer}
 .flavor-subtitle{font-size:15px;color:rgba(255,255,255,.48);margin-top:.8rem}
 .flavor-section-label{margin-bottom:.75rem}
 .flavor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.flavor-card,.flavor-wide-card{position:relative;display:block;overflow:hidden;padding:0;border:1px solid rgba(255,255,255,.17);background:#101010;border-radius:22px;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.flavor-card,.flavor-wide-card{position:relative;display:block;overflow:hidden;padding:0;margin:0;appearance:none;-webkit-appearance:none;outline:none;border:1px solid rgba(255,255,255,.17);background:#101010;border-radius:22px;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
 .flavor-card{aspect-ratio:2.25/1}
 .flavor-wide-card{width:100%;aspect-ratio:3.8/1}
 .flavor-card img,.flavor-wide-card img{display:block;width:100%;height:100%;object-fit:cover}
 .flavor-specific .flavor-card img{object-position:left center}
 .flavor-card,.flavor-wide-card{box-sizing:border-box}
-.flavor-card.selected,.flavor-wide-card.selected{box-shadow:0 0 0 1px rgba(217,184,108,.14),0 8px 28px rgba(0,0,0,.28)}
+.flavor-card:focus,.flavor-card:focus-visible,.flavor-wide-card:focus,.flavor-wide-card:focus-visible{outline:none;box-shadow:none}
+.flavor-card.selected,.flavor-wide-card.selected{box-shadow:0 8px 28px rgba(0,0,0,.28)}
 .flavor-card:hover,.flavor-wide-card:hover{transform:translateY(-1px);border-color:rgba(217,184,108,.5)}
-.flavor-card.selected,.flavor-wide-card.selected{border:1px solid #d9b86c;box-shadow:inset 0 0 0 1px #d9b86c,0 0 0 1px rgba(217,184,108,.14),0 8px 28px rgba(0,0,0,.28)}
+.flavor-card.selected,.flavor-wide-card.selected{border:1px solid #d9b86c;box-shadow:0 0 0 1px rgba(217,184,108,.08),0 8px 28px rgba(0,0,0,.28)}
 .flavor-check{position:absolute;right:10px;top:10px;width:27px;height:27px;border-radius:50%;background:#d9b86c;color:#090909;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
 .flavor-specific{margin-top:2.25rem}
 .flavor-other{margin-top:2.25rem}

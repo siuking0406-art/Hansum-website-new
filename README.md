@@ -75,10 +75,10 @@ Updated v5.6.10+: replaced Cosmo and Oblako bowl images in order bowl selection 
 - Verified inline JavaScript syntax in both order pages and `script.js`.
 - Removed unused image assets that were not referenced by any HTML/CSS/JS file.
 - Kept all images currently used by the website, order pages, and Gallery 01–13.
-- Updated stale page titles from v5.5 to v5.8.1.
+- Updated stale page titles from v5.5 to v5.8.2.
 
 
-## v5.8.1 final UI fix
+## v5.8.2 final UI fix
 - Flavor Profile selected cards keep a fixed 1px outer border and use an inset gold highlight, preventing the yellow selection line from shifting or changing card position.
-- Updated order page title to v5.8.1.
+- Updated order page title to v5.8.2.
 - Removed unused preview embeds from the deployment package.

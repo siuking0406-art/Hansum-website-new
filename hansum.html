@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<title>HANSUM — Shisha Omakase · v5.5</title>
+<title>HANSUM — Shisha Omakase · v5.7.6</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="js/vue.global.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +47,36 @@ button{font-family:inherit;cursor:pointer}
     .bowl-caption span{font-size:9px;letter-spacing:.28em;color:rgba(255,255,255,.48)}
     .bowl-caption strong{font-family:Georgia,serif;font-size:21px;font-weight:400;letter-spacing:.04em;color:#f5f1e8}
     @media(max-width:640px){.bowl-caption{padding:13px 16px 15px}.bowl-caption strong{font-size:19px}}
- .fruit-head-image{width:100%;height:auto!important;max-height:none;object-fit:contain;object-position:center top;display:block;background:#080706;border-bottom:1px solid rgba(255,255,255,.08)}</style>
+ .fruit-head-image{width:100%;height:auto!important;max-height:none;object-fit:contain;object-position:center top;display:block;background:#080706;border-bottom:1px solid rgba(255,255,255,.08)}
+
+/* V5.8 Flavor Profile — visual card treatment */
+.flavor-step{padding-top:2.2rem;padding-bottom:1.5rem}
+.flavor-head{margin-bottom:2.4rem}
+.flavor-stepno,.flavor-section-label{font-size:9px;letter-spacing:.35em;color:rgba(255,255,255,.42);text-transform:uppercase}
+.flavor-stepno{margin-bottom:.65rem}
+.flavor-title{font-size:clamp(42px,8.6vw,64px);line-height:.95;letter-spacing:.01em;text-transform:uppercase}
+.flavor-subtitle{font-size:15px;color:rgba(255,255,255,.48);margin-top:.8rem}
+.flavor-section-label{margin-bottom:.75rem}
+.flavor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.flavor-card,.flavor-wide-card{position:relative;display:block;overflow:hidden;padding:0;border:1px solid rgba(255,255,255,.17);background:#101010;border-radius:22px;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.flavor-card{aspect-ratio:2.25/1}
+.flavor-wide-card{width:100%;aspect-ratio:3.8/1}
+.flavor-card img,.flavor-wide-card img{display:block;width:100%;height:100%;object-fit:cover}
+.flavor-card:hover,.flavor-wide-card:hover{transform:translateY(-1px);border-color:rgba(217,184,108,.5)}
+.flavor-card.selected,.flavor-wide-card.selected{border:2px solid #d9b86c;box-shadow:0 0 0 1px rgba(217,184,108,.14),0 8px 28px rgba(0,0,0,.28)}
+.flavor-check{position:absolute;right:10px;top:10px;width:27px;height:27px;border-radius:50%;background:#d9b86c;color:#090909;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.flavor-specific{margin-top:2.25rem}
+.flavor-other{margin-top:2.25rem}
+.flavor-other .flavor-section-label{margin-bottom:.75rem}
+@media(max-width:420px){
+  .flavor-step{padding-top:1.7rem}
+  .flavor-head{margin-bottom:2rem}
+  .flavor-grid{gap:10px}
+  .flavor-card{border-radius:19px}
+  .flavor-wide-card{border-radius:19px}
+  .flavor-title{font-size:43px}
+}
+</style>
 </head>
 <body>
 <div id="app" v-cloak class="min-h-screen">
@@ -205,47 +234,51 @@ button{font-family:inherit;cursor:pointer}
   </div>
 </section>
 
-<section v-if="step===3">
-  <div class="pt-7 mb-7">
-    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">STEP 03</div>
-    <h1 class="serif text-3xl">Flavor Profile</h1>
-    <p class="text-sm text-white/45 mt-3">Choose your preferred flavor direction.</p>
+<section v-if="step===3" class="flavor-step">
+  <div class="flavor-head">
+    <div class="flavor-stepno">STEP 03</div>
+    <h1 class="serif flavor-title">Flavor Profile</h1>
+    <p class="flavor-subtitle">Choose your preferred flavor direction.</p>
   </div>
 
-  <div class="text-[9px] tracking-[.3em] text-white/35 mb-3">FLAVOR DIRECTION</div>
-  <div class="grid grid-cols-2 gap-3">
+  <div class="flavor-section-label">FLAVOR DIRECTION</div>
+  <div class="flavor-grid">
     <button v-for="flavor in flavorDirections" :key="flavor.name" @click="toggleDirection(flavor.name)"
-      class="glass rounded-2xl p-5 text-left card" :class="{selected:selectedDirections.includes(flavor.name)}">
-      <div class="text-2xl">{{flavor.icon}}</div>
-      <div class="text-sm font-semibold mt-3">{{flavor.name}}</div>
-      <div class="text-[10px] text-white/35 mt-2">{{flavor.description}}</div>
+      class="flavor-card" :class="{selected:selectedDirections.includes(flavor.name)}"
+      :aria-label="flavor.name">
+      <img :src="flavor.image" :alt="flavor.name" loading="lazy">
+      <span v-if="selectedDirections.includes(flavor.name)" class="flavor-check">✓</span>
     </button>
   </div>
 
-  <div v-if="showSpecific" class="mt-8">
-    <div class="text-[9px] tracking-[.3em] text-white/35 mb-3">SPECIFIC</div>
-    <div class="grid grid-cols-2 gap-3">
+  <div v-if="showSpecific" class="flavor-specific">
+    <div class="flavor-section-label">SPECIFIC</div>
+    <div class="flavor-grid">
       <button v-for="flavor in specificFlavors" :key="flavor.name" @click="selectSpecific(flavor.name)"
-        class="glass rounded-2xl p-5 text-left card" :class="{selected:order.specific===flavor.name}">
-        <div class="text-2xl">{{flavor.icon}}</div><div class="text-sm font-semibold mt-3">{{flavor.name}}</div>
+        class="flavor-card" :class="{selected:order.specific===flavor.name}"
+        :aria-label="flavor.name">
+        <img :src="flavor.image" :alt="flavor.name" loading="lazy">
+        <span v-if="order.specific===flavor.name" class="flavor-check">✓</span>
       </button>
     </div>
   </div>
 
-  <div class="mt-8">
-    <div class="text-[9px] tracking-[.3em] text-white/35 mb-3">OTHER</div>
-    <button @click="selectOther()" class="glass rounded-2xl p-5 w-full text-left" :class="{selected:order.flavorType==='Other'}">
-      <div class="text-2xl">✎</div><div class="text-sm font-semibold mt-3">OTHER</div>
-      <div class="text-xs text-white/40 mt-1">Tell us what you have in mind</div>
+  <div class="flavor-other">
+    <div class="flavor-section-label">OTHER</div>
+    <button @click="selectOther()" class="flavor-wide-card" :class="{selected:order.flavorType==='Other'}"
+      aria-label="Other">
+      <img src="images/flavor/other.jpg" alt="Other">
+      <span v-if="order.flavorType==='Other'" class="flavor-check">✓</span>
     </button>
     <textarea v-if="order.flavorType==='Other'" v-model="order.other" placeholder="Tell us your preferred flavor..."
       class="glass bg-transparent w-full h-28 rounded-2xl mt-3 p-4 text-sm outline-none resize-none"></textarea>
-  </div>
 
-  <button @click="selectOmakase()" class="glass rounded-2xl p-5 w-full text-left mt-3" :class="{selected:order.flavorType==='Omakase'}">
-    <div class="text-2xl">👨‍🍳</div><div class="text-sm font-semibold mt-3">HANSUM OMAKASE</div>
-    <div class="text-xs text-white/40 mt-1">Let our shisha chef decide</div>
-  </button>
+    <button @click="selectOmakase()" class="flavor-wide-card mt-3" :class="{selected:order.flavorType==='Omakase'}"
+      aria-label="Hansum Omakase">
+      <img src="images/flavor/omakase.jpg" alt="Hansum Omakase">
+      <span v-if="order.flavorType==='Omakase'" class="flavor-check">✓</span>
+    </button>
+  </div>
 
   <button @click="nextFromFlavor" :disabled="!canContinueFlavor" class="w-full mt-6 py-4 rounded-2xl cta disabled:opacity-20">{{t('continue')}} <span class="ml-2">→</span></button>
 </section>
@@ -474,7 +507,7 @@ order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',f
 selectedDirections:[],
 flavorDirections:[],
 specificFlavors:[
-{icon:'🍏',name:'DOUBLE APPLE'},{icon:'🌿',name:'MINT'},{icon:'💕',name:'LOVE 66'},{icon:'🍓',name:'LADYKILLER'}
+{name:'DOUBLE APPLE',image:'images/flavor/double-apple.jpg'},{name:'MINT',image:'images/flavor/mint.jpg'},{name:'LOVE 66',image:'images/flavor/love66.jpg'},{name:'LADYKILLER',image:'images/flavor/ladykiller.jpg'}
 ],
 addonOptions:[
 {icon:'🧊',name:'Ice Hose Cooling',price:100000},
@@ -565,16 +598,16 @@ methods:{
   next(){if(this.step<8)this.step++},
 setDirections(dark){
 this.flavorDirections=dark?[
-{icon:'🍓',name:'FRUITY',description:'Sweet and easy to enjoy.'},
-{icon:'🍋',name:'CITRUS',description:'Bright and zesty.'},
-{icon:'🍦',name:'CREAMY',description:'Smooth and dessert-like.'},
-{icon:'🌸',name:'FLORAL',description:'Light and elegant.'},
-{icon:'🍵',name:'TEA',description:'Aromatic and layered.'},
-{icon:'🪵',name:'WOOD',description:'Deep and aromatic.'}
+{name:'FRUITY',description:'Sweet and easy to enjoy.',image:'images/flavor/fruity.jpg'},
+{name:'CITRUS',description:'Bright and zesty.',image:'images/flavor/citrus.jpg'},
+{name:'CREAMY',description:'Smooth and dessert-like.',image:'images/flavor/creamy.jpg'},
+{name:'FLORAL',description:'Light and elegant.',image:'images/flavor/floral.jpg'},
+{name:'TEA',description:'Aromatic and layered.',image:'images/flavor/tea.jpg'},
+{name:'WOOD',description:'Deep and aromatic.',image:'images/flavor/wood.jpg'}
 ]:[
-{icon:'🍓',name:'FRUITY',description:'Sweet and easy to enjoy.'},
-{icon:'🍋',name:'CITRUS',description:'Bright and zesty.'},
-{icon:'🍦',name:'CREAMY',description:'Smooth and dessert-like.'}
+{name:'FRUITY',description:'Sweet and easy to enjoy.',image:'images/flavor/fruity.jpg'},
+{name:'CITRUS',description:'Bright and zesty.',image:'images/flavor/citrus.jpg'},
+{name:'CREAMY',description:'Smooth and dessert-like.',image:'images/flavor/creamy.jpg'}
 ]},
 selectShisha(type,name,price,fruitHead){
 Object.assign(this.order,{shishaType:type,shishaName:name,price,bowl:'',flavorType:'',specific:'',other:''});

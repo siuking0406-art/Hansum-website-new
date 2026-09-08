@@ -1,12 +1,12 @@
-HANSUM V5.2 FINAL — Two-Order Optimized
+HANSUM V5.7.6 — Audited Website + Order Package
 
-# HANSUM V5.2 Optimized
+# HANSUM V5.7.6 Audited
 
 ## Included updates
 - Bowl selection now uses the supplied Cosmo and Oblako images only; no extra bowl text/card labels.
 - Category titles use a consistent heading size.
 - Regular coffee is placed directly after the **-86°C Frozen Coffee** section.
-- Final shisha review and final order review both show **VAT 10% NOT INCLUDED**.
+- All order review screens use the standardized **8/10% VAT NOT INCLUDED** wording.
 - Shisha review no longer sends a duplicate Telegram order. Customers can continue to order drinks/items, then send one final complete order.
 - Final order prices are displayed in VND consistently.
 - Telegram sending is wired through `telegram-worker.js` and will work after the Cloudflare Worker URL is entered in `hansum.html`.
@@ -26,7 +26,7 @@ Upload/replace the files in the repository root and commit to `main`.
 Do not put the Telegram bot token directly into the HTML. Keep it as a Cloudflare Worker secret.
 
 
-Order flow: Shisha is confirmed and sent to Telegram first. Drinks & More are a separate second order and are sent only when the customer confirms the second order. All order review screens show 10% VAT NOT INCLUDED.
+Order flow: Shisha is confirmed and sent to Telegram first. Drinks & More are a separate second order and are sent only when the customer confirms the second order. All order review screens use **8/10% VAT NOT INCLUDED**.
 
 ## V5.2 Order Flow Optimization
 - Shisha confirmation is sent as Order #1 before drinks.
@@ -60,17 +60,19 @@ VAT wording is standardized to **8/10% VAT NOT INCLUDED** / **Prices are exclusi
 - Saigon can use the same table QR format, e.g. `hansum-saigon.html?table=01`.
 
 
-Updated v5.6.10: replaced Cosmo and Oblako bowl images in order bowl selection and standardized Phunnel Bowl naming.
+Updated v5.6.10+: replaced Cosmo and Oblako bowl images in order bowl selection and standardized **Phunnel Bowl** naming.
 
 
 ## HANSUM v5.7 Release
 - Website redesigned with 01–07 section/category hierarchy.
-- Uses the existing website imagery except for the new -86°C Coffee artwork (`images/coffee-86-v3.jpeg`).
+- Uses the current website imagery, including the latest -86°C Coffee artwork (`images/coffee-86-v4.jpeg`) and Gallery 01–13.
 - Bowl showcase uses Cosmo and Oblako images.
 - Order pages (`hansum.html` and `hansum-saigon.html`) are included and remain separate.
 
 
-## v5.7.3 update
-- Restored the original Website hero image.
-- Updated only the “ONE MORE PUFF / ONE MORE DRINK / ONE MORE NIGHT” manifesto background to the newly supplied photo.
-- No Order page changes.
+## V5.7.6 Audit / Cleanup
+- Verified all local image, stylesheet, script and internal HTML references in the package.
+- Verified inline JavaScript syntax in both order pages and `script.js`.
+- Removed unused image assets that were not referenced by any HTML/CSS/JS file.
+- Kept all images currently used by the website, order pages, and Gallery 01–13.
+- Updated stale page titles from v5.5 to v5.7.6.

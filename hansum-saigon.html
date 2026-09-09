@@ -198,6 +198,14 @@ button{font-family:inherit;cursor:pointer}
       <div class="bowl-caption"><span>PHUNNEL BOWL</span><strong>OBLAKO</strong></div>
       <div v-if="order.bowl==='Phunnel Bowl — Oblako'" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#d9b86c] text-black flex items-center justify-center font-bold">✓</div>
     </button>
+
+    <button @click="selectBowl('HookahJohn Bowl')"
+      class="glass rounded-3xl overflow-hidden w-full text-left card relative"
+      :class="{selected:order.bowl==='HookahJohn Bowl'}">
+      <img src="images/hookahjohn-bowl.png" alt="HookahJohn Bowl" class="bowl-img">
+      <div class="bowl-caption"><span>HOOKAH BOWL</span><strong>HOOKAHJOHN</strong></div>
+      <div v-if="order.bowl==='HookahJohn Bowl'" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#d9b86c] text-black flex items-center justify-center font-bold">✓</div>
+    </button>
   </div>
 </section>
 

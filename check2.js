@@ -1,0 +1,1 @@
+/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_SAIGON_TELEGRAM_ENDPOINT = 'https://hansum-telegram-saigon.siuking0406.workers.dev';

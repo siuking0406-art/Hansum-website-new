@@ -688,7 +688,7 @@ async confirmOrder(){
   if(this.shishaSent)return;
   this.sending=true; this.sendMessage='';
   this.shishaOrderRef=this.generateRef('SH');
-  const payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:this.order,subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  const payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:{...this.order,flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
   try{
     await this.sendToTelegram(payload);
     this.shishaSent=true;this.sendMessage='';this.step=8;this.persistState();

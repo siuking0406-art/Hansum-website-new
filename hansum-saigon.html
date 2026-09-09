@@ -138,7 +138,7 @@ button{font-family:inherit;cursor:pointer}
       </div>
     </button>
 
-    <button @click="selectShisha('Fruit Head','Fresh Fruit',980000,true)"
+    <button @click="selectShisha('Fruit Head','Fresh Fruit',1180000,true)"
       class="glass rounded-3xl p-0 w-full text-left card overflow-hidden" :class="{selected:order.shishaType==='Fruit Head'}">
       <img src="images/fruit-head.jpeg" alt="Fruit Head shisha" class="shisha-product-image fruit-head-image">
       <div class="p-6">
@@ -648,7 +648,7 @@ async confirmOrder(){
   if(this.shishaSent)return;
   this.sending=true; this.sendMessage='';
   this.shishaOrderRef=this.generateRef('SH');
-  const payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:this.order,subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  const payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:{...this.order,flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
   try{
     await this.sendToTelegram(payload);
     this.shishaSent=true;this.sendMessage='';this.step=8;this.persistState();

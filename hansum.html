@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="hansum-version" content="HANSUM-DANANG-WELCOME-FIX-20260913">
+<!-- HANSUM-DANANG-WELCOME-FIX-20260913 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
@@ -125,7 +127,6 @@ button{font-family:inherit;cursor:pointer}
   <div v-if="step>=1 && step<=7" class="step-caption">{{t('step')}} {{String(step).padStart(2,'0')}} · {{localizedStepNames[step]}}</div>
   <div class="flex items-center justify-between mt-3">
     <div class="language-switch"><button v-for="language in languages" :key="language.code" @click="setLocale(language.code)" :class="{active:locale===language.code}">{{language.label}}</button></div>
-    <button @click="showStaffHelp=true" class="text-[8px] tracking-[.14em] text-[#d9b86c]">{{t('needHelp')}}?</button>
   </div>
 </header>
 
@@ -173,7 +174,7 @@ button{font-family:inherit;cursor:pointer}
 
   <div class="mt-10 mb-5 text-center">
     <div class="text-[8px] tracking-[.35em] text-[#d9b86c]">DISCOVER OUR LOCATION</div>
-    <h2 class="serif text-2xl mt-2">Follow · Find · Review</h2>
+    <h2 class="serif text-2xl mt-2">Follow · Find</h2>
   </div>
 
   <div class="location-social-card">
@@ -184,15 +185,6 @@ button{font-family:inherit;cursor:pointer}
     <div class="grid grid-cols-3 gap-2">
       <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-ig.png" alt="Hansum DANANG Instagram QR"><span>INSTAGRAM</span></a>
       <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-map.png" alt="Hansum DANANG Google Maps QR"><span>GOOGLE MAPS</span></a>
-      <a href="https://www.google.com/search?q=Hansum%20Da%20Nang%20Lounge%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%20%C4%90%C3%A0%20N%E1%BA%B5ng%20Google%20Reviews" target="_blank" rel="noopener" class="social-qr-card"><span>GOOGLE REVIEWS</span></a>
-    </div>
-  </div>
-      <div class="text-xs text-white/45 mt-1">Da Nang</div>
-    </div>
-    <div class="grid grid-cols-3 gap-2">
-      <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-ig.png" alt="Hansum Danang Instagram QR"><span>INSTAGRAM</span></a>
-      <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Shisha%20Lounge%20Da%20Nang" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-map.png" alt="Hansum Danang Google Maps QR"><span>GOOGLE MAPS</span></a>
-      <a href="" target="_blank" rel="noopener" class="social-qr-card"><span>GOOGLE REVIEWS</span></a>
     </div>
   </div>
 
@@ -540,15 +532,6 @@ button{font-family:inherit;cursor:pointer}
 
 </main>
 
-<div v-if="showStaffHelp" class="staff-modal" @click.self="showStaffHelp=false">
-  <div class="staff-sheet p-7 text-center">
-    <div class="text-3xl">✦</div><h2 class="serif text-2xl mt-3">{{t('staffTitle')}}</h2>
-    <p class="text-sm text-white/55 leading-6 mt-3">{{t('staffMessage')}}</p>
-    <button @click="showStaffHelp=false" class="w-full mt-6 py-4 rounded-2xl cta">{{t('close')}}</button>
-  </div>
-</div>
-
-</div>
 
 <script>
 const {createApp}=Vue;
@@ -569,11 +552,11 @@ data(){return{
 stepNames:{1:'SHISHA',2:'BOWL',3:'FLAVOR',4:'STRENGTH',5:'COOLING',6:'ADD-ONS',7:'REVIEW'},
 step:hasQrTable?0:0,
 tables:['01','02','03','04','05','06','07','08','09','10','11','12'],
-locale:'en',languages:[{code:'en',label:'EN'},{code:'zh',label:'中文'},{code:'ko',label:'한국어'}],showStaffHelp:false,
+locale:'en',languages:[{code:'en',label:'EN'},{code:'zh',label:'中文'},{code:'ko',label:'한국어'}],
 translations:{
-en:{back:'BACK',table:'TABLE',qrTable:'QR TABLE',step:'STEP',needHelp:'NEED HELP',welcome:'WELCOME TO HANSUM',chooseTable:'Choose your table',chooseTableHint:'Select your table to begin your Hansum experience.',continue:'CONTINUE',shishaSelection:'Shisha Selection',shishaHint:'Choose your leaf experience.',addons:'ADD-ONS',reviewOrder:'REVIEW ORDER',subtotal:'Subtotal',vat:'8/10% VAT NOT INCLUDED',vatSentence:'Prices are exclusive of 8/10% VAT.',sending:'SENDING…',confirmShisha:'CONFIRM SHISHA ORDER',shishaSent:'SHISHA ORDER SENT',thankYou:'Thank You',shishaSentHint:'Your shisha order has been confirmed and sent to our team.',orderMore:'ORDER DRINKS & MORE',finish:'FINISH',addToOrder:'Add to your order',addToOrderHint:'Add drinks and other items. Your shisha order has already been sent to our team.',drinkCategories:'Drink categories',add:'ADD',reviewDrinkOrder:'REVIEW DRINK ORDER',additionalOrder:'ADDITIONAL ORDER',staffTitle:'Need assistance?',staffMessage:'Please raise your hand and a Hansum team member will be with you shortly.',close:'CLOSE',cat_Cocktails:'Cocktails',cat_FrozenSeries:'Frozen Series',cat_86:'-86°C Frozen Coffee',cat_Coffee:'Coffee',cat_Shooters:'Shooters',cat_Mocktails:'Mocktails & Soft Drinks',cat_Beer:'Beer · Soju · Wine',cat_Bottle:'Bottle Service'},
-zh:{back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',needHelp:'需要協助',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',staffTitle:'需要協助？',staffMessage:'請舉手示意，Hansum 團隊成員將很快為您服務。',close:'關閉',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
-ko:{back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',needHelp:'도움이 필요하신가요',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',staffTitle:'도움이 필요하신가요?',staffMessage:'손을 들어 주시면 Hansum 팀원이 곧 도와드리겠습니다.',close:'닫기',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
+en:{back:'BACK',table:'TABLE',qrTable:'QR TABLE',step:'STEP',welcome:'WELCOME TO HANSUM',chooseTable:'Choose your table',chooseTableHint:'Select your table to begin your Hansum experience.',continue:'CONTINUE',shishaSelection:'Shisha Selection',shishaHint:'Choose your leaf experience.',addons:'ADD-ONS',reviewOrder:'REVIEW ORDER',subtotal:'Subtotal',vat:'8/10% VAT NOT INCLUDED',vatSentence:'Prices are exclusive of 8/10% VAT.',sending:'SENDING…',confirmShisha:'CONFIRM SHISHA ORDER',shishaSent:'SHISHA ORDER SENT',thankYou:'Thank You',shishaSentHint:'Your shisha order has been confirmed and sent to our team.',orderMore:'ORDER DRINKS & MORE',finish:'FINISH',addToOrder:'Add to your order',addToOrderHint:'Add drinks and other items. Your shisha order has already been sent to our team.',drinkCategories:'Drink categories',add:'ADD',reviewDrinkOrder:'REVIEW DRINK ORDER',additionalOrder:'ADDITIONAL ORDER',cat_Cocktails:'Cocktails',cat_FrozenSeries:'Frozen Series',cat_86:'-86°C Frozen Coffee',cat_Coffee:'Coffee',cat_Shooters:'Shooters',cat_Mocktails:'Mocktails & Soft Drinks',cat_Beer:'Beer · Soju · Wine',cat_Bottle:'Bottle Service'},
+zh:{back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
+ko:{back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
 },
 order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''},
 selectedDirections:[],

@@ -131,7 +131,7 @@ button{font-family:inherit;cursor:pointer}
 
 <main class="max-w-xl mx-auto px-5 pb-28">
 
-<section v-if="step===0 && hasQrTable">
+<section v-if="step===0 && tableLocked">
   <div class="welcome-hero rounded-[28px] overflow-hidden mt-4">
     <img src="images/hero-smoke.jpeg" alt="HANSUM DANANG Shisha Lounge" class="welcome-hero-img">
     <div class="welcome-overlay"></div>
@@ -139,7 +139,7 @@ button{font-family:inherit;cursor:pointer}
       <div class="text-[9px] tracking-[.42em] text-[#efd58e]">WELCOME TO HANSUM</div>
       <h1 class="serif text-4xl md:text-5xl mt-3">Your Night,<br>HANSUM Way.</h1>
       <p class="text-sm text-white/65 mt-4 leading-6 max-w-sm">Premium shisha, signature drinks and a Korean-style lounge experience.</p>
-      <div class="text-[8px] tracking-[.22em] text-white/40 mt-5">HANSUM DANANG · TABLE {order.table}</div>
+      <div class="text-[8px] tracking-[.22em] text-white/40 mt-5">HANSUM DANANG · TABLE {{order.table}}</div>
     </div>
   </div>
 
@@ -200,7 +200,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
   </div>
 
-  <div class="text-center text-[8px] tracking-[.3em] text-white/25 mt-8 mb-6">HANSUMSHISHA.COM · TABLE {order.table}</div>
+  <div class="text-center text-[8px] tracking-[.3em] text-white/25 mt-8 mb-6">HANSUMSHISHA.COM · TABLE {{order.table}}</div>
 </section>
 
 <section v-if="step===1">
@@ -802,7 +802,7 @@ initializeQrTable(){
       if(saved.order && saved.order.table && String(saved.order.table).toUpperCase()!==qrTable){
         localStorage.removeItem('hansumOrderV55');
         this.order={table:qrTable,shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''};
-        this.basket=[];this.shishaSent=false;this.drinkSent=false;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.step=1;
+        this.basket=[];this.shishaSent=false;this.drinkSent=false;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.step=0;
       } else {
         this.restoreState();
         this.order.table=qrTable;

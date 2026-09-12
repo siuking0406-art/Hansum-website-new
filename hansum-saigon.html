@@ -41,7 +41,9 @@ button{font-family:inherit;cursor:pointer}
 .fruit-head-image{height:300px;object-position:center top;}
 @media(max-width:640px){.fruit-head-image{height:300px;object-position:center top}}
 @media(max-width:640px){.shisha-product-image{height:180px}}
- .fruit-head-image{width:100%;height:auto!important;max-height:none;object-fit:contain;object-position:center top;display:block;background:#080706;border-bottom:1px solid rgba(255,255,255,.08)}</style>
+ .fruit-head-image{width:100%;height:auto!important;max-height:none;object-fit:contain;object-position:center top;display:block;background:#080706;border-bottom:1px solid rgba(255,255,255,.08)}
+.welcome-hero{position:relative;border:1px solid rgba(217,184,108,.22);min-height:360px;background:#090909}.welcome-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}.welcome-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.82) 82%),linear-gradient(90deg,rgba(0,0,0,.38),transparent)}.welcome-content{position:relative;z-index:2;min-height:360px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px}.welcome-choice{min-height:145px;text-align:left;padding:20px;border-radius:24px;border:1px solid rgba(217,184,108,.24);background:linear-gradient(145deg,rgba(217,184,108,.08),rgba(255,255,255,.025));transition:.22s ease}.welcome-choice:active{transform:scale(.98);border-color:rgba(217,184,108,.6)}.welcome-site-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border:1px solid rgba(255,255,255,.1);border-radius:22px;background:rgba(255,255,255,.035)}.welcome-site-btn{font-size:8px;letter-spacing:.12em;color:#d9b86c;border:1px solid rgba(217,184,108,.35);padding:10px 12px;border-radius:12px;white-space:nowrap}.location-social-card{padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:24px;background:rgba(255,255,255,.025)}.social-qr-card{display:flex;flex-direction:column;align-items:center;gap:7px;padding:9px 5px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.22)}.social-qr-card img{width:100%;max-width:82px;aspect-ratio:1;object-fit:contain;background:#fff;padding:4px;border-radius:8px}.social-qr-card span{font-size:6.5px;letter-spacing:.12em;color:rgba(255,255,255,.55);text-align:center}@media(max-width:380px){.welcome-hero,.welcome-content{min-height:330px}.social-qr-card img{max-width:70px}}
+</style>
 </head>
 <body>
 <div id="app" v-cloak class="min-h-screen">
@@ -75,15 +77,79 @@ button{font-family:inherit;cursor:pointer}
 
 <main class="max-w-xl mx-auto px-5 pb-28">
 
-<section v-if="step===0">
+<section v-if="step===0 && hasQrTable">
+  <div class="welcome-hero rounded-[28px] overflow-hidden mt-4">
+    <img src="images/hero-smoke.jpeg" alt="HANSUM Shisha Lounge" class="welcome-hero-img">
+    <div class="welcome-overlay"></div>
+    <div class="welcome-content">
+      <div class="text-[9px] tracking-[.42em] text-[#efd58e]">WELCOME TO HANSUM</div>
+      <h1 class="serif text-4xl md:text-5xl mt-3">Your Night,<br>HANSUM Way.</h1>
+      <p class="text-sm text-white/65 mt-4 leading-6 max-w-sm">Premium shisha, signature drinks and a Korean-style lounge experience.</p>
+      <div class="text-[8px] tracking-[.22em] text-white/40 mt-5">TABLE {{order.table}}</div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-3 mt-5">
+    <button @click="step=1" class="welcome-choice">
+      <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">01</div>
+      <div class="serif text-xl mt-2">SHISHA</div>
+      <div class="text-[9px] text-white/40 mt-2">Choose your bowl & flavor</div>
+      <div class="text-[#d9b86c] mt-4">→</div>
+    </button>
+    <button @click="step=9" class="welcome-choice">
+      <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">02</div>
+      <div class="serif text-xl mt-2">DRINKS</div>
+      <div class="text-[9px] text-white/40 mt-2">Cocktails, coffee & more</div>
+      <div class="text-[#d9b86c] mt-4">→</div>
+    </button>
+  </div>
+
+  <div class="welcome-site-card mt-5">
+    <div>
+      <div class="text-[8px] tracking-[.3em] text-white/35">EXPLORE HANSUM</div>
+      <div class="serif text-xl mt-1">HANSUMSHISHA.COM</div>
+    </div>
+    <a href="https://hansumshisha.com/" target="_blank" rel="noopener" class="welcome-site-btn">VISIT WEBSITE ↗</a>
+  </div>
+
+  <div class="mt-10 mb-5 text-center">
+    <div class="text-[8px] tracking-[.35em] text-[#d9b86c]">DISCOVER OUR LOCATIONS</div>
+    <h2 class="serif text-2xl mt-2">Follow · Find · Review</h2>
+  </div>
+
+  <div class="location-social-card">
+    <div class="text-center mb-4">
+      <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM SAIGON</div>
+      <div class="text-xs text-white/45 mt-1">Ho Chi Minh City</div>
+    </div>
+    <div class="grid grid-cols-3 gap-2">
+      <a href="https://www.instagram.com/hansum.saigon/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-saigon-ig.png" alt="Hansum Saigon Instagram QR"><span>INSTAGRAM</span></a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Saigon%20Shisha%20Lounge%20Ho%20Chi%20Minh%20City" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-saigon-map.png" alt="Hansum Saigon Google Maps QR"><span>GOOGLE MAPS</span></a>
+      <a href="https://www.google.com/search?q=Hansum+Saigon+Shisha+Lounge+Google+Reviews" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-saigon-review.png" alt="Hansum Saigon Google Reviews QR"><span>REVIEWS</span></a>
+    </div>
+  </div>
+
+  <div class="location-social-card mt-4">
+    <div class="text-center mb-4">
+      <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM DANANG</div>
+      <div class="text-xs text-white/45 mt-1">Da Nang</div>
+    </div>
+    <div class="grid grid-cols-3 gap-2">
+      <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-ig.png" alt="Hansum Danang Instagram QR"><span>INSTAGRAM</span></a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Shisha%20Lounge%20Da%20Nang" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-map.png" alt="Hansum Danang Google Maps QR"><span>GOOGLE MAPS</span></a>
+      <a href="https://www.google.com/search?q=Hansum+Da+Nang+Shisha+Lounge+Google+Reviews" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-review.png" alt="Hansum Danang Google Reviews QR"><span>REVIEWS</span></a>
+    </div>
+  </div>
+</section>
+
+<section v-else-if="step===0">
   <div class="pt-8 mb-8">
     <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">{{t('welcome')}}</div>
     <h1 class="serif text-3xl">{{t('chooseTable')}}</h1>
     <p class="text-sm text-white/45 mt-3">{{t('chooseTableHint')}}</p>
   </div>
   <div class="table-grid grid grid-cols-3 gap-3">
-    <button v-for="table in tables" :key="table" @click="order.table=table"
-      class="glass rounded-2xl py-5 card" :class="{selected:order.table===table}">
+    <button v-for="table in tables" :key="table" @click="order.table=table" class="glass rounded-2xl py-5 card" :class="{selected:order.table===table}">
       <div class="text-[8px] tracking-[.22em] text-white/30 mb-1">TABLE</div>
       <div class="table-number">{{table}}</div>
       <div v-if="order.table===table" class="text-[7px] tracking-[.16em] text-[#d9b86c] mt-2">SELECTED</div>
@@ -466,7 +532,7 @@ const hasQrTable=allowedTables.includes(qrTable);
 createApp({
 data(){return{
 stepNames:{1:'SHISHA',2:'BOWL',3:'FLAVOR',4:'STRENGTH',5:'COOLING',6:'ADD-ONS',7:'REVIEW'},
-step:hasQrTable?1:0,
+step:0,
 tables:['01','02','03','04','05','06','07','08','09','10','11','12'],
 locale:'en',languages:[{code:'en',label:'EN'},{code:'zh',label:'中文'},{code:'ko',label:'한국어'}],showStaffHelp:false,
 translations:{
@@ -710,11 +776,11 @@ initializeQrTable(){
       } else {
         this.restoreState();
         this.order.table=qrTable;
-        if(this.step===0)this.step=1;
+        this.step=0;
       }
-    } else {this.order.table=qrTable;this.step=1;}
+    } else {this.order.table=qrTable;this.step=0;}
     this.persistState();
-  }catch(e){this.order.table=qrTable;this.step=1;}
+  }catch(e){this.order.table=qrTable;this.step=0;}
 }
 },
 mounted(){

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<meta name="hansum-version" content="HANSUM-SAIGON-WELCOME-FIX-20260913"><title>HANSUM — Shisha Omakase · v5.7.6</title>
+<meta name="hansum-version" content="HANSUM-SAIGON-WELCOME-FIX-20260913-V2"><title>HANSUM — Shisha Omakase · v5.7.6</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="js/vue.global.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,13 +78,13 @@ button{font-family:inherit;cursor:pointer}
 
 <section v-if="step===0 && tableLocked">
   <div class="welcome-hero rounded-[28px] overflow-hidden mt-4">
-    <img src="images/hero-smoke.jpeg" alt="HANSUM Shisha Lounge" class="welcome-hero-img">
+    <img src="images/hero-smoke.jpeg" alt="HANSUM SAIGON Shisha Lounge" class="welcome-hero-img">
     <div class="welcome-overlay"></div>
     <div class="welcome-content">
       <div class="text-[9px] tracking-[.42em] text-[#efd58e]">WELCOME TO HANSUM</div>
       <h1 class="serif text-4xl md:text-5xl mt-3">Your Night,<br>HANSUM Way.</h1>
       <p class="text-sm text-white/65 mt-4 leading-6 max-w-sm">Premium shisha, signature drinks and a Korean-style lounge experience.</p>
-      <div class="text-[8px] tracking-[.22em] text-white/40 mt-5">TABLE {{order.table}}</div>
+      <div class="text-[8px] tracking-[.22em] text-white/40 mt-5">HANSUM SAIGON · TABLE {{order.table}}</div>
     </div>
   </div>
 
@@ -104,11 +104,16 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <div class="welcome-site-card mt-5">
-    <div>
+    <div class="min-w-0">
       <div class="text-[8px] tracking-[.3em] text-white/35">EXPLORE HANSUM</div>
       <div class="serif text-xl mt-1">HANSUMSHISHA.COM</div>
     </div>
     <a href="https://hansumshisha.com/" target="_blank" rel="noopener" class="welcome-site-btn">VISIT WEBSITE ↗</a>
+  </div>
+
+  <div class="welcome-wifi">
+    <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">WIFI</div><div class="text-sm mt-1">HANSUM</div></div>
+    <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">PASSWORD</div><div class="text-sm mt-1">hansum12</div></div>
   </div>
 
   <div class="mt-10 mb-5 text-center">
@@ -121,18 +126,24 @@ button{font-family:inherit;cursor:pointer}
       <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM SAIGON</div>
       <div class="text-xs text-white/45 mt-1">Ho Chi Minh City</div>
     </div>
-    <div class="grid grid-cols-3 gap-2">
+    <div class="grid grid-cols-2 gap-2">
       <a href="https://www.instagram.com/hansum.saigon/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-saigon-ig.png" alt="Hansum SAIGON Instagram QR"><span>INSTAGRAM</span></a>
       <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Saigon%20Shisha%20Lounge%2C%202nd%20Floor%2C%2077-79%20L%C3%BD%20T%E1%BB%B1%20Tr%E1%BB%8Dng%2C%20Ho%20Chi%20Minh%20City" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-saigon-map.png" alt="Hansum SAIGON Google Maps QR"><span>GOOGLE MAPS</span></a>
     </div>
   </div>
+
+  <div class="location-social-card mt-4">
+    <div class="text-center mb-4">
+      <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM DANANG</div>
       <div class="text-xs text-white/45 mt-1">Da Nang</div>
     </div>
-    <div class="grid grid-cols-3 gap-2">
+    <div class="grid grid-cols-2 gap-2">
       <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-ig.png" alt="Hansum Danang Instagram QR"><span>INSTAGRAM</span></a>
-      <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Shisha%20Lounge%20Da%20Nang" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-map.png" alt="Hansum Danang Google Maps QR"><span>GOOGLE MAPS</span></a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-map.png" alt="Hansum Danang Google Maps QR"><span>GOOGLE MAPS</span></a>
     </div>
   </div>
+
+  <div class="text-center text-[8px] tracking-[.3em] text-white/25 mt-8 mb-6">HANSUMSHISHA.COM · TABLE {{order.table}}</div>
 </section>
 
 <section v-else-if="step===0">

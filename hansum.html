@@ -99,6 +99,13 @@ button{font-family:inherit;cursor:pointer}
 .social-qr-card span{display:block;font-size:7px;letter-spacing:.08em;font-weight:700;margin-top:7px;white-space:nowrap}
 @media(max-width:420px){.welcome-hero,.welcome-content{min-height:335px}.welcome-content{padding:24px 20px 20px}.welcome-choice{padding:17px 14px}.welcome-site-card{align-items:flex-start;flex-direction:column}.welcome-site-btn{align-self:stretch;text-align:center}}
 
+
+.welcome-choice-image{padding:0 0 1rem;overflow:hidden;text-align:left}
+.welcome-choice-image .welcome-choice-img{display:block;width:100%;height:112px;object-fit:cover;border-radius:22px 22px 0 0;margin-bottom:12px}
+.welcome-choice-image > div{margin-left:18px;margin-right:18px}
+
+.location-photo-card{position:relative;overflow:hidden;background-image:linear-gradient(rgba(0,0,0,.54),rgba(0,0,0,.70)),var(--location-bg);background-size:cover;background-position:center}
+.location-photo-card>*{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -145,13 +152,15 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <div class="grid grid-cols-2 gap-3 mt-5">
-    <button @click="step=1" class="welcome-choice">
+    <button @click="step=1" class="welcome-choice welcome-choice-image">
+      <img src="images/welcome-shisha.jpg" alt="Shisha Selection" class="welcome-choice-img">
       <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">01</div>
       <div class="serif text-xl mt-2">SHISHA SELECTION</div>
       <div class="text-[9px] text-white/40 mt-2">Choose your bowl & flavor</div>
       <div class="text-[#d9b86c] mt-4">→</div>
     </button>
-    <button @click="step=9" class="welcome-choice">
+    <button @click="step=9" class="welcome-choice welcome-choice-image">
+      <img src="images/welcome-drinks.jpg" alt="Drink Menu" class="welcome-choice-img">
       <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">02</div>
       <div class="serif text-xl mt-2">DRINK MENU</div>
       <div class="text-[9px] text-white/40 mt-2">Cocktails, coffee & more</div>
@@ -171,13 +180,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">WIFI</div><div class="text-sm mt-1">HANSUM</div></div>
     <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">PASSWORD</div><div class="text-sm mt-1">20260606</div></div>
   </div>
-
-  <div class="mt-10 mb-5 text-center">
-    <div class="text-[8px] tracking-[.35em] text-[#d9b86c]">DISCOVER OUR LOCATION</div>
-    <h2 class="serif text-2xl mt-2">Follow · Find</h2>
-  </div>
-
-  <div class="location-social-card">
+<div class="location-social-card location-photo-card" style="--location-bg:url('images/location-danang.jpg')">
     <div class="text-center mb-4">
       <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM DANANG</div>
       <div class="text-xs text-white/45 mt-1">Da Nang</div>

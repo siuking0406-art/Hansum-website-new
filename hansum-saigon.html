@@ -42,7 +42,29 @@ button{font-family:inherit;cursor:pointer}
 @media(max-width:640px){.fruit-head-image{height:300px;object-position:center top}}
 @media(max-width:640px){.shisha-product-image{height:180px}}
  .fruit-head-image{width:100%;height:auto!important;max-height:none;object-fit:contain;object-position:center top;display:block;background:#080706;border-bottom:1px solid rgba(255,255,255,.08)}
-.welcome-hero{position:relative;border:1px solid rgba(217,184,108,.22);min-height:360px;background:#090909}.welcome-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}.welcome-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.82) 82%),linear-gradient(90deg,rgba(0,0,0,.38),transparent)}.welcome-content{position:relative;z-index:2;min-height:360px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px}.welcome-choice{min-height:145px;text-align:left;padding:20px;border-radius:24px;border:1px solid rgba(217,184,108,.24);background:linear-gradient(145deg,rgba(217,184,108,.08),rgba(255,255,255,.025));transition:.22s ease}.welcome-choice:active{transform:scale(.98);border-color:rgba(217,184,108,.6)}.welcome-site-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border:1px solid rgba(255,255,255,.1);border-radius:22px;background:rgba(255,255,255,.035)}.welcome-site-btn{font-size:8px;letter-spacing:.12em;color:#d9b86c;border:1px solid rgba(217,184,108,.35);padding:10px 12px;border-radius:12px;white-space:nowrap}.location-social-card{padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:24px;background:rgba(255,255,255,.025)}.social-qr-card{display:flex;flex-direction:column;align-items:center;gap:7px;padding:9px 5px;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.22)}.social-qr-card img{width:100%;max-width:82px;aspect-ratio:1;object-fit:contain;background:#fff;padding:4px;border-radius:8px}.social-qr-card span{font-size:6.5px;letter-spacing:.12em;color:rgba(255,255,255,.55);text-align:center}@media(max-width:380px){.welcome-hero,.welcome-content{min-height:330px}.social-qr-card img{max-width:70px}}
+.welcome-hero{position:relative;min-height:360px;border:1px solid rgba(217,184,108,.28);background:#080808;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.welcome-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.welcome-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.78) 78%,rgba(0,0,0,.92))}
+.welcome-content{position:relative;z-index:1;min-height:360px;padding:28px 24px 24px;display:flex;flex-direction:column;justify-content:flex-end}
+.welcome-choice{border:1px solid rgba(217,184,108,.28);border-radius:22px;padding:20px 18px;text-align:left;background:linear-gradient(145deg,rgba(217,184,108,.08),rgba(255,255,255,.025));transition:.2s ease;box-shadow:inset 0 0 24px rgba(255,255,255,.015)}
+.welcome-choice:active{transform:scale(.985);border-color:rgba(217,184,108,.65)}
+.welcome-site-card{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(255,255,255,.10);border-radius:20px;padding:17px 18px;background:rgba(255,255,255,.035)}
+.welcome-site-btn{white-space:nowrap;border:1px solid rgba(217,184,108,.45);border-radius:999px;padding:9px 12px;font-size:8px;letter-spacing:.12em;color:#efd58e}
+.welcome-wifi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.welcome-wifi-card{border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}
+.location-social-card{border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:18px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))}
+.social-qr-card{display:block;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:8px;background:#fff;text-align:center;color:#111;overflow:hidden}
+.social-qr-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block}
+.social-qr-card span{display:block;font-size:7px;letter-spacing:.08em;font-weight:700;margin-top:7px;white-space:nowrap}
+@media(max-width:420px){.welcome-hero,.welcome-content{min-height:335px}.welcome-content{padding:24px 20px 20px}.welcome-choice{padding:17px 14px}.welcome-site-card{align-items:flex-start;flex-direction:column}.welcome-site-btn{align-self:stretch;text-align:center}}
+
+
+.welcome-choice-image{padding:0 0 1rem;overflow:hidden;text-align:left}
+.welcome-choice-image .welcome-choice-img{display:block;width:100%;height:112px;object-fit:cover;border-radius:22px 22px 0 0;margin-bottom:12px}
+.welcome-choice-image > div{margin-left:18px;margin-right:18px}
+
+.location-photo-card{position:relative;overflow:hidden;background-image:linear-gradient(rgba(0,0,0,.54),rgba(0,0,0,.70)),var(--location-bg);background-size:cover;background-position:center}
+.location-photo-card>*{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -89,13 +111,15 @@ button{font-family:inherit;cursor:pointer}
   </div>
 
   <div class="grid grid-cols-2 gap-3 mt-5">
-    <button @click="step=1" class="welcome-choice">
+    <button @click="step=1" class="welcome-choice welcome-choice-image">
+      <img src="images/welcome-shisha.jpg" alt="Shisha Selection" class="welcome-choice-img">
       <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">01</div>
       <div class="serif text-xl mt-2">SHISHA SELECTION</div>
       <div class="text-[9px] text-white/40 mt-2">Choose your bowl & flavor</div>
       <div class="text-[#d9b86c] mt-4">→</div>
     </button>
-    <button @click="step=9" class="welcome-choice">
+    <button @click="step=9" class="welcome-choice welcome-choice-image">
+      <img src="images/welcome-drinks.jpg" alt="Drink Menu" class="welcome-choice-img">
       <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">02</div>
       <div class="serif text-xl mt-2">DRINK MENU</div>
       <div class="text-[9px] text-white/40 mt-2">Cocktails, coffee & more</div>
@@ -115,13 +139,7 @@ button{font-family:inherit;cursor:pointer}
     <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">WIFI</div><div class="text-sm mt-1">HANSUM</div></div>
     <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">PASSWORD</div><div class="text-sm mt-1">hansum12</div></div>
   </div>
-
-  <div class="mt-10 mb-5 text-center">
-    <div class="text-[8px] tracking-[.35em] text-[#d9b86c]">DISCOVER OUR LOCATION</div>
-    <h2 class="serif text-2xl mt-2">Follow · Find</h2>
-  </div>
-
-  <div class="location-social-card">
+<div class="location-social-card location-photo-card" style="--location-bg:url('images/location-saigon.jpg')">
     <div class="text-center mb-4">
       <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM SAIGON</div>
       <div class="text-xs text-white/45 mt-1">Ho Chi Minh City</div>
@@ -132,7 +150,7 @@ button{font-family:inherit;cursor:pointer}
     </div>
   </div>
 
-  <div class="location-social-card mt-4">
+  <div class="location-social-card location-photo-card" style="--location-bg:url('images/location-danang.jpg')">
     <div class="text-center mb-4">
       <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM DANANG</div>
       <div class="text-xs text-white/45 mt-1">Da Nang</div>

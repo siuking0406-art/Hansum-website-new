@@ -106,6 +106,62 @@ button{font-family:inherit;cursor:pointer}
 
 .location-photo-card{position:relative;overflow:hidden;background-image:linear-gradient(rgba(0,0,0,.54),rgba(0,0,0,.70)),var(--location-bg);background-size:cover;background-position:center}
 .location-photo-card>*{position:relative;z-index:1}
+
+/* HANSUM welcome menu cards — image as full background, matching reference design */
+.welcome-choice-image{
+  position:relative;
+  min-height:238px;
+  padding:18px;
+  overflow:hidden;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  isolation:isolate;
+  background:#0b0b0b;
+}
+.welcome-choice-image .welcome-choice-img{
+  position:absolute;
+  inset:0;
+  z-index:-3;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:inherit;
+  margin:0;
+}
+.welcome-choice-image::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.16) 35%,rgba(0,0,0,.78) 100%);
+}
+.welcome-choice-image::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(90deg,rgba(0,0,0,.18),transparent 60%);
+}
+.welcome-choice-image > div{
+  position:relative;
+  z-index:1;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+.welcome-choice-image > div.text-\[8px\]{
+  margin-bottom:6px;
+}
+.welcome-choice-image .serif{
+  text-shadow:0 2px 16px rgba(0,0,0,.75);
+}
+.welcome-choice-image:hover .welcome-choice-img{
+  transform:scale(1.025);
+  transition:transform .45s ease;
+}
+
 </style>
 </head>
 <body>

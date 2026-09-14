@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="hansum-version" content="HANSUM-DANANG-WELCOME-FIX-20260913">
+<!-- HANSUM-DANANG-WELCOME-FIX-20260913 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050505">
@@ -85,26 +87,87 @@ button{font-family:inherit;cursor:pointer}
 .welcome-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
 .welcome-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.78) 78%,rgba(0,0,0,.92))}
 .welcome-content{position:relative;z-index:1;min-height:360px;padding:28px 24px 24px;display:flex;flex-direction:column;justify-content:flex-end}
+.welcome-choice{border:1px solid rgba(217,184,108,.28);border-radius:22px;padding:20px 18px;text-align:left;background:linear-gradient(145deg,rgba(217,184,108,.08),rgba(255,255,255,.025));transition:.2s ease;box-shadow:inset 0 0 24px rgba(255,255,255,.015)}
+.welcome-choice:active{transform:scale(.985);border-color:rgba(217,184,108,.65)}
 .welcome-site-card{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(255,255,255,.10);border-radius:20px;padding:17px 18px;background:rgba(255,255,255,.035)}
 .welcome-site-btn{white-space:nowrap;border:1px solid rgba(217,184,108,.45);border-radius:999px;padding:9px 12px;font-size:8px;letter-spacing:.12em;color:#efd58e}
 .welcome-wifi{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .welcome-wifi-card{border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:12px;background:rgba(255,255,255,.025)}
 .location-social-card{border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:18px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018))}
-.location-photo-card{position:relative;overflow:hidden;background-image:linear-gradient(rgba(0,0,0,.54),rgba(0,0,0,.70)),var(--location-bg);background-size:cover;background-position:center}
-.location-photo-card>*{position:relative;z-index:1}
 .social-qr-card{display:block;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:8px;background:#fff;text-align:center;color:#111;overflow:hidden}
 .social-qr-card img{width:100%;aspect-ratio:1;object-fit:contain;display:block}
 .social-qr-card span{display:block;font-size:7px;letter-spacing:.08em;font-weight:700;margin-top:7px;white-space:nowrap}
+@media(max-width:420px){.welcome-hero,.welcome-content{min-height:335px}.welcome-content{padding:24px 20px 20px}.welcome-choice{padding:17px 14px}.welcome-site-card{align-items:flex-start;flex-direction:column}.welcome-site-btn{align-self:stretch;text-align:center}}
 
-/* Welcome menu cards — image as full background */
-.welcome-choice-image{position:relative;min-height:238px;padding:18px;overflow:hidden;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;isolation:isolate;background:#0b0b0b;border:1px solid rgba(217,184,108,.28);border-radius:22px;transition:.2s ease}
-.welcome-choice-image:active{transform:scale(.985);border-color:rgba(217,184,108,.65)}
-.welcome-choice-image .welcome-choice-img{position:absolute;inset:0;z-index:-3;display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;margin:0}
-.welcome-choice-image::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.16) 35%,rgba(0,0,0,.78) 100%)}
-.welcome-choice-image::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(0,0,0,.18),transparent 60%)}
-.welcome-choice-image>div{position:relative;z-index:1}
-.welcome-choice-image .serif{text-shadow:0 2px 16px rgba(0,0,0,.75)}
-@media(max-width:420px){.welcome-hero,.welcome-content{min-height:335px}.welcome-content{padding:24px 20px 20px}}
+
+.welcome-choice-image{padding:0 0 1rem;overflow:hidden;text-align:left}
+.welcome-choice-image .welcome-choice-img{display:block;width:100%;height:112px;object-fit:cover;border-radius:22px 22px 0 0;margin-bottom:12px}
+.welcome-choice-image > div{margin-left:18px;margin-right:18px}
+
+.location-photo-card{position:relative;overflow:hidden;background-image:linear-gradient(rgba(0,0,0,.54),rgba(0,0,0,.70)),var(--location-bg);background-size:cover;background-position:center}
+.location-photo-card>*{position:relative;z-index:1}
+
+/* HANSUM welcome menu cards — image as full background, matching reference design */
+.welcome-choice-image{
+  position:relative;
+  min-height:238px;
+  padding:18px;
+  overflow:hidden;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  isolation:isolate;
+  background:#0b0b0b;
+}
+.welcome-choice-image .welcome-choice-img{
+  position:absolute;
+  inset:0;
+  z-index:-3;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:inherit;
+  margin:0;
+}
+.welcome-choice-image::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.16) 35%,rgba(0,0,0,.78) 100%);
+}
+.welcome-choice-image::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(90deg,rgba(0,0,0,.18),transparent 60%);
+}
+.welcome-choice-image > div{
+  position:relative;
+  z-index:1;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+.welcome-choice-image > div.text-\[8px\]{
+  margin-bottom:6px;
+}
+.welcome-choice-image .serif{
+  text-shadow:0 2px 16px rgba(0,0,0,.75);
+}
+.welcome-choice-image:hover .welcome-choice-img{
+  transform:scale(1.025);
+  transition:transform .45s ease;
+}
+
+
+/* Quick reorder buttons on order status pages */
+.reorder-actions{width:100%;max-width:420px;margin:2rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.reorder-action{padding:1rem .75rem;border-radius:1rem;border:1px solid rgba(217,184,108,.42);background:rgba(20,17,10,.82);color:#d9b86c;font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+.reorder-action.primary{background:linear-gradient(135deg,rgba(217,184,108,.98),rgba(183,145,58,.98));color:#090806;border-color:transparent;font-weight:600}
+
 </style>
 </head>
 <body>
@@ -133,7 +196,6 @@ button{font-family:inherit;cursor:pointer}
   <div v-if="step>=1 && step<=7" class="step-caption">{{t('step')}} {{String(step).padStart(2,'0')}} · {{localizedStepNames[step]}}</div>
   <div class="flex items-center justify-between mt-3">
     <div class="language-switch"><button v-for="language in languages" :key="language.code" @click="setLocale(language.code)" :class="{active:locale===language.code}">{{language.label}}</button></div>
-    <button @click="showStaffHelp=true" class="text-[8px] tracking-[.14em] text-[#d9b86c]">{{t('needHelp')}}?</button>
   </div>
 </header>
 
@@ -141,25 +203,25 @@ button{font-family:inherit;cursor:pointer}
 
 <section v-if="step===0 && tableLocked">
   <div class="welcome-hero rounded-[28px] overflow-hidden mt-4">
-    <img src="images/hero-smoke.jpeg" alt="HANSUM Da Nang Shisha Lounge" class="welcome-hero-img">
+    <img src="images/hero-smoke.jpeg" alt="HANSUM DANANG Shisha Lounge" class="welcome-hero-img">
     <div class="welcome-overlay"></div>
     <div class="welcome-content">
       <div class="text-[9px] tracking-[.42em] text-[#efd58e]">WELCOME TO HANSUM</div>
       <h1 class="serif text-4xl md:text-5xl mt-3">Your Night,<br>HANSUM Way.</h1>
       <p class="text-sm text-white/65 mt-4 leading-6 max-w-sm">Premium shisha, signature drinks and a Korean-style lounge experience.</p>
-      <div class="text-[8px] tracking-[.22em] text-white/40 mt-5">HANSUM DA NANG · TABLE {{order.table}}</div>
+      <div class="text-[8px] tracking-[.22em] text-white/40 mt-5">HANSUM DANANG · TABLE {{order.table}}</div>
     </div>
   </div>
 
   <div class="grid grid-cols-2 gap-3 mt-5">
-    <button @click="step=1" class="welcome-choice-image">
+    <button @click="step=1" class="welcome-choice welcome-choice-image">
       <img src="images/welcome-shisha.jpg" alt="Shisha Selection" class="welcome-choice-img">
       <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">01</div>
       <div class="serif text-xl mt-2">SHISHA SELECTION</div>
       <div class="text-[9px] text-white/40 mt-2">Choose your bowl & flavor</div>
       <div class="text-[#d9b86c] mt-4">→</div>
     </button>
-    <button @click="step=9" class="welcome-choice-image">
+    <button @click="step=9" class="welcome-choice welcome-choice-image">
       <img src="images/welcome-drinks.jpg" alt="Drink Menu" class="welcome-choice-img">
       <div class="text-[8px] tracking-[.28em] text-[#d9b86c]">02</div>
       <div class="serif text-xl mt-2">DRINK MENU</div>
@@ -180,35 +242,18 @@ button{font-family:inherit;cursor:pointer}
     <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">WIFI</div><div class="text-sm mt-1">HANSUM</div></div>
     <div class="welcome-wifi-card"><div class="text-[7px] tracking-[.25em] text-white/35">PASSWORD</div><div class="text-sm mt-1">20260606</div></div>
   </div>
-  <div class="location-social-card location-photo-card mt-4" style="--location-bg:url('images/location-danang.jpg')">
+<div class="location-social-card location-photo-card" style="--location-bg:url('images/location-danang.jpg')">
     <div class="text-center mb-4">
-      <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM DA NANG</div>
+      <div class="text-[9px] tracking-[.3em] text-[#d9b86c]">HANSUM DANANG</div>
       <div class="text-xs text-white/45 mt-1">Da Nang</div>
     </div>
     <div class="grid grid-cols-3 gap-2">
-      <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-ig.png" alt="Hansum Da Nang Instagram QR"><span>INSTAGRAM</span></a>
-      <a href="https://www.google.com/maps/search/?api=1&query=Hansum+Da+Nang+Lounge%2C+2F+14+La+Xuan+Oai%2C+Da+Nang" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-map.png" alt="Hansum Da Nang Google Maps QR"><span>GOOGLE MAPS</span></a>
+      <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-ig.png" alt="Hansum DANANG Instagram QR"><span>INSTAGRAM</span></a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng" target="_blank" rel="noopener" class="social-qr-card"><img src="images/qr-danang-map.png" alt="Hansum DANANG Google Maps QR"><span>GOOGLE MAPS</span></a>
     </div>
   </div>
 
   <div class="text-center text-[8px] tracking-[.3em] text-white/25 mt-8 mb-6">HANSUMSHISHA.COM · TABLE {{order.table}}</div>
-</section>
-
-<section v-if="step===0 && !tableLocked">
-  <div class="pt-8 mb-8">
-    <div class="text-[9px] tracking-[.35em] text-white/40 mb-3">{{t('welcome')}}</div>
-    <h1 class="serif text-3xl">{{t('chooseTable')}}</h1>
-    <p class="text-sm text-white/45 mt-3">{{t('chooseTableHint')}}</p>
-  </div>
-  <div class="table-grid grid grid-cols-3 gap-3">
-    <button v-for="table in tables" :key="table" @click="order.table=table"
-      class="glass rounded-2xl py-5 card" :class="{selected:order.table===table}">
-      <div class="text-[8px] tracking-[.22em] text-white/30 mb-1">TABLE</div>
-      <div class="table-number">{{table}}</div>
-      <div v-if="order.table===table" class="text-[7px] tracking-[.16em] text-[#d9b86c] mt-2">SELECTED</div>
-    </button>
-  </div>
-  <button @click="next" :disabled="!order.table" class="w-full mt-7 py-4 rounded-2xl cta disabled:opacity-20">{{t('continue')}} <span class="ml-2">→</span></button>
 </section>
 
 <section v-if="step===1">
@@ -458,10 +503,11 @@ button{font-family:inherit;cursor:pointer}
     <div class="serif text-xl mt-2">{{shishaOrderRef}}</div>
     <div class="text-[9px] tracking-[.18em] text-white/35 mt-2">TABLE {{order.table}}</div>
   </div>
-  <div class="w-full mt-10 space-y-3">
-    <button @click="startMoreOrder" class="w-full py-4 rounded-2xl cta">{{t('orderMore')}}</button>
-    <button @click="finish" class="w-full py-4 rounded-2xl border border-white/15 text-sm text-white/65">{{t('finish')}}</button>
+  <div class="reorder-actions">
+    <button @click="step=1" class="reorder-action primary">SHISHA</button>
+    <button @click="startMoreOrder" class="reorder-action">DRINKS</button>
   </div>
+  <button @click="finish" class="w-full max-w-xs mt-3 py-4 rounded-2xl border border-white/15 text-sm text-white/65">{{t('finish')}}</button>
 </section>
 
 <section v-if="step===9">
@@ -547,20 +593,15 @@ button{font-family:inherit;cursor:pointer}
     <div class="serif text-xl mt-2">{{drinkOrderRef}}</div>
     <div class="text-[9px] tracking-[.18em] text-white/35 mt-2">TABLE {{order.table}}</div>
   </div>
-  <button @click="finish" class="w-full max-w-xs mt-8 py-4 rounded-2xl cta">DONE</button>
+  <div class="reorder-actions">
+    <button @click="step=1" class="reorder-action primary">SHISHA</button>
+    <button @click="startMoreOrder" class="reorder-action">DRINKS</button>
+  </div>
+  <button @click="finish" class="w-full max-w-xs mt-3 py-4 rounded-2xl cta">DONE</button>
 </section>
 
 </main>
 
-<div v-if="showStaffHelp" class="staff-modal" @click.self="showStaffHelp=false">
-  <div class="staff-sheet p-7 text-center">
-    <div class="text-3xl">✦</div><h2 class="serif text-2xl mt-3">{{t('staffTitle')}}</h2>
-    <p class="text-sm text-white/55 leading-6 mt-3">{{t('staffMessage')}}</p>
-    <button @click="showStaffHelp=false" class="w-full mt-6 py-4 rounded-2xl cta">{{t('close')}}</button>
-  </div>
-</div>
-
-</div>
 
 <script>
 const {createApp}=Vue;
@@ -579,13 +620,13 @@ const hasQrTable=allowedTables.includes(qrTable);
 createApp({
 data(){return{
 stepNames:{1:'SHISHA',2:'BOWL',3:'FLAVOR',4:'STRENGTH',5:'COOLING',6:'ADD-ONS',7:'REVIEW'},
-step:0,
+step:hasQrTable?0:0,
 tables:['01','02','03','04','05','06','07','08','09','10','11','12'],
-locale:'en',languages:[{code:'en',label:'EN'},{code:'zh',label:'中文'},{code:'ko',label:'한국어'}],showStaffHelp:false,
+locale:'en',languages:[{code:'en',label:'EN'},{code:'zh',label:'中文'},{code:'ko',label:'한국어'}],
 translations:{
-en:{back:'BACK',table:'TABLE',qrTable:'QR TABLE',step:'STEP',needHelp:'NEED HELP',welcome:'WELCOME TO HANSUM',chooseTable:'Choose your table',chooseTableHint:'Select your table to begin your Hansum experience.',continue:'CONTINUE',shishaSelection:'Shisha Selection',shishaHint:'Choose your leaf experience.',addons:'ADD-ONS',reviewOrder:'REVIEW ORDER',subtotal:'Subtotal',vat:'8/10% VAT NOT INCLUDED',vatSentence:'Prices are exclusive of 8/10% VAT.',sending:'SENDING…',confirmShisha:'CONFIRM SHISHA ORDER',shishaSent:'SHISHA ORDER SENT',thankYou:'Thank You',shishaSentHint:'Your shisha order has been confirmed and sent to our team.',orderMore:'ORDER DRINKS & MORE',finish:'FINISH',addToOrder:'Add to your order',addToOrderHint:'Add drinks and other items. Your shisha order has already been sent to our team.',drinkCategories:'Drink categories',add:'ADD',reviewDrinkOrder:'REVIEW DRINK ORDER',additionalOrder:'ADDITIONAL ORDER',staffTitle:'Need assistance?',staffMessage:'Please raise your hand and a Hansum team member will be with you shortly.',close:'CLOSE',cat_Cocktails:'Cocktails',cat_FrozenSeries:'Frozen Series',cat_86:'-86°C Frozen Coffee',cat_Coffee:'Coffee',cat_Shooters:'Shooters',cat_Mocktails:'Mocktails & Soft Drinks',cat_Beer:'Beer · Soju · Wine',cat_Bottle:'Bottle Service'},
-zh:{back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',needHelp:'需要協助',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',staffTitle:'需要協助？',staffMessage:'請舉手示意，Hansum 團隊成員將很快為您服務。',close:'關閉',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
-ko:{back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',needHelp:'도움이 필요하신가요',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',staffTitle:'도움이 필요하신가요?',staffMessage:'손을 들어 주시면 Hansum 팀원이 곧 도와드리겠습니다.',close:'닫기',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
+Drinks per person: 1 drink minimum<br>en:{back:'BACK',table:'TABLE',qrTable:'QR TABLE',step:'STEP',welcome:'WELCOME TO HANSUM',chooseTable:'Choose your table',chooseTableHint:'Select your table to begin your Hansum experience.',continue:'CONTINUE',shishaSelection:'Shisha Selection',shishaHint:'Choose your leaf experience.',addons:'ADD-ONS',reviewOrder:'REVIEW ORDER',subtotal:'Subtotal',vat:'8/10% VAT NOT INCLUDED',vatSentence:'Prices are exclusive of 8/10% VAT.',sending:'SENDING…',confirmShisha:'CONFIRM SHISHA ORDER',shishaSent:'SHISHA ORDER SENT',thankYou:'Thank You',shishaSentHint:'Your shisha order has been confirmed and sent to our team.',orderMore:'ORDER DRINKS & MORE',finish:'FINISH',addToOrder:'Add to your order',addToOrderHint:'Add drinks and other items. Your shisha order has already been sent to our team.',drinkCategories:'Drink categories',add:'ADD',reviewDrinkOrder:'REVIEW DRINK ORDER',additionalOrder:'ADDITIONAL ORDER',cat_Cocktails:'Cocktails',cat_FrozenSeries:'Frozen Series',cat_86:'-86°C Frozen Coffee',cat_Coffee:'Coffee',cat_Shooters:'Shooters',cat_Mocktails:'Mocktails & Soft Drinks',cat_Beer:'Beer · Soju · Wine',cat_Bottle:'Bottle Service'},
+zh:{back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
+ko:{back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
 },
 order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,addons:[],otherAddon:''},
 selectedDirections:[],
@@ -814,6 +855,7 @@ initializeQrTable(){
       } else {
         this.restoreState();
         this.order.table=qrTable;
+        this.step=0;
       }
     } else {this.order.table=qrTable;this.step=0;}
     this.persistState();

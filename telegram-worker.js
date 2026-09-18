@@ -41,7 +41,9 @@ function formatOrder(p){
     lines.push(`${esc(o.shishaName)} — ${money(o.price)}`);
     if(o.bowl) lines.push(`Bowl: ${esc(o.bowl)}`);
     if(o.specific||o.other||o.flavorType) lines.push(`Flavor: ${esc(o.specific||o.other||o.flavorType)}`);
-    lines.push(`Strength: ${o.intensity||'-'} / 10 · Cooling: ${o.mint||0} / 10`);
+    lines.push(`Intensity: ${o.intensity||'-'} / 10`);
+    lines.push(`Cool: ${o.mint||0} / 10`);
+    if(o.shishaType==='Classic'||o.shishaType==='Premium') lines.push(`Mint: ${o.mintiness||0} / 10`);
     (o.addons||[]).forEach(a=>lines.push(`+ ${esc(a.name)} — ${money(a.price)}`));
   }
   if((p.basket||[]).length){

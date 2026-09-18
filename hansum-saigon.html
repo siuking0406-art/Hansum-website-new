@@ -27,8 +27,6 @@ button{font-family:inherit;cursor:pointer}
 .logo{width:56px;height:56px;object-fit:cover;border-radius:50%;mix-blend-mode:screen}
 .bowl-img{width:100%;height:auto;object-fit:contain;display:block}
 .range{width:100%;accent-color:#d9b86c}
-.preference-scale{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;color:rgba(255,255,255,.32);font-size:8px;letter-spacing:.02em;text-align:center}
-.preference-scale span{min-width:0}
 .category-title{line-height:1.05;letter-spacing:.01em}
 .category-label{line-height:1.1;letter-spacing:.16em;color:#d9b86c}
 .select-hint{font-size:9px;letter-spacing:.18em;color:#d9b86c;margin-top:18px;text-align:right}.selected-badge{font-size:8px;letter-spacing:.16em;color:#d9b86c}.step-caption{font-size:8px;letter-spacing:.28em;color:rgba(255,255,255,.34);text-align:center;margin-top:8px}.order-note{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.4);text-align:center}
@@ -403,18 +401,15 @@ button{font-family:inherit;cursor:pointer}
     <h1 class="serif text-3xl">Preferences</h1><p class="text-sm text-white/45 mt-3">Set your intensity, cool and mint.</p>
   </div>
   <div class="text-center mb-6"><div class="text-7xl serif">{{order.intensity}}</div><div class="text-[9px] tracking-[.35em] text-white/35 mt-3">INTENSITY</div></div>
-  <input :value="order.intensity" @input="setPreference('intensity',$event.target.value)" type="range" min="1" max="10" class="range">
-  <div class="preference-scale mt-3" aria-label="Intensity scale"><span v-for="n in 10" :key="'i'+n">{{n}}</span></div>
-  <div class="flex justify-between text-[8px] text-white/25 mt-1 mb-8"><span>LIGHT</span><span>BALANCED</span><span>STRONG</span></div>
+  <input :value="order.intensity" @input="setPref('intensity',$event)" type="range" min="0" max="10" step="1" class="range">
+  <div class="flex justify-between text-[9px] text-white/30 mt-3 mb-8"><span>LIGHT</span><span>BALANCED</span><span>STRONG</span></div>
   <div class="text-center mb-6"><div class="text-7xl serif">{{order.mint}}</div><div class="text-[9px] tracking-[.35em] text-white/35 mt-3">COOL</div></div>
-  <input :value="order.mint" @input="setPreference('mint',$event.target.value)" type="range" min="1" max="10" class="range">
-  <div class="preference-scale mt-3" aria-label="Cool scale"><span v-for="n in 10" :key="'c'+n">{{n}}</span></div>
-  <div class="flex justify-between text-[8px] text-white/25 mt-1 mb-8"><span>NONE</span><span>SOFT</span><span>ICY</span></div>
+  <input :value="order.mint" @input="setPref('mint',$event)" type="range" min="0" max="10" step="1" class="range">
+  <div class="flex justify-between text-[9px] text-white/30 mt-3 mb-8"><span>NONE</span><span>SOFT</span><span>ICY</span></div>
   <div v-if="order.shishaType==='Classic'||order.shishaType==='Premium'">
   <div class="text-center mb-6"><div class="text-7xl serif">{{order.mintiness}}</div><div class="text-[9px] tracking-[.35em] text-white/35 mt-3">MINT</div></div>
-  <input :value="order.mintiness" @input="setPreference('mintiness',$event.target.value)" type="range" min="1" max="10" class="range">
-  <div class="preference-scale mt-3" aria-label="Mint scale"><span v-for="n in 10" :key="'m'+n">{{n}}</span></div>
-  <div class="flex justify-between text-[8px] text-white/25 mt-1"><span>NONE</span><span>LIGHT</span><span>STRONG</span></div>
+  <input :value="order.mintiness" @input="setPref('mintiness',$event)" type="range" min="0" max="10" step="1" class="range">
+  <div class="flex justify-between text-[9px] text-white/30 mt-3"><span>NONE</span><span>LIGHT</span><span>STRONG</span></div>
   </div>
   <button @click="nextFromPreferences" class="w-full mt-10 py-4 rounded-2xl cta">{{t('addons')}}</button>
 </section>
@@ -459,9 +454,9 @@ button{font-family:inherit;cursor:pointer}
     <div class="py-4 border-b border-white/10"><div class="text-white/40 text-sm">Shisha</div><div class="font-semibold mt-1">{{order.shishaName}}</div></div>
     <div v-if="order.bowl" class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Bowl</span><span class="font-semibold text-right">{{order.bowl}}</span></div>
     <div class="py-4 border-b border-white/10"><div class="text-white/40 text-sm">Flavor</div><div class="font-semibold mt-1">{{flavorSummary}}</div></div>
-    <div class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Intensity</span><span>{{order.intensity}} / {{prefMax}}</span></div>
-    <div class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Cool</span><span>{{order.mint}} / {{prefMax}}</span></div>
-    <div v-if="order.shishaType==='Classic'||order.shishaType==='Premium'" class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Mint</span><span>{{order.mintiness}} / {{prefMax}}</span></div>
+    <div class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Intensity</span><span>{{order.intensity}} / 10</span></div>
+    <div class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Cool</span><span>{{order.mint}} / 10</span></div>
+    <div v-if="order.shishaType==='Classic'||order.shishaType==='Premium'" class="flex justify-between py-4 border-b border-white/10"><span class="text-white/40 text-sm">Mint</span><span>{{order.mintiness}} / 10</span></div>
 
     <div v-if="order.addons.length || order.otherAddon" class="py-4 border-b border-white/10">
       <div class="text-white/40 text-sm mb-2">Add-ons</div>
@@ -728,8 +723,16 @@ clampPreferences(){
   if(this.order.mintiness>max)this.order.mintiness=max;
   if(this.order.mintiness<1)this.order.mintiness=1;
 },
-setPreference(field,value){const max=this.prefMax();const n=Math.max(1,Math.min(max,Number(value)||1));this.order[field]=n},
-  nextFromPreferences(){this.clampPreferences();this.step=6},
+setPref(field,event){
+  let v=Math.round(Number(event.target.value));
+  if(!Number.isFinite(v))v=1;
+  if(v<1)v=1;
+  const max=this.prefMax;
+  if(v>max)v=max;
+  this.order[field]=v;
+  event.target.value=v;
+},
+nextFromPreferences(){this.clampPreferences();this.step=6},
 setDirections(dark){
 this.flavorDirections=dark?[
 {icon:'🍓',name:'FRUITY',description:'Sweet and easy to enjoy.'},

@@ -1,449 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="hansum-version" content="HANSUM-DANANG-WELCOME-FIX-20260913">
-<!-- HANSUM-DANANG-WELCOME-FIX-20260913 -->
+<meta name="hansum-version" content="HANSUM-DANANG-ORDER-V21-PORT-20260922">
+<!-- HANSUM-DANANG-ORDER-V21-PORT-20260922 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050505">
-<title>HANSUM — Shisha Omakase · v5.8.2</title>
+<meta name="theme-color" content="#05070d">
+<title>HANSUM — Shisha Omakase · v6.0.0</title>
 <script src="js/vue.global.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_TELEGRAM_ENDPOINT='https://hansum-telegram.siuking0406.workers.dev';</script>
 <link rel="stylesheet" href="css/order.css">
+<script src="js/order-ui.js"></script>
 </head>
-<body class="o-body">
-<a class="o-skip" href="#main">Skip to main content</a>
-<div id="app" v-cloak class="o-app">
-
-<header class="o-header">
-  <div class="o-header__row">
-    <button v-if="step>0 && step<8" @click="back" class="o-back" type="button"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>{{t('back')}}</span></button>
-    <div v-else class="o-header__spacer"></div>
-
-    <div class="o-brand">
-      <img src="images/hansum-logo-gold.jpg" class="o-logo" alt="HANSUM" width="44" height="44">
-      <div class="o-brand__name">HANSUM</div>
-      <div class="o-brand__tag">SHISHA OMAKASE</div>
-    </div>
-
-    <div class="o-table">
-      <div class="o-table__label">{{t('table')}}</div>
-      <div class="o-table__value">{{order.table||'—'}}</div><div v-if="tableLocked" class="o-table__qr">{{t('qrTable')}}</div>
-    </div>
-  </div>
-  <div class="o-progress" aria-hidden="true">
-    <div v-for="n in 8" :key="n" class="o-progress__seg"
-         :class="step>=n-1?'bg-[#d9b86c]':'bg-white/10'"></div>
-  </div>
-  <div v-if="step>=1 && step<=7" class="o-step-caption">{{t('step')}} {{String(displayStep).padStart(2,'0')}} · {{localizedStepNames[step]}}</div>
-  <div class="o-lang" role="group" aria-label="Language"><button v-for="language in languages" :key="language.code" @click="setLocale(language.code)" :class="{active:locale===language.code}" :aria-pressed="locale===language.code" type="button">{{language.label}}</button></div>
-</header>
-
-<main id="main" class="o-main" tabindex="-1">
-
-<section v-if="step===0 && tableLocked" class="o-view">
-  <div class="o-hero">
-    <img src="images/hero-smoke.jpeg" alt="HANSUM DANANG Shisha Lounge" class="o-hero__img" width="1170" height="1527" fetchpriority="high" decoding="async">
-    <div class="o-hero__shade"></div>
-    <div class="o-hero__content">
-      <div class="o-eyebrow o-eyebrow--gold">WELCOME TO HANSUM</div>
-      <h1 class="o-display">Your Night,<br>HANSUM Way.</h1>
-      <p class="o-lead">Premium shisha, signature drinks and a Korean-style lounge experience.</p>
-      <div class="o-eyebrow o-hero__where">HANSUM DANANG · TABLE {{order.table}}</div>
-    </div>
-  </div>
-
-  <div class="o-tiles">
-    <button @click="step=1" class="o-tile" type="button">
-      <img src="images/welcome-shisha.jpg" alt="" class="o-tile__img" width="768" height="523" loading="lazy" decoding="async">
-      <span class="o-tile__num">01</span>
-      <span class="o-tile__title">SHISHA SELECTION</span>
-      <span class="o-tile__sub">Choose your bowl &amp; flavor</span>
-      <span class="o-tile__go" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-    </button>
-    <button @click="step=9" class="o-tile" type="button">
-      <img src="images/welcome-drinks.jpg" alt="" class="o-tile__img" width="768" height="523" loading="lazy" decoding="async">
-      <span class="o-tile__num">02</span>
-      <span class="o-tile__title">DRINK MENU</span>
-      <span class="o-tile__sub">Cocktails, coffee &amp; more</span>
-      <span class="o-tile__go" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-    </button>
-  </div>
-
-  <div class="o-info">
-    <div class="o-info__text">
-      <div class="o-eyebrow">EXPLORE HANSUM</div>
-      <div class="o-h3">HANSUMSHISHA.COM</div>
-    </div>
-    <a href="https://hansumshisha.com/" target="_blank" rel="noopener" class="o-btn o-btn--secondary o-btn--sm">VISIT WEBSITE ↗</a>
-  </div>
-
-  <div class="o-wifi">
-    <div class="o-wifi__card"><div class="o-eyebrow">WIFI</div><div class="o-wifi__val">HANSUM</div></div>
-    <div class="o-wifi__card"><div class="o-eyebrow">PASSWORD</div><div class="o-wifi__val">20260606</div></div>
-  </div>
-  <div class="o-loc o-loc--danang">
-    <div class="o-eyebrow o-eyebrow--gold">HANSUM DANANG</div>
-    <div class="o-loc__city">Da Nang</div>
-    <div class="o-loc__grid">
-      <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener" class="o-qr"><img src="images/qr-danang-ig.png" alt="Hansum DANANG Instagram QR" width="240" height="240" loading="lazy" decoding="async"><span>INSTAGRAM</span></a>
-      <a href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng" target="_blank" rel="noopener" class="o-qr"><img src="images/qr-danang-map.png" alt="Hansum DANANG Google Maps QR" width="240" height="240" loading="lazy" decoding="async"><span>GOOGLE MAPS</span></a>
-    </div>
-  </div>
-
-  <div class="o-foot">HANSUMSHISHA.COM · TABLE {{order.table}}</div>
-</section>
-
-<section v-if="step===1" class="o-view">
-  <div class="o-pagehead o-pagehead--card">
-    <div class="o-eyebrow">{{t('welcome')}} · {{t('table')}} {{order.table}}</div>
-    <h1 class="o-h1">{{t('shishaSelection')}}</h1>
-    <p class="o-sub">{{t('shishaHint')}}</p>
-  </div>
-
-  <div class="o-stack o-stagger o-stack--after-head">
-    <button @click="selectShisha('Classic','Blonde Leaf',580000,false)" class="o-card o-card--press o-product" :class="{selected:order.shishaType==='Classic'}" :aria-pressed="order.shishaType==='Classic'" type="button">
-      <span class="o-product__media"><img src="images/blonde-leaf.jpeg" alt="Blonde Leaf shisha tobacco" width="1254" height="1254" loading="lazy" decoding="async"><span class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></span>
-      <span class="o-product__body">
-        <span class="o-product__row">
-          <span class="o-product__info">
-            <span class="o-eyebrow">CLASSIC</span>
-            <span class="o-h2">BLONDE LEAF</span>
-            <span class="o-note">Al Fakher · Adalya · Jam</span>
-          </span>
-          <span class="o-price"><strong>580,000</strong><small>VND</small></span>
-        </span>
-        <span class="o-product__foot">
-          <span v-if="order.shishaType==='Classic'" class="o-selected-tag">✓ SELECTED</span><span v-else></span>
-          <span class="o-hint">{{order.shishaType==='Classic'?'SELECTED':'SELECT →'}}</span>
-        </span>
-      </span>
-    </button>
-
-    <button @click="selectShisha('Premium','Dark Leaf',680000,false)" class="o-card o-card--press o-product" :class="{selected:order.shishaType==='Premium'}" :aria-pressed="order.shishaType==='Premium'" type="button">
-      <span class="o-product__media"><img src="images/dark-leaf.jpeg" alt="Dark Leaf shisha tobacco" width="1254" height="1254" loading="lazy" decoding="async"><span class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></span>
-      <span class="o-product__body">
-        <span class="o-product__row">
-          <span class="o-product__info">
-            <span class="o-eyebrow">PREMIUM</span>
-            <span class="o-h2">DARK LEAF</span>
-            <span class="o-note">Darkside · MustHave · Element · Spectrum · Kismet · etc.</span>
-          </span>
-          <span class="o-price"><strong>680,000</strong><small>VND</small></span>
-        </span>
-        <span class="o-product__foot">
-          <span v-if="order.shishaType==='Premium'" class="o-selected-tag">✓ SELECTED</span><span v-else></span>
-          <span class="o-hint">{{order.shishaType==='Premium'?'SELECTED':'SELECT →'}}</span>
-        </span>
-      </span>
-    </button>
-
-    <button @click="selectShisha('Fruit Head','Fresh Fruit',980000,true)" class="o-card o-card--press o-product" :class="{selected:order.shishaType==='Fruit Head'}" :aria-pressed="order.shishaType==='Fruit Head'" type="button">
-      <span class="o-product__media o-product__media--tall"><img src="images/fruit-head.jpeg" alt="Fruit Head shisha" width="845" height="1536" loading="lazy" decoding="async"><span class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></span>
-      <span class="o-product__body">
-        <span class="o-product__row">
-          <span class="o-product__info">
-            <span class="o-eyebrow">SIGNATURE</span>
-            <span class="o-h2">FRUIT HEAD</span>
-            <span class="o-note">Dragon Fruit · Pineapple · Apple etc.</span>
-          </span>
-          <span class="o-price"><strong>980,000</strong><small>VND</small></span>
-        </span>
-        <span class="o-product__foot">
-          <span v-if="order.shishaType==='Fruit Head'" class="o-selected-tag">✓ SELECTED</span><span v-else></span>
-          <span class="o-hint">{{order.shishaType==='Fruit Head'?'SELECTED':'SELECT →'}}</span>
-        </span>
-      </span>
-    </button>
-
-    <div class="o-card o-refill">
-      <div class="o-eyebrow">REFILL</div>
-      <div class="o-h2">FRESH REFILL</div>
-      <div class="o-note">Continue your session with fresh tobacco.</div>
-      <div class="o-refill__grid">
-        <button @click="selectRefill('Refill — Blonde Leaf',480000,'Blonde Leaf')"
-          class="o-card o-card--press o-option" :class="{selected:order.shishaType==='Refill Blonde'}" :aria-pressed="order.shishaType==='Refill Blonde'" type="button">
-          <span class="o-eyebrow">BLONDE LEAF</span><span class="o-option__price">480K</span>
-        </button>
-        <button @click="selectRefill('Refill — Dark Leaf',580000,'Dark Leaf')"
-          class="o-card o-card--press o-option" :class="{selected:order.shishaType==='Refill Dark'}" :aria-pressed="order.shishaType==='Refill Dark'" type="button">
-          <span class="o-eyebrow">DARK LEAF</span><span class="o-option__price">580K</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section v-if="step===2" class="o-view">
-  <div class="o-pagehead">
-    <div class="o-eyebrow">STEP 02</div>
-    <h1 class="o-h1">Choose your bowl</h1>
-    <p class="o-sub">Different style, different experience.</p>
-  </div>
-
-  <div class="o-stack o-stack--bowls o-stagger">
-    <button @click="selectBowl('Egyptian Bowl — Cosmo')" class="o-card o-card--press o-bowl" :class="{selected:order.bowl==='Egyptian Bowl — Cosmo'}" :aria-pressed="order.bowl==='Egyptian Bowl — Cosmo'" type="button">
-      <img src="images/order-bowl-cosmo.jpg" alt="Egyptian Bowl — Cosmo" class="o-bowl__img" width="1086" height="1448" loading="lazy" decoding="async">
-      <span class="o-bowl__cap"><strong>EGYPTIAN BOWL</strong></span>
-      <span v-if="order.bowl==='Egyptian Bowl — Cosmo'" class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-    </button>
-
-    <button @click="selectBowl('Phunnel Bowl — Oblako')" class="o-card o-card--press o-bowl" :class="{selected:order.bowl==='Phunnel Bowl — Oblako'}" :aria-pressed="order.bowl==='Phunnel Bowl — Oblako'" type="button">
-      <img src="images/order-bowl-oblako.jpg" alt="Phunnel Bowl — Oblako" class="o-bowl__img" width="1086" height="1448" loading="lazy" decoding="async">
-      <span class="o-bowl__cap"><strong>PHUNNEL BOWL</strong></span>
-      <span v-if="order.bowl==='Phunnel Bowl — Oblako'" class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-    </button>
-  </div>
-</section>
-
-<section v-if="step===3" class="o-view">
-  <div class="o-pagehead">
-    <div class="o-eyebrow">STEP 03</div>
-    <h1 class="o-h1">Flavor Profile</h1>
-    <p class="o-sub">Choose your preferred flavor direction.</p>
-  </div>
-
-  <div class="o-eyebrow o-section-label">FLAVOR DIRECTION</div>
-  <div class="o-flavor-grid">
-    <button v-for="flavor in flavorDirections" :key="flavor.name" @click="toggleDirection(flavor.name)"
-      class="o-flavor" :class="{selected:selectedDirections.includes(flavor.name)}" :aria-pressed="selectedDirections.includes(flavor.name)"
-      :aria-label="flavor.name" type="button">
-      <img :src="flavor.image" :alt="flavor.name" loading="lazy" decoding="async">
-      <span v-if="selectedDirections.includes(flavor.name)" class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-    </button>
-  </div>
-
-  <div v-if="showSpecific" class="o-flavor-block">
-    <div class="o-eyebrow o-section-label">SPECIFIC</div>
-    <div class="o-flavor-grid o-flavor-grid--specific">
-      <button v-for="flavor in specificFlavors" :key="flavor.name" @click="selectSpecific(flavor.name)"
-        class="o-flavor" :class="{selected:order.specific===flavor.name}" :aria-pressed="order.specific===flavor.name"
-        :aria-label="flavor.name" type="button">
-        <img :src="flavor.image" :alt="flavor.name" loading="lazy" decoding="async">
-        <span v-if="order.specific===flavor.name" class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-      </button>
-    </div>
-  </div>
-
-  <div class="o-flavor-block">
-    <div class="o-eyebrow o-section-label">OTHER</div>
-    <button @click="selectOther()" class="o-flavor o-flavor--wide" :class="{selected:order.flavorType==='Other'}" :aria-pressed="order.flavorType==='Other'"
-      aria-label="Other" type="button">
-      <img src="images/flavor/other.jpg" alt="Other" loading="lazy" decoding="async">
-      <span v-if="order.flavorType==='Other'" class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-    </button>
-    <textarea v-if="order.flavorType==='Other'" v-model="order.other" placeholder="Tell us your preferred flavor..."
-      class="o-input" aria-label="Preferred flavor" rows="4"></textarea>
-
-    <button @click="selectOmakase()" class="o-flavor o-flavor--wide" :class="{selected:order.flavorType==='Omakase'}" :aria-pressed="order.flavorType==='Omakase'"
-      aria-label="Hansum Omakase" type="button">
-      <img src="images/flavor/omakase.jpg" alt="Hansum Omakase" loading="lazy" decoding="async">
-      <span v-if="order.flavorType==='Omakase'" class="o-check" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-    </button>
-  </div>
-
-  <button @click="nextFromFlavor" :disabled="!canContinueFlavor" class="o-btn o-btn--primary o-btn--block" type="button">{{t('continue')}} <svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-</section>
-
-<section v-if="step===4" class="o-view">
-  <div class="o-pagehead">
-    <div class="o-eyebrow">STEP 04</div>
-    <h1 class="o-h1">Preferences</h1><p class="o-sub">Set your intensity, cool and mint.</p>
-  </div>
-  <div class="o-card o-slider">
-    <div class="o-slider__value"><div class="o-slider__num">{{order.intensity}}</div><div class="o-eyebrow">INTENSITY</div></div>
-    <input :value="order.intensity" @input="setPref('intensity',$event)" type="range" min="0" max="10" step="1" class="o-range" aria-label="Intensity">
-    <div class="o-slider__ends"><span>LIGHT</span><span>BALANCED</span><span>STRONG</span></div>
-    <p v-if="prefMax===5" class="o-note o-slider__note">Maximum intensity is 5. For stronger intensity, please select Dark Leaf.</p>
-  </div>
-  <div class="o-card o-slider">
-    <div class="o-slider__value"><div class="o-slider__num">{{order.mint}}</div><div class="o-eyebrow">COOL</div></div>
-    <input :value="order.mint" @input="setPref('mint',$event)" type="range" min="0" max="10" step="1" class="o-range" aria-label="Cool">
-    <div class="o-slider__ends o-slider__ends--5"><span>NONE</span><span>SOFT</span><span>MEDIUM</span><span>ICY</span><span>EXTREME ICY</span></div>
-  </div>
-  <div v-if="order.shishaType==='Classic'||order.shishaType==='Premium'" class="o-card o-slider">
-    <div class="o-slider__value"><div class="o-slider__num">{{order.mintiness}}</div><div class="o-eyebrow">MINT</div></div>
-    <input :value="order.mintiness" @input="setPref('mintiness',$event)" type="range" min="0" max="10" step="1" class="o-range" aria-label="Mint">
-    <div class="o-slider__ends o-slider__ends--5"><span>NONE</span><span>SOFT</span><span>MEDIUM</span><span>STRONG</span><span>EXTREME STRONG</span></div>
-  </div>
-  <button @click="nextFromPreferences" class="o-btn o-btn--primary o-btn--block" type="button">{{t('addons')}}</button>
-</section>
-
-<section v-if="step===6" class="o-view">
-  <div class="o-pagehead">
-    <div class="o-eyebrow">STEP 05</div>
-    <h1 class="o-h1">Upgrades</h1><p class="o-sub">Add something extra to your experience.</p>
-  </div>
-
-  <div class="o-stack o-stagger">
-    <button v-for="addon in addonOptions" :key="addon.name" @click="toggleAddon(addon)"
-      class="o-card o-card--press o-rowopt" :class="{selected:isAddonSelected(addon.name)}" :aria-pressed="isAddonSelected(addon.name)" type="button">
-      <span class="o-rowopt__main">
-        <span class="o-rowopt__name"><span class="o-emoji" aria-hidden="true">{{addon.icon}}</span> {{addon.name}}</span>
-        <span v-if="addon.note" class="o-note">{{addon.note}}</span>
-        <span class="o-price-inline">+{{formatPrice(addon.price)}}</span>
-      </span>
-      <span class="o-radio" aria-hidden="true"><span v-if="isAddonSelected(addon.name)">✓</span></span>
-    </button>
-
-    <div class="o-card o-others">
-      <button @click="toggleOtherAddon" class="o-rowopt" :aria-pressed="otherAddonEnabled" type="button">
-        <span class="o-rowopt__main"><span class="o-rowopt__name">✎ Others</span><span class="o-note">Custom request</span></span>
-        <span class="o-radio" aria-hidden="true"><span v-if="otherAddonEnabled">✓</span></span>
-      </button>
-      <input v-if="otherAddonEnabled" v-model="order.otherAddon" placeholder="Please specify..."
-        class="o-input" aria-label="Other add-on">
-    </div>
-  </div>
-  <button @click="next" class="o-btn o-btn--primary o-btn--block" type="button">{{t('reviewOrder')}}</button>
-</section>
-
-<section v-if="step===7" class="o-view">
-  <div class="o-pagehead">
-    <div class="o-eyebrow">FINAL STEP</div>
-    <h1 class="o-h1">Your Hansum</h1><p class="o-sub">Review your shisha selection. Once confirmed, it will be sent to our team before you order drinks.</p>
-  </div>
-
-  <div class="o-card o-receipt">
-    <div class="o-receipt__row"><span class="o-receipt__k">{{t('table')}}</span><span class="o-receipt__v">{{order.table}}</span></div>
-    <div class="o-receipt__row o-receipt__row--stack"><div class="o-receipt__k">Shisha</div><div class="o-receipt__v">{{order.shishaName}}</div></div>
-    <div v-if="order.bowl" class="o-receipt__row"><span class="o-receipt__k">Bowl</span><span class="o-receipt__v">{{order.bowl}}</span></div>
-    <div class="o-receipt__row o-receipt__row--stack"><div class="o-receipt__k">Flavor</div><div class="o-receipt__v">{{flavorSummary}}</div></div>
-    <div class="o-receipt__row"><span class="o-receipt__k">Intensity</span><span class="o-receipt__v">{{order.intensity}} / 10</span></div>
-    <div class="o-receipt__row"><span class="o-receipt__k">Cool</span><span class="o-receipt__v">{{order.mint}} / 10</span></div>
-    <div v-if="order.shishaType==='Classic'||order.shishaType==='Premium'" class="o-receipt__row"><span class="o-receipt__k">Mint</span><span class="o-receipt__v">{{order.mintiness}} / 10</span></div>
-
-    <div v-if="order.addons.length || order.otherAddon" class="o-receipt__block">
-      <div class="o-receipt__k">Add-ons</div>
-      <div v-for="addon in order.addons" :key="addon.name" class="o-receipt__line"><span>{{addon.name}}</span><span class="o-price-inline">+{{formatPrice(addon.price)}}</span></div>
-      <div v-if="order.otherAddon" class="o-receipt__line">✎ {{order.otherAddon}}</div>
-    </div>
-
-    <div class="o-receipt__total"><span class="o-receipt__k">{{t('subtotal')}}</span><span class="o-receipt__sum">{{formatPrice(totalPrice)}} VND</span></div>
-    <div class="o-receipt__vat">{{t('vat')}}</div>
-  </div>
-
-  <div v-if="sendMessage" class="o-alert" role="alert"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span>{{sendMessage}}</span></div>
-  <button @click="confirmOrder" :disabled="sending" class="o-btn o-btn--primary o-btn--block" type="button">{{sending?t('sending'):t('confirmShisha')}}</button>
-  <p class="o-fineprint">{{t('vatSentence')}}</p>
-  <button @click="back" class="o-btn o-btn--tertiary o-btn--block" type="button">{{t('back')}}</button>
-</section>
-
-<section v-if="step===8" class="o-view o-success">
-  <div class="o-success__mark" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-  <div class="o-eyebrow o-eyebrow--gold">{{t('shishaSent')}} ✓</div>
-  <h1 class="o-display">{{t('thankYou')}}</h1>
-  <p class="o-success__text">{{t('shishaSentHint')}}</p>
-  <div class="o-refcard">
-    <div class="o-eyebrow">ORDER REFERENCE</div>
-    <div class="o-h3">{{shishaOrderRef}}</div>
-    <div class="o-eyebrow">TABLE {{order.table}}</div>
-  </div>
-  <div class="o-actions">
-    <button @click="step=1" class="o-btn o-btn--primary" type="button">SHISHA</button>
-    <button @click="startMoreOrder" class="o-btn o-btn--secondary" type="button">DRINKS</button>
-  </div>
-  <button @click="finish" class="o-btn o-btn--tertiary o-btn--block" type="button">{{t('finish')}}</button>
-</section>
-
-<section v-if="step===9" class="o-view">
-  <div class="o-pagehead">
-    <div class="o-eyebrow">{{t('orderMore')}}</div>
-    <h1 class="o-h1">{{t('addToOrder')}}</h1>
-    <p class="o-sub">{{t('addToOrderHint')}}</p><div class="o-vat">{{t('vat')}}</div>
-  </div>
-
-  <nav class="o-quicknav" :aria-label="t('drinkCategories')"><button v-for="(cat,index) in moreCategories" :key="'nav-'+index" @click="scrollToCategory(index)" type="button">{{categoryTitle(cat)}}</button></nav>
-
-  <div class="o-stack">
-    <div v-for="(cat,index) in moreCategories" :id="'category-'+index" :key="cat.name+index" class="o-card o-cat">
-      <div class="o-cat__head">
-        <div class="o-eyebrow o-eyebrow--gold">{{cat.label}}</div>
-        <h2 class="o-h2">{{categoryTitle(cat)}}</h2>
-      </div>
-      <div class="o-items">
-        <div v-for="item in cat.items" :key="item.name" class="o-item">
-          <button @click="addMoreItem(item)" class="o-item__main" type="button">
-            <span class="o-item__name">{{item.name}}</span>
-            <span v-if="item.note" class="o-item__note">{{item.note}}</span>
-            <span class="o-price-inline">{{formatPrice(item.price)}} VND</span>
-          </button>
-          <div v-if="itemQty(item.name)" class="o-qty">
-            <button @click.stop="changeQty(item,-1)" aria-label="Decrease quantity" type="button"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/></svg></button>
-            <span>{{itemQty(item.name)}}</span>
-            <button @click.stop="changeQty(item,1)" aria-label="Increase quantity" type="button"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg></button>
-          </div>
-          <button v-else @click="addMoreItem(item)" class="o-add" :aria-label="t('add')+' '+item.name" type="button">{{t('add')}}</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button @click="step=10" :disabled="!basketCount" class="o-btn o-btn--primary o-btn--block" type="button">{{t('reviewDrinkOrder')}} <span v-if="basketCount">({{basketCount}})</span></button>
-  <button @click="finish" class="o-btn o-btn--tertiary o-btn--block" type="button">{{t('finish')}}</button>
-
-  <transition name="o-cart">
-  <div v-if="basketCount" class="o-cartbar">
-    <div class="o-cartbar__inner">
-      <div class="o-cartbar__sum" role="status">
-        <div class="o-eyebrow">{{t('additionalOrder')}}</div>
-        <div class="o-cartbar__line">{{basketCount}} {{basketCount===1?'ITEM':'ITEMS'}} · {{formatPrice(basketTotal)}} VND</div>
-      </div>
-      <button @click="step=10" class="o-btn o-btn--primary o-btn--sm" type="button">{{t('reviewOrder')}}</button>
-    </div>
-  </div>
-  </transition>
-</section>
-
-<section v-if="step===10" class="o-view">
-  <div class="o-pagehead">
-    <div class="o-eyebrow">SECOND ORDER</div>
-    <h1 class="o-h1">Drinks &amp; More</h1>
-    <p class="o-sub">Review your additional items. This order will be sent separately.</p>
-  </div>
-
-  <div class="o-card o-receipt">
-    <div class="o-receipt__row"><span class="o-receipt__k">Table</span><span class="o-receipt__v">{{order.table}}</span></div>
-
-    <div v-if="basket.length" class="o-receipt__block">
-      <div class="o-receipt__k">Additional Items</div>
-      <div v-for="(item,index) in basket" :key="item.name" class="o-receipt__line">
-        <span>{{item.name}} <span class="o-receipt__qty">×{{item.qty}}</span></span>
-        <span class="o-price-inline">{{formatPrice(item.price*item.qty)}} VND</span>
-      </div>
-    </div>
-
-    <div class="o-receipt__total"><span class="o-receipt__k">Subtotal</span><span class="o-receipt__sum">{{formatPrice(basketTotal)}} VND</span></div>
-    <div class="o-receipt__vat">Drinks per person: 1 drink minimum<br>Prices are exclusive of 8/10% VAT.</div>
-  </div>
-
-  <div v-if="sendMessage" class="o-alert" role="alert"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span>{{sendMessage}}</span></div>
-  <button @click="sendFinalOrder" :disabled="sending || !basketCount" class="o-btn o-btn--primary o-btn--block" type="button">{{sending?'SENDING…':'CONFIRM &amp; SEND ADDITIONAL ORDER'}}</button>
-  <button @click="step=9" class="o-btn o-btn--tertiary o-btn--block" type="button">+ ADD MORE</button>
-</section>
-
-<section v-if="step===11" class="o-view o-success">
-  <div class="o-success__mark" aria-hidden="true"><svg class="o-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-  <div class="o-eyebrow o-eyebrow--gold">ADDITIONAL ORDER SENT ✓</div>
-  <h1 class="o-display">Order Confirmed</h1>
-  <p class="o-success__text">Your additional order has been sent to our team.</p>
-  <div class="o-refcard">
-    <div class="o-eyebrow">ORDER REFERENCE</div>
-    <div class="o-h3">{{drinkOrderRef}}</div>
-    <div class="o-eyebrow">TABLE {{order.table}}</div>
-  </div>
-  <div class="o-actions">
-    <button @click="step=1" class="o-btn o-btn--primary" type="button">SHISHA</button>
-    <button @click="startMoreOrder" class="o-btn o-btn--secondary" type="button">DRINKS</button>
-  </div>
-  <button @click="finish" class="o-btn o-btn--primary o-btn--block" type="button">DONE</button>
-</section>
-
-</main>
-
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M5 9l7 7 7-7"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h8"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M8 16L18 6M9 6h9v9"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4zM14 7l3 3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></symbol>
+  </defs>
+</svg>
+<div id="app" v-cloak></div>
 
 <script>
 const {createApp}=Vue;
@@ -460,15 +49,22 @@ const qrTable=normalizeTable(rawQrTable);
 const allowedTables=['01','02','03','04','05','06','07','08','09','10','11','12'];
 const hasQrTable=allowedTables.includes(qrTable);
 createApp({
+template:HansumOrderUI.template,
+mixins:[HansumOrderUI.mixin],
 data(){return{
+/* V2.1 interface: this page's location facts, shown by the shared UI (js/order-ui.js). Values are the ones the previous template hard-coded. */
+L:{name:"Da Nang",city:"Da Nang",handle:"hansum.danang",chooser:false,wifi:{ssid:"HANSUM",pass:"20260606"},ig:"https://www.instagram.com/hansum.danang/",map:"https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng",qrIg:"images/qr-danang-ig.png",qrMap:"images/qr-danang-map.png",drinkPhoto:"images/welcome-drinks.jpg",drinkPos:"50% 55%"},
+/* Shisha options as previously passed to selectShisha()/selectRefill() by the template (single source for display and selection). */
+shishaOptions:[{type:'Classic',name:'Blonde Leaf',price:580000,fruitHead:false},{type:'Premium',name:'Dark Leaf',price:680000,fruitHead:false},{type:'Fruit Head',name:'Fresh Fruit',price:980000,fruitHead:true}],
+refillOptions:[{type:'Refill Blonde',name:'Refill — Blonde Leaf',price:480000,leaf:'Blonde Leaf'},{type:'Refill Dark',name:'Refill — Dark Leaf',price:580000,leaf:'Dark Leaf'}],
 stepNames:{1:'SHISHA',2:'BOWL',3:'FLAVOR',4:'STRENGTH',5:'COOLING',6:'ADD-ONS',7:'REVIEW'},
 step:hasQrTable?0:0,
 tables:['01','02','03','04','05','06','07','08','09','10','11','12'],
 locale:'en',languages:[{code:'en',label:'EN'},{code:'zh',label:'中文'},{code:'ko',label:'한국어'}],
 translations:{
-en:{back:'BACK',table:'TABLE',qrTable:'QR TABLE',step:'STEP',welcome:'WELCOME TO HANSUM',chooseTable:'Choose your table',chooseTableHint:'Select your table to begin your Hansum experience.',continue:'CONTINUE',shishaSelection:'Shisha Selection',shishaHint:'Choose your leaf experience.',addons:'ADD-ONS',reviewOrder:'REVIEW ORDER',subtotal:'Subtotal',vat:'8/10% VAT NOT INCLUDED',vatSentence:'Prices are exclusive of 8/10% VAT.',sending:'SENDING…',confirmShisha:'CONFIRM SHISHA ORDER',shishaSent:'SHISHA ORDER SENT',thankYou:'Thank You',shishaSentHint:'Your shisha order has been confirmed and sent to our team.',orderMore:'ORDER DRINKS & MORE',finish:'FINISH',addToOrder:'Add to your order',addToOrderHint:'Add drinks and other items. Your shisha order has already been sent to our team.',drinkCategories:'Drink categories',add:'ADD',reviewDrinkOrder:'REVIEW DRINK ORDER',additionalOrder:'ADDITIONAL ORDER',cat_Cocktails:'Cocktails',cat_FrozenSeries:'Frozen Series',cat_86:'-86°C Frozen Coffee',cat_Coffee:'Coffee',cat_Shooters:'Shooters',cat_Mocktails:'Mocktails & Soft Drinks',cat_Beer:'Beer · Soju · Wine',cat_Bottle:'Bottle Service'},
-zh:{back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
-ko:{back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
+en:{wantMore:'WANT SOMETHING ELSE?',orderMoreTitle:'Order More',orderMoreHint:'Order more Shisha or Drinks anytime. The menu is still open.',drinksBtn:'DRINKS',shishaBtn:'SHISHA',back:'BACK',table:'TABLE',qrTable:'QR TABLE',step:'STEP',welcome:'WELCOME TO HANSUM',chooseTable:'Choose your table',chooseTableHint:'Select your table to begin your Hansum experience.',continue:'CONTINUE',shishaSelection:'Shisha Selection',shishaHint:'Choose your leaf experience.',addons:'ADD-ONS',reviewOrder:'REVIEW ORDER',subtotal:'Subtotal',vat:'8/10% VAT NOT INCLUDED',vatSentence:'Prices are exclusive of 8/10% VAT.',sending:'SENDING…',confirmShisha:'CONFIRM SHISHA ORDER',shishaSent:'SHISHA ORDER SENT',thankYou:'Thank You',shishaSentHint:'Your shisha order has been confirmed and sent to our team.',orderMore:'ORDER DRINKS & MORE',finish:'FINISH',addToOrder:'Add to your order',addToOrderHint:'Add drinks and other items. Your shisha order has already been sent to our team.',drinkCategories:'Drink categories',add:'ADD',reviewDrinkOrder:'REVIEW DRINK ORDER',additionalOrder:'ADDITIONAL ORDER',cat_Cocktails:'Cocktails',cat_FrozenSeries:'Frozen Series',cat_86:'-86°C Frozen Coffee',cat_Coffee:'Coffee',cat_Shooters:'Shooters',cat_Mocktails:'Mocktails & Soft Drinks',cat_Beer:'Beer · Soju · Wine',cat_Bottle:'Bottle Service'},
+zh:{wantMore:'想再點些甚麼？',orderMoreTitle:'加點',orderMoreHint:'隨時可加點水煙或飲品，餐牌一直開放。',drinksBtn:'飲品',shishaBtn:'水煙',back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
+ko:{wantMore:'더 필요하신가요?',orderMoreTitle:'추가 주문',orderMoreHint:'시샤와 음료를 언제든지 추가로 주문하실 수 있습니다. 메뉴는 계속 열려 있습니다.',drinksBtn:'음료',shishaBtn:'시샤',back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
 },
 order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:''},
 selectedDirections:[],
@@ -484,7 +80,7 @@ addonOptions:[
 {icon:'☕',name:'Coffee Base',price:50000}
 ],
 otherAddonEnabled:false,
-basket:[],sending:false,sendMessage:'',shishaSent:false,drinkSent:false,sessionRef:'',shishaOrderRef:'',drinkOrderRef:'',
+basket:[],sending:false,sendMessage:'',shishaSent:false,drinkSent:false,additionalSeq:0,sessionRef:'',shishaOrderRef:'',drinkOrderRef:'',
 moreCategories:[
  {label:'SIGNATURE',name:'Cocktails',items:[
   {name:'Fly to the Moon',price:168000,note:'Floral · Lychee · Rose'},
@@ -545,6 +141,11 @@ if(this.order.flavorType==='Other')return this.order.other;
 if(this.order.flavorType==='Omakase')return 'HANSUM OMAKASE';
 return this.selectedDirections.join(' · ')
 },
+flavorSelectedLabel(){
+if(this.order.flavorType==='Other')return this.flavorSummary.trim();
+return this.flavorSummary.toLowerCase().replace(/\b[a-z]/g,c=>c.toUpperCase())
+},
+bowlLabel(){const b=this.order.bowl||'';if(b.indexOf('Egyptian')===0)return 'Egyptian Bowl';if(b.indexOf('Phunnel')===0)return 'Phunnel Bowl';return b},
 addonTotal(){return this.order.addons.reduce((s,a)=>s+a.price,0)},
 totalPrice(){return this.order.price+this.addonTotal},
 grandTotal(){return this.order.price+this.addonTotal+this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
@@ -616,7 +217,8 @@ toggleDirection(d){
 this.order.flavorType='Direction';this.order.specific='';
 const i=this.selectedDirections.indexOf(d);
 if(i>-1)this.selectedDirections.splice(i,1);
-else if(this.selectedDirections.length<3)this.selectedDirections.push(d)
+else if(this.selectedDirections.length<3)this.selectedDirections.push(d);
+else this.say('You can blend up to three. Tap one to swap it out.')
 },
 selectSpecific(f){this.order.flavorType='Specific';this.order.specific=f;this.order.other='';this.selectedDirections=[]},
 selectOther(){this.order.flavorType='Other';this.order.specific='';this.selectedDirections=[]},
@@ -645,7 +247,7 @@ generateRef(prefix){
   return `${prefix}-${this.sessionRef}`;
 },
 persistState(){
-  try{localStorage.setItem('hansumOrderV55',JSON.stringify({step:this.step,order:this.order,selectedDirections:this.selectedDirections,basket:this.basket,shishaSent:this.shishaSent,drinkSent:this.drinkSent,sessionRef:this.sessionRef,shishaOrderRef:this.shishaOrderRef,drinkOrderRef:this.drinkOrderRef,otherAddonEnabled:this.otherAddonEnabled}));}catch(e){}
+  try{localStorage.setItem('hansumOrderV55',JSON.stringify({step:this.step,order:this.order,selectedDirections:this.selectedDirections,basket:this.basket,shishaSent:this.shishaSent,drinkSent:this.drinkSent,additionalSeq:this.additionalSeq,sessionRef:this.sessionRef,shishaOrderRef:this.shishaOrderRef,drinkOrderRef:this.drinkOrderRef,otherAddonEnabled:this.otherAddonEnabled,sentLog:this.sentLog,tableConfirmed:this.tableConfirmed}));}catch(e){}
 },
 restoreState(){
   try{
@@ -654,9 +256,11 @@ restoreState(){
     if(saved.order)Object.assign(this.order,saved.order);
     if(Array.isArray(saved.selectedDirections))this.selectedDirections=saved.selectedDirections;
     if(Array.isArray(saved.basket))this.basket=saved.basket;
-    this.shishaSent=!!saved.shishaSent; this.drinkSent=!!saved.drinkSent;
+    this.shishaSent=!!saved.shishaSent; this.drinkSent=!!saved.drinkSent; this.additionalSeq=Number(saved.additionalSeq)||0;
     this.sessionRef=saved.sessionRef||''; this.shishaOrderRef=saved.shishaOrderRef||''; this.drinkOrderRef=saved.drinkOrderRef||'';
     this.otherAddonEnabled=!!saved.otherAddonEnabled;
+    if(Array.isArray(saved.sentLog))this.sentLog=saved.sentLog;
+    this.tableConfirmed=!!saved.tableConfirmed||!!(saved.order&&saved.order.table&&Number(saved.step)>0);
     if(this.shishaSent && !this.drinkSent && Number(saved.step)>=8)this.step=8;
     else if(this.drinkSent)this.step=11;
     else if(Number.isInteger(saved.step))this.step=Math.min(saved.step,10);
@@ -668,36 +272,69 @@ clearSavedOrder(){try{localStorage.removeItem('hansumOrderV55')}catch(e){}},
 formatPrice(n){return Number(n).toLocaleString('en-US')},
 back(){
 if(this.step<=0)return;
-if(this.tableLocked && this.step===1)return;
+if(this.step===1){this.step=0;return}
+if(this.step===9){this.step=this.drinksFrom||0;return}
+if(this.step===10){this.step=9;return}
 if(this.step===3&&(this.order.shishaType==='Fruit Head'||this.order.shishaType==='Refill Blonde'||this.order.shishaType==='Refill Dark')){this.step=1;return}
 if(this.step===6){this.step=4;return}
 this.step--
 },
 async confirmOrder(){
-  if(this.shishaSent)return;
+  if(this.sending)return;
+  /* First shisha of the session = the original order. Once it has been sent, every further shisha is a NEW additional order. */
+  const additional=this.shishaSent;
+  const logTitle=this.orderLogTitle();
   this.sending=true; this.sendMessage='';
-  this.shishaOrderRef=this.generateRef('SH');
-  const payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:{...this.order,flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  let payload;
+  if(additional){
+    this.drinkOrderRef=this.additionalRef();
+    payload={type:'additional-order',orderRef:this.drinkOrderRef,parentOrderRef:this.shishaOrderRef,additionalNo:this.nextAdditionalNo(),table:this.order.table,order:{...this.order,addons:this.order.addons.map(a=>({...a})),flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  }else{
+    this.shishaOrderRef=this.generateRef('SH');
+    payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:{...this.order,flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  }
   try{
     await this.sendToTelegram(payload);
-    this.shishaSent=true;this.sendMessage='';this.step=8;this.persistState();
+    if(additional){
+      this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Additional shisha',this.drinkOrderRef,logTitle,this.totalPrice);this.resetShishaSelection();
+      this.sendMessage='';this.step=11;this.persistState();
+    }else{
+      this.shishaSent=true;this.logSent('Shisha',this.shishaOrderRef,logTitle,this.totalPrice);this.sendMessage='';this.step=8;this.persistState();
+    }
   }catch(e){
     console.error(e);this.sendMessage='We could not send the order to our team. Please try again. Your selection is saved on this device.';
   }finally{this.sending=false}
 },
-startMoreOrder(){this.sendMessage='';this.step=9},
+/* A new additional order starts here: the previous additional order (if any) is finished, so its "sent" state is cleared. */
+startMoreOrder(){this.sendMessage='';this.drinkSent=false;this.drinkOrderRef='';this.drinksFrom=(this.step===8||this.step===11||this.step===0)?this.step:0;this.step=9},
+startMoreShisha(){
+  this.sendMessage='';this.drinkSent=false;this.drinkOrderRef='';
+  if(this.shishaSent)this.resetShishaSelection();
+  this.step=1;
+},
+resetShishaSelection(){
+  Object.assign(this.order,{shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:''});
+  this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.shishaMode='new';
+},
+nextAdditionalNo(){return (Number(this.additionalSeq)||0)+1},
+additionalRef(){
+  const base=this.shishaOrderRef||this.generateRef('AD');
+  return base+'-A'+String(this.nextAdditionalNo()).padStart(2,'0');
+},
 addMoreItem(item){
   const existing=this.basket.find(x=>x.name===item.name);
   if(existing)existing.qty++;else this.basket.push({...item,qty:1});
 },
 async sendFinalOrder(){
-  if(!this.basketCount || this.drinkSent)return;
+  if(this.sending || !this.basketCount || this.drinkSent)return;
   this.sending=true;this.sendMessage='';
-  this.drinkOrderRef=this.generateRef('AD');
-  const payload={type:'additional-order',orderRef:this.drinkOrderRef,parentOrderRef:this.shishaOrderRef,table:this.order.table,basket:this.basket,subtotal:this.basketTotal,total:this.basketTotal,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+  this.drinkOrderRef=this.additionalRef();
+  const logTitle=this.basket.map(i=>i.qty+'× '+i.name).join(', '),logTotal=this.basketTotal;
+  const payload={type:'additional-order',orderRef:this.drinkOrderRef,parentOrderRef:this.shishaOrderRef,additionalNo:this.nextAdditionalNo(),table:this.order.table,basket:this.basket.map(i=>({...i})),subtotal:this.basketTotal,total:this.basketTotal,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
   try{
     await this.sendToTelegram(payload);
-    this.drinkSent=true;this.sendMessage='';this.step=11;this.persistState();
+    /* The items are now sent: empty the cart so they can never be sent again with the next additional order. */
+    this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Drinks',this.drinkOrderRef,logTitle,logTotal);this.basket=[];this.sendMessage='';this.step=11;this.persistState();
   }catch(e){
     console.error(e);this.sendMessage='We could not send the additional order to our team. Please try again. Your items are saved on this device.';
   }finally{this.sending=false}
@@ -718,7 +355,7 @@ initializeQrTable(){
       if(saved.order && saved.order.table && String(saved.order.table).toUpperCase()!==qrTable){
         localStorage.removeItem('hansumOrderV55');
         this.order={table:qrTable,shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:''};
-        this.basket=[];this.shishaSent=false;this.drinkSent=false;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.step=0;
+        this.basket=[];this.shishaSent=false;this.drinkSent=false;this.additionalSeq=0;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.sentLog=[];this.tableConfirmed=false;this.step=0;
       } else {
         this.restoreState();
         this.order.table=qrTable;

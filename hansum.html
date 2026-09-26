@@ -48,6 +48,8 @@ const normalizeTable=(value)=>{
 const qrTable=normalizeTable(rawQrTable);
 const allowedTables=['01','02','03','04','05','06','07','08','09','10','11','12'];
 const hasQrTable=allowedTables.includes(qrTable);
+/* Drink photos are display-only: keep them out of the basket, localStorage and Telegram payload. */
+const basketItem=({img,imgPos,...rest})=>rest;
 createApp({
 template:HansumOrderUI.template,
 mixins:[HansumOrderUI.mixin],
@@ -83,42 +85,42 @@ otherAddonEnabled:false,
 basket:[],sending:false,sendMessage:'',shishaSent:false,drinkSent:false,additionalSeq:0,sessionRef:'',shishaOrderRef:'',drinkOrderRef:'',
 moreCategories:[
  {label:'SIGNATURE',name:'Cocktails',items:[
-  {name:'Fly to the Moon',price:168000,note:'Floral · Lychee · Rose'},
-  {name:'Diamond Blossom',price:168000,note:'Butterfly Pea Gin · Honey · Lime'},
-  {name:'Midnight Sakura',price:168000,note:'Cherry · Cranberry · Vodka'},
-  {name:'Tamarind Sunset',price:168000,note:'Dark Rum · Tamarind · Ginger'},
-  {name:'Coconut Passion',price:168000,note:'Coconut · Passion Fruit · Rum'},
-  {name:'Sea Breeze',price:168000,note:'Gin · Blue Curaçao · Citrus'}]},
+  {name:'Fly to the Moon',price:168000,img:'images/drinks/danang/signature/fly-to-the-moon.webp',note:'Floral · Lychee · Rose'},
+  {name:'Diamond Blossom',price:168000,img:'images/drinks/saigon/signature/diamond-blossom-uranus.webp',note:'Butterfly Pea Gin · Honey · Lime'},
+  {name:'Midnight Sakura',price:168000,img:'images/drinks/danang/signature/midnight-sakura.webp',note:'Cherry · Cranberry · Vodka'},
+  {name:'Tamarind Sunset',price:168000,img:'images/drinks/danang/signature/tamarind-sunset.webp',note:'Dark Rum · Tamarind · Ginger'},
+  {name:'Coconut Passion',price:168000,img:'images/drinks/danang/signature/coconut-passion.webp',note:'Coconut · Passion Fruit · Rum'},
+  {name:'Sea Breeze',price:168000,img:'images/drinks/danang/signature/sea-breeze.webp',note:'Gin · Blue Curaçao · Citrus'}]},
  {label:'CLASSIC',name:'Cocktails',items:[
-  {name:'Mojito',price:168000},{name:'Negroni',price:168000},{name:'Old Fashioned',price:168000},{name:'Whiskey Sour',price:168000},{name:'Espresso Martini',price:168000},{name:'Margarita',price:168000}]},
+  {name:'Mojito',price:168000,img:'images/drinks/saigon/classic-mojito.webp'},{name:'Negroni',price:168000,img:'images/drinks/saigon/classic-negroni.webp'},{name:'Old Fashioned',price:168000,img:'images/drinks/saigon/classic-old-fashioned.webp'},{name:'Whiskey Sour',price:168000,img:'images/drinks/saigon/classic-whiskey-sour.webp'},{name:'Espresso Martini',price:168000,img:'images/drinks/saigon/classic-espresso-martini.webp'},{name:'Margarita',price:168000,img:'images/drinks/saigon/classic-margarita.webp'}]},
  {label:'FROZEN',name:'Frozen Series',items:[
-  {name:'Frozen Coconut Coffee',price:168000},{name:'Frozen Mango Colada',price:168000},{name:'Frozen Lychee Yakult',price:158000},{name:'Frozen Yuzu Lemon',price:158000}]},
+  {name:'Frozen Coconut Coffee',price:168000,img:'images/drinks/danang/frozen-series/frozen-coconut-coffee.webp'},{name:'Frozen Mango Colada',price:168000,img:'images/drinks/danang/frozen-series/frozen-mango-colada.webp'},{name:'Frozen Lychee Yakult',price:158000,img:'images/drinks/danang/frozen-series/frozen-lychee-yakult.webp'},{name:'Frozen Yuzu Lemon',price:158000,img:'images/drinks/danang/frozen-series/frozen-yuzu-lemon.webp'}]},
  {label:'COFFEE',name:'-86°C Frozen Coffee',items:[
-  {name:'-86° Espresso',price:88000},{name:'-86° Dirty Coffee',price:128000},{name:'-86° Saigon Coffee',price:98000},{name:'-86° Spanish Latte',price:108000},{name:'-86° Coconut Coffee',price:108000}]},
+  {name:'-86° Espresso',price:88000,img:'images/drinks/danang/minus86-frozen-coffee/minus86-espresso.webp'},{name:'-86° Dirty Coffee',price:128000,img:'images/drinks/danang/minus86-frozen-coffee/minus86-dirty-coffee.webp'},{name:'-86° Saigon Coffee',price:98000,img:'images/drinks/danang/minus86-frozen-coffee/minus86-saigon-coffee.webp'},{name:'-86° Spanish Latte',price:108000,img:'images/drinks/danang/minus86-frozen-coffee/minus86-spanish-latte.webp'},{name:'-86° Coconut Coffee',price:108000,img:'images/drinks/danang/minus86-frozen-coffee/minus86-coconut-coffee.webp'}]},
  {label:'COFFEE',name:'Coffee',items:[
-  {name:'Espresso',price:75000},
-  {name:'Americano',price:85000},
-  {name:'Latte',price:95000},
-  {name:'Cappuccino',price:95000},
-  {name:'Flat White',price:75000},
-  {name:'Mocha',price:105000},
-  {name:'Caramel Macchiato',price:85000},
-  {name:'Iced Americano',price:75000},
-  {name:'Iced Latte',price:85000},
-  {name:'Iced Cappuccino',price:85000},
-  {name:'Iced Flat White',price:85000},
-  {name:'Iced Mocha',price:95000},
-  {name:'Iced Caramel Macchiato',price:95000},
-  {name:'Vietnamese Black Coffee — Hot',price:55000},
-  {name:'Vietnamese Black Coffee — Iced',price:65000},
-  {name:'Vietnamese Milk Coffee — Hot',price:65000},
-  {name:'Vietnamese Milk Coffee — Iced',price:75000}]},
+  {name:'Espresso',price:75000,img:'images/drinks/saigon/coffee-espresso.webp'},
+  {name:'Americano',price:85000,img:'images/drinks/saigon/coffee-americano.webp'},
+  {name:'Latte',price:95000,img:'images/drinks/saigon/coffee-latte.webp'},
+  {name:'Cappuccino',price:95000,img:'images/drinks/danang/coffee/cappuccino.webp'},
+  {name:'Flat White',price:75000,img:'images/drinks/danang/coffee/flat-white.webp'},
+  {name:'Mocha',price:105000,img:'images/drinks/danang/coffee/mocha.webp'},
+  {name:'Caramel Macchiato',price:85000,img:'images/drinks/danang/coffee/caramel-macchiato.webp'},
+  {name:'Iced Americano',price:75000,img:'images/drinks/danang/coffee/iced-americano.webp'},
+  {name:'Iced Latte',price:85000,img:'images/drinks/danang/coffee/iced-latte.webp'},
+  {name:'Iced Cappuccino',price:85000,img:'images/drinks/danang/coffee/iced-cappuccino.webp'},
+  {name:'Iced Flat White',price:85000,img:'images/drinks/danang/coffee/iced-flat-white.webp'},
+  {name:'Iced Mocha',price:95000,img:'images/drinks/danang/coffee/iced-mocha.webp'},
+  {name:'Iced Caramel Macchiato',price:95000,img:'images/drinks/danang/coffee/iced-caramel-macchiato.webp'},
+  {name:'Vietnamese Black Coffee — Hot',price:55000,img:'images/drinks/danang/coffee/vietnamese-black-hot.webp'},
+  {name:'Vietnamese Black Coffee — Iced',price:65000,img:'images/drinks/danang/coffee/vietnamese-black-iced.webp'},
+  {name:'Vietnamese Milk Coffee — Hot',price:65000,img:'images/drinks/danang/coffee/vietnamese-milk-hot.webp'},
+  {name:'Vietnamese Milk Coffee — Iced',price:75000,img:'images/drinks/saigon/coffee-vietnamese-iced-milk.webp'}]},
  {label:'SHOTS',name:'Shooters',items:[
-  {name:'Green Tea Shot',price:118000},{name:'Baby Guinness',price:98000},{name:'B52',price:108000},{name:'Duck Fart',price:118000},{name:'Jelly Fish',price:128000}]},
+  {name:'Green Tea Shot',price:118000,img:'images/drinks/danang/shooters/green-tea-shot.webp'},{name:'Baby Guinness',price:98000,img:'images/drinks/saigon/shot-baby-guinness.webp'},{name:'B52',price:108000,img:'images/drinks/saigon/shot-b52.webp'},{name:'Duck Fart',price:118000,img:'images/drinks/saigon/shot-duck-fart.webp'},{name:'Jelly Fish',price:128000,img:'images/drinks/saigon/shot-jelly-fish.webp'}]},
  {label:'REFRESH',name:'Mocktails & Soft Drinks',items:[
-  {name:'Berry Cooler',price:108000},{name:'Tropical Sunset',price:108000},{name:'Lychee Yakult',price:108000},{name:'Blue Lagoon',price:108000},{name:'Fresh Coconut',price:98000},{name:'Coke / Sprite / Soda',price:50000},{name:'Orange / Pineapple / Apple Juice',price:65000},{name:'LaVie Still / Sparkling',price:65000}]},
+  {name:'Berry Cooler',price:108000,img:'images/drinks/danang/mocktails/berry-cooler.webp'},{name:'Tropical Sunset',price:108000,img:'images/drinks/danang/mocktails/tropical-sunset.webp'},{name:'Lychee Yakult',price:108000,img:'images/drinks/danang/mocktails/lychee-yakult.webp'},{name:'Blue Lagoon',price:108000,img:'images/drinks/danang/mocktails/blue-lagoon.webp'},{name:'Fresh Coconut',price:98000,img:'images/drinks/danang/mocktails/fresh-coconut.webp'},{name:'Coca-Cola',price:50000,img:'images/drinks/saigon/soft-coca-cola-original.webp'},{name:'Sprite',price:50000,img:'images/drinks/saigon/soft-sprite.webp'},{name:'Soda Water',price:50000,img:'images/drinks/saigon/soft-soda-water.webp'},{name:'Orange Juice',price:65000,img:'images/drinks/saigon/juice-orange.webp'},{name:'Pineapple Juice',price:65000,img:'images/drinks/saigon/juice-pineapple.webp'},{name:'Apple Juice',price:65000,img:'images/drinks/saigon/juice-apple.webp'},{name:'La Vie Still Water',price:65000,img:'images/drinks/saigon/water-lavie-still.webp'},{name:'La Vie Sparkling Water',price:65000,img:'images/drinks/saigon/water-lavie-sparkling.webp'}]},
  {label:'NIGHT',name:'Beer · Soju · Wine',items:[
-  {name:'Tiger Draft',price:85000},{name:'1664 Blanc',price:85000},{name:'Carlsberg',price:85000},{name:'Chamisul Fresh',price:148000},{name:'Chamisul Original',price:148000},{name:'House Red / White',price:150000}]},
+  {name:'Tiger Draft',price:85000,img:'images/drinks/saigon/beer-tiger-draft.webp'},{name:'Kronenbourg 1664 Blanc',price:85000,img:'images/drinks/saigon/beer-kronenbourg-1664-blanc.webp'},{name:'Carlsberg',price:85000,img:'images/drinks/saigon/beer-carlsberg.webp'},{name:'Chamisul Fresh Soju',price:148000,img:'images/drinks/danang/night/chamisul-fresh-soju.webp',imgPos:'50% 20%'},{name:'Chamisul Original Soju',price:148000,img:'images/drinks/saigon/soju-chamisul-original.webp'},{name:'House Red',price:150000,img:'images/drinks/danang/night/house-red.webp'},{name:'House White',price:150000,img:'images/drinks/danang/night/house-white.webp'}]},
  {label:'PREMIUM',name:'Bottle Service',items:[
   {name:'Belvedere',price:3280000},{name:'Grey Goose',price:3280000},{name:'Ciroc',price:3080000},{name:'Absolut Blue',price:2280000},{name:'Johnnie Walker Blue Label',price:6880000},{name:'Chivas Regal 18 Years',price:3880000},{name:'Moët & Chandon Imperial',price:3980000},{name:'Veuve Clicquot Brut',price:4280000},]},
 ]
@@ -233,7 +235,7 @@ toggleOtherAddon(){this.otherAddonEnabled=!this.otherAddonEnabled;if(!this.other
 itemQty(name){const item=this.basket.find(x=>x.name===name);return item?item.qty:0},
 changeQty(item,delta){
   const i=this.basket.findIndex(x=>x.name===item.name);
-  if(i<0 && delta>0){this.basket.push({...item,qty:1});return}
+  if(i<0 && delta>0){this.basket.push({...basketItem(item),qty:1});return}
   if(i<0)return;
   this.basket[i].qty+=delta;
   if(this.basket[i].qty<=0)this.basket.splice(i,1);
@@ -323,7 +325,7 @@ additionalRef(){
 },
 addMoreItem(item){
   const existing=this.basket.find(x=>x.name===item.name);
-  if(existing)existing.qty++;else this.basket.push({...item,qty:1});
+  if(existing)existing.qty++;else this.basket.push({...basketItem(item),qty:1});
 },
 async sendFinalOrder(){
   if(this.sending || !this.basketCount || this.drinkSent)return;

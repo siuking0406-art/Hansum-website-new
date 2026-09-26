@@ -672,6 +672,7 @@
           <div class="dhead__in">
             <h1 class="h1 h1--l" tabindex="-1" data-focus>Drinks</h1>
             <p class="sub sub--tight">{{shishaSent?'Your shisha order has already been sent. ':''}}{{tx('vat','Prices in VND. 8/10% VAT not included.')}}</p>
+            <p class="fine dhead__ref" v-if="moreCategories.some(c=>c.items.some(i=>i.img))">Picture just for reference</p>
           </div>
         </header>
         <div class="cats">
@@ -685,7 +686,8 @@
             </h2>
             <div class="cat__body" :id="'cat-'+ci" role="region" :aria-labelledby="'cathead-'+ci" :inert="openCat!==ci">
               <div class="cat__in">
-                <div class="item" v-for="it in cat.items" :key="it.name" :class="{has:itemQty(it.name)}">
+                <div class="item" v-for="it in cat.items" :key="it.name" :class="{has:itemQty(it.name),'item--img':it.img}">
+                  <img v-if="it.img" class="item__img" :src="it.img" :style="it.imgPos?{objectPosition:it.imgPos}:null" alt="" width="84" height="84" loading="lazy" decoding="async">
                   <div class="item__txt">
                     <span class="item__name">{{it.name}}</span>
                     <span class="item__note" v-if="it.note">{{it.note}}</span>

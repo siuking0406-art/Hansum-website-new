@@ -426,6 +426,7 @@ img { display: block; max-width: 100%; }
 .dhead__photo { position: absolute; inset: 0; background-size: 122% auto; background-repeat: no-repeat; filter: brightness(.8) saturate(1.1); animation: settle 1.4s var(--ease) backwards; }
 .dhead__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 7, 13, .6) 0, rgba(5, 7, 13, .1) 30%, rgba(5, 7, 13, .92) 100%); }
 .dhead__in { position: relative; padding: 0 var(--pad) 18px; }
+.dhead__ref { margin-top: 4px; font-style: italic; }
 .cats { border-top: 1px solid var(--line-gold); }
 .cat { border-bottom: 1px solid var(--line); }
 .cat__h { font: inherit; }

@@ -672,6 +672,7 @@
           <div class="dhead__in">
             <h1 class="h1 h1--l" tabindex="-1" data-focus>Drinks</h1>
             <p class="sub sub--tight">{{shishaSent?'Your shisha order has already been sent. ':''}}{{tx('vat','Prices in VND. 8/10% VAT not included.')}}</p>
+            <p class="fine dhead__ref" v-if="moreCategories.some(c=>c.items.some(i=>i.img))">Picture just for reference</p>
           </div>
         </header>
         <div class="cats">

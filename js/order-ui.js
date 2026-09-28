@@ -11,13 +11,13 @@
    only reads them.
 
    Page contract (provided by each page's Vue options):
-     data:    L, order, selectedDirections, flavorDirections, specificFlavors, addonOptions,
+     data:    L, order, selectedDirections, flavorDirections, specificFlavors, signatureFlavors, addonOptions,
               otherAddonEnabled, basket, moreCategories, shishaOptions, refillOptions, tables,
               sending, sendMessage, shishaSent, drinkSent, shishaOrderRef, drinkOrderRef, locale, languages
      computed: tableLocked, prefMax, bowlLabel, flavorSummary, canContinueFlavor, showSpecific,
                totalPrice, addonTotal, basketTotal, basketCount
      methods: selectShisha, selectRefill, selectBowl, toggleDirection, selectSpecific, selectOther,
-              selectOmakase, nextFromFlavor, nextFromPreferences, toggleAddon, toggleOtherAddon,
+              selectOmakase, selectSignature, nextFromFlavor, nextFromPreferences, toggleAddon, toggleOtherAddon,
               isAddonSelected, itemQty, changeQty, addMoreItem, confirmOrder, sendFinalOrder,
               startMoreOrder, startMoreShisha, finish, back, formatPrice, persistState, t, setLocale,
               categoryTitle, clampPreferences */
@@ -32,7 +32,8 @@
     stepLeaf: 'Leaf',
     headingLeaf: 'Choose your leaf',
     hintLeaf: 'Tap a leaf to continue',
-    hintBowl: 'Tap a bowl to continue'
+    hintBowl: 'Tap a bowl to continue',
+    hintSignature: 'Tap a blend to continue'
   };
 
   /* Customer-facing presentation of each production shishaType. Prices are NOT here. */
@@ -40,6 +41,7 @@
     'Classic': { label: 'Blonde Leaf', tier: 'Classic', img: 'images/blonde-leaf.jpeg', pos: '50% 58%', notes: 'Al Fakher · Adalya · Jam', ceiling: 5 },
     'Premium': { label: 'Dark Leaf', tier: 'Premium', img: 'images/dark-leaf.jpeg', pos: '50% 56%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 },
     'Fruit Head': { label: 'Fruit Head', tier: 'Signature', img: 'images/fruit-head.jpeg', pos: '50% 20%', notes: 'Dragon Fruit · Pineapple · Apple etc.', ceiling: 10, fruit: true },
+    'Signature': { label: 'Hansum Signature', tier: 'Signature', img: 'images/signature/black-temple.webp', pos: '72% 50%', notes: '8 exclusive house blends', ceiling: 10, signature: true },
     'Refill Blonde': { label: 'Blonde Leaf refill', tier: 'Refill', img: 'images/blonde-leaf.jpeg', pos: '50% 58%', notes: 'Al Fakher · Adalya · Jam', ceiling: 10 },
     'Refill Dark': { label: 'Dark Leaf refill', tier: 'Refill', img: 'images/dark-leaf.jpeg', pos: '50% 56%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 }
   };
@@ -75,6 +77,9 @@
         sheet: '', openCat: 0, toast: '', copied: '', dir: 'fwd',
         shishaMode: 'new', drinksFrom: 0, capHit: '', activeDial: '',
         tableConfirmed: false, sentLog: [],
+        /* Signature cards 3-8 get their src only after card 1 has loaded, so the first visible photo is not
+           sharing bandwidth with the whole list (Chrome's lazy-load distance covers all 8 cards). */
+        sigFirstDone: false,
         BOWLS: BOWLS, OMAKASE_IMG: OMAKASE_IMG, OTHER_IMG: OTHER_IMG, COPY: COPY
       };
     },
@@ -91,6 +96,9 @@
       hasBowl: function () { var t = this.order.shishaType; return t === 'Classic' || t === 'Premium'; },
       hasMint: function () { var t = this.order.shishaType; return t === 'Classic' || t === 'Premium'; },
       bowlObj: function () { var v = this.order.bowl; return BOWLS.find(function (b) { return b.value === v; }) || null; },
+      /* the chosen Hansum Signature blend (display only; order keeps id + name) */
+      sigObj: function () { var id = this.order.signatureFlavorId; return id ? (this.signatureFlavors || []).find(function (f) { return f.id === id; }) || null : null; },
+      isSignature: function () { return this.order.shishaType === 'Signature'; },
       bowlArticle: function () { return /^[aeiou]/i.test(this.bowlLabel) ? 'an' : 'a'; },
 
       directionItems: function () {
@@ -115,6 +123,7 @@
         if (t === 'Specific') { var d = FLAVOR_META[this.order.specific]; return d ? d.label : ''; }
         if (t === 'Omakase') return 'Omakase';
         if (t === 'Other') return 'Custom flavor';
+        if (t === 'Signature') return this.order.signatureFlavorName;
         return '';
       },
       /* What the customer has composed so far, shown above the flavor list. */
@@ -142,7 +151,7 @@
         if (this.step === 10) return 80;
         return 0;
       },
-      stepName: function () { return STEP_NAMES[this.step] || ''; },
+      stepName: function () { return this.step === 3 && this.isSignature ? 'Signature' : STEP_NAMES[this.step] || ''; },
       stepCount: function () { return this.journeyIndex >= 0 ? (this.journeyIndex + 1) + ' of ' + this.journey.length : ''; },
       clearTop: function () { return this.step === 0 || this.step === 8 || this.step === 11; },
       inShishaFlow: function () { return this.journeyIndex >= 0; },
@@ -163,6 +172,7 @@
             if (!this.bowlObj) return Object.assign(base, { hint: COPY.hintBowl });
             return Object.assign(base, { label: 'Continue with ' + this.bowlObj.short, disabled: false, act: 'fromBowl' });
           }
+          if (s === 3 && this.isSignature && !this.sigObj) return Object.assign(base, { hint: COPY.hintSignature });
           if (s === 3) return Object.assign(base, { label: this.tx('continue', 'Continue'), disabled: !this.canContinueFlavor, act: 'nextFromFlavor' });
           if (s === 4) return Object.assign(base, { label: this.tx('continue', 'Continue'), disabled: false, act: 'nextFromPreferences' });
           if (s === 6) return Object.assign(base, { label: o.addons.length || o.otherAddon.trim() ? this.tx('reviewOrder', 'Review order') : 'Skip and review', disabled: false, act: 'toReview' });
@@ -214,7 +224,7 @@
         var o = this.order, rows = [];
         rows.push({ k: 'Shisha', v: this.shishaDisplay, step: 1 });
         if (this.hasBowl && o.bowl) rows.push({ k: 'Bowl', v: this.bowlLabel, step: 2 });
-        rows.push({ k: 'Flavor', v: this.flavorLabel || 'Not chosen yet', step: 3 });
+        rows.push({ k: this.isSignature ? 'Signature' : 'Flavor', v: this.flavorLabel || 'Not chosen yet', step: 3 });
         rows.push({ k: 'Feel', v: this.feelShort, step: 4 });
         var ex = o.addons.map(function (a) { return a.name; }).concat(o.otherAddon.trim() ? [o.otherAddon.trim()] : []);
         rows.push({ k: 'Extras', v: ex.length ? ex.join(', ') : 'None', step: 6 });
@@ -277,11 +287,11 @@
       },
       /* switching New session / Refill with a choice already made: return to "nothing chosen" (same fields production resets) */
       clearShisha: function () {
-        Object.assign(this.order, { shishaType: '', shishaName: '', price: 0, bowl: '', flavorType: '', specific: '', other: '' });
+        Object.assign(this.order, { shishaType: '', shishaName: '', price: 0, bowl: '', flavorType: '', specific: '', other: '', signatureFlavorId: '', signatureFlavorName: '' });
         this.selectedDirections = [];
         this.clampPreferences();
       },
-      clearFlavor: function () { this.order.flavorType = ''; this.order.specific = ''; this.order.other = ''; this.selectedDirections = []; },
+      clearFlavor: function () { this.order.flavorType = ''; this.order.specific = ''; this.order.other = ''; this.order.signatureFlavorId = ''; this.order.signatureFlavorName = ''; this.selectedDirections = []; },
       pickOther: function () {
         var self = this;
         this.selectOther();
@@ -435,7 +445,7 @@
           <p class="sub sub--tight" v-if="shishaMode==='refill'">Continue your session with fresh tobacco.</p>
         </div>
         <div class="bands bands--tap" role="group" aria-label="Shisha options">
-          <button v-for="s in bandList" :key="s.type" class="band" :class="{on:order.shishaType===s.type}" :aria-pressed="order.shishaType===s.type" @click="tapShisha(s)">
+          <button v-for="s in bandList" :key="s.type" class="band" :class="{on:order.shishaType===s.type,'band--sig':s.signature}" :aria-pressed="order.shishaType===s.type" @click="tapShisha(s)">
             <span class="band__img" :style="{backgroundImage:'url('+s.img+')',backgroundPosition:s.pos}"></span>
             <span class="band__shade"></span>
             <span class="band__in">
@@ -452,6 +462,7 @@
                 </span>
                 <span class="band__path" v-if="s.fruit">Served in fresh fruit. No bowl to choose.</span>
                 <span class="band__path" v-else-if="s.tier==='Refill'">Straight to flavor.</span>
+                <span class="band__path" v-else-if="s.signature">House-crafted flavor combinations.</span>
               </span>
             </span>
             <span class="band__tick" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
@@ -474,6 +485,26 @@
               <span class="bowl__line">{{b.line}}</span>
             </span>
             <span class="bowl__tick" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 3s. Hansum Signature: one of the 8 house blends (no bowl, no blending) -->
+      <section v-else-if="step===3 && isSignature" class="scr scr--sig" :key="'signature'">
+        <div class="ph">
+          <h1 class="h1" tabindex="-1" data-focus>Choose your signature</h1>
+          <p class="sub">Eight house blends, one price. Tap to continue.</p>
+        </div>
+        <div class="sigs" :class="{pick:sigObj}" role="radiogroup" aria-label="Hansum Signature blends">
+          <button v-for="(f,i) in signatureFlavors" :key="f.id" class="sig" :class="{on:order.signatureFlavorId===f.id}" role="radio" :aria-checked="order.signatureFlavorId===f.id" @click="selectSignature(f)">
+            <img class="sig__img" :src="i<2||sigFirstDone?f.image:null" alt="" :loading="i<2?'eager':'lazy'" :fetchpriority="i<2?'high':'low'" decoding="async" @load="i===0&&(sigFirstDone=true)" @error="i===0&&(sigFirstDone=true)">
+            <span class="sig__shade"></span>
+            <span class="sig__cap">
+              <span class="sig__name">{{f.name}}</span>
+              <span class="sig__rule" aria-hidden="true"></span>
+              <span class="sig__desc">{{f.description}}</span>
+            </span>
+            <span class="sig__tick" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
           </button>
         </div>
       </section>
@@ -592,7 +623,7 @@
       <!-- 7. Review: my Hansum order -->
       <section v-else-if="step===7" class="scr scr--review" :key="'review'">
         <article class="card" aria-labelledby="rv-title">
-          <div class="card__photo" :style="{backgroundImage:'url('+(currentMeta?currentMeta.img:'')+')',backgroundPosition:currentMeta?currentMeta.pos:'50% 50%'}">
+          <div class="card__photo" :style="{backgroundImage:'url('+(sigObj?sigObj.image:currentMeta?currentMeta.img:'')+')',backgroundPosition:sigObj?'72% 50%':currentMeta?currentMeta.pos:'50% 50%'}">
             <span class="card__stamp">Table {{order.table}}</span>
           </div>
           <div class="card__body">
@@ -601,9 +632,9 @@
 
             <dl class="lines">
               <div class="line">
-                <dt>Flavor</dt>
+                <dt>{{isSignature?'Signature':'Flavor'}}</dt>
                 <dd>{{flavorLabel}}</dd>
-                <button class="edit" @click="go(3)" aria-label="Edit flavor"><svg class="ic"><use href="#i-edit"/></svg></button>
+                <button class="edit" @click="go(3)" :aria-label="isSignature?'Edit signature':'Edit flavor'"><svg class="ic"><use href="#i-edit"/></svg></button>
               </div>
               <div class="line line--feel">
                 <dt>Feel</dt>

@@ -1,5 +1,20 @@
 # Changelog — Hansum Order App
 
+## Hansum Signature (2026-09-28)
+
+New leaf option **Hansum Signature**, fourth on "Choose your leaf" (after Blonde Leaf, Dark Leaf, Fruit Head). One fixed price per branch: Saigon 780,000 VND, Da Nang 680,000 VND, defined in each page's `shishaOptions`.
+Flow: Leaf → Choose your signature (8 house blends, full-width 16:9 photo cards) → Feel (Intensity + Cool, max 10) → Extras → Review. No bowl step.
+New shared files: `js/signature-flavors.js` (the 8 blends: id, name, description, image), `images/signature/*.webp`.
+Images: 8 WebP, 1672×941 (from hansum-signature-16x9-webp.zip). Cards 1–2 load immediately; cards 3–8 get their src after card 1 has loaded, then lazy-load (Chrome's lazy distance otherwise fetches all 8 at once).
+
+### Payload (additive, backward compatible)
+- `order.shishaType: 'Signature'`, `order.shishaName: 'Hansum Signature'`, `order.price` = branch price.
+- New `order.signatureFlavorId` / `order.signatureFlavorName` (empty strings for every other leaf). `order.flavorType` carries the blend name, so the current Telegram worker already prints "Flavor: <blend>" with no worker change.
+- New top-level `branch` (`L.name`: "Saigon" / "Da Nang") on shisha and additional-shisha payloads.
+
+### Unchanged
+Blonde Leaf, Dark Leaf, Fruit Head and Refill flows: payloads identical to the previous version apart from the added `branch` and the two empty signature fields (verified on both pages).
+
 ## V2.1 port — new customer interface (2026-09-22)
 
 Pages: `hansum.html` (Da Nang, v5.9.0 → **v6.0.0**), `hansum-saigon.html` (Saigon, v5.8.0 → **v5.9.0**).

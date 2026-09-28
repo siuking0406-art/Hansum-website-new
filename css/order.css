@@ -560,3 +560,28 @@ img { display: block; max-width: 100%; }
 
 /* Port addition: language selector in the table sheet (production feature) reuses the .seg component with three columns. */
 .seg--3 { grid-template-columns: repeat(3, 1fr); margin: 0 0 14px; }
+
+/* Hansum Signature: 8 house blends as full-width 16:9 photo cards (same language as the leaf bands and bowls).
+   The photos keep dark negative space on the left, so the caption sits lower-left and the bowl stays clear on the right. */
+.scr--sig { padding-bottom: 20px; }
+.sigs { display: flex; flex-direction: column; border-top: 1px solid var(--line-gold); }
+.sig { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-bottom: 1px solid var(--line-gold); isolation: isolate; background: var(--night); }
+.sig__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; z-index: -2; filter: brightness(.9) saturate(1); transition: filter .4s, transform .9s var(--ease); }
+.sig__shade { position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(90deg, rgba(5, 7, 13, .62) 0%, rgba(5, 7, 13, .22) 46%, rgba(5, 7, 13, 0) 70%),
+  linear-gradient(180deg, rgba(5, 7, 13, 0) 40%, rgba(5, 7, 13, .78) 100%); }
+.sig__cap { position: absolute; left: var(--pad); bottom: 14px; max-width: 64%; display: flex; flex-direction: column; align-items: flex-start; text-shadow: 0 1px 14px rgba(5, 7, 13, .8); }
+.sig__name { font-family: var(--serif); font-style: italic; font-size: clamp(24px, 7vw, 32px); line-height: 1.05; color: var(--tx); }
+.sig__rule { width: 34px; height: 1px; margin: 8px 0 7px; background: linear-gradient(90deg, var(--gold), rgba(216, 181, 106, 0)); }
+.sig__desc { font-size: 13.5px; line-height: 1.35; color: var(--gold-hi); letter-spacing: .01em; }
+.sig__tick { position: absolute; right: 16px; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--gold); color: #1a1408; display: grid; place-items: center; transform: scale(0); transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+.sig__tick .ic { width: 16px; height: 16px; stroke-width: 2.4; }
+.sig.on .sig__tick { transform: scale(1); }
+.sig.on::after { content: ""; position: absolute; inset: 0; border: 2px solid var(--gold); pointer-events: none; animation: fade .25s both; }
+.sig.on .sig__img { transform: scale(1.03); filter: brightness(1); }
+.sigs.pick .sig:not(.on) .sig__img { filter: brightness(.55); }
+.sig:active .sig__img { filter: brightness(.72); }
+@media (max-width: 360px) { .sig__cap { max-width: 72%; bottom: 10px; } .sig__desc { font-size: 12.5px; } }
+/* The Hansum Signature leaf card wraps its title to two lines; give it room so the "Signature" category line is never clipped. */
+.bands--tap .band--sig { min-height: 236px; }
+@media (max-width: 360px) { .bands--tap .band--sig { min-height: 262px; } }

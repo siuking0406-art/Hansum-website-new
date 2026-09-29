@@ -10,6 +10,7 @@
 <script src="js/vue.global.js"></script>
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_TELEGRAM_ENDPOINT='https://hansum-telegram.siuking0406.workers.dev';</script>
 <link rel="stylesheet" href="css/order.css">
+<script src="js/signature-flavors.js"></script>
 <script src="js/order-ui.js"></script>
 </head>
 <body>
@@ -56,8 +57,9 @@ mixins:[HansumOrderUI.mixin],
 data(){return{
 /* V2.1 interface: this page's location facts, shown by the shared UI (js/order-ui.js). Values are the ones the previous template hard-coded. */
 L:{name:"Da Nang",city:"Da Nang",handle:"hansum.danang",chooser:false,wifi:{ssid:"HANSUM",pass:"20260606"},ig:"https://www.instagram.com/hansum.danang/",map:"https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng",qrIg:"images/qr-danang-ig.png",qrMap:"images/qr-danang-map.png",drinkPhoto:"images/welcome-drinks.jpg",drinkPos:"50% 55%"},
+/* Hansum Signature: one fixed price for this branch, shared by all 8 blends (list in js/signature-flavors.js). */
 /* Shisha options as previously passed to selectShisha()/selectRefill() by the template (single source for display and selection). */
-shishaOptions:[{type:'Classic',name:'Blonde Leaf',price:580000,fruitHead:false},{type:'Premium',name:'Dark Leaf',price:680000,fruitHead:false},{type:'Fruit Head',name:'Fresh Fruit',price:980000,fruitHead:true}],
+shishaOptions:[{type:'Classic',name:'Blonde Leaf',price:580000,fruitHead:false},{type:'Premium',name:'Dark Leaf',price:680000,fruitHead:false},{type:'Fruit Head',name:'Fresh Fruit',price:980000,fruitHead:true},{type:'Signature',name:'Hansum Signature',price:680000,fruitHead:false}],
 refillOptions:[{type:'Refill Blonde',name:'Refill — Blonde Leaf',price:480000,leaf:'Blonde Leaf'},{type:'Refill Dark',name:'Refill — Dark Leaf',price:580000,leaf:'Dark Leaf'}],
 stepNames:{1:'SHISHA',2:'BOWL',3:'FLAVOR',4:'STRENGTH',5:'COOLING',6:'ADD-ONS',7:'REVIEW'},
 step:hasQrTable?0:0,
@@ -68,9 +70,10 @@ en:{wantMore:'WANT SOMETHING ELSE?',orderMoreTitle:'Order More',orderMoreHint:'O
 zh:{wantMore:'想再點些甚麼？',orderMoreTitle:'加點',orderMoreHint:'隨時可加點水煙或飲品，餐牌一直開放。',drinksBtn:'飲品',shishaBtn:'水煙',back:'返回',table:'枱號',qrTable:'QR 枱號',step:'步驟',welcome:'歡迎來到 HANSUM',chooseTable:'選擇您的枱號',chooseTableHint:'選擇枱號後，即可開始您的 Hansum 體驗。',continue:'繼續',shishaSelection:'水煙選擇',shishaHint:'選擇您喜歡的煙葉體驗。',addons:'附加選項',reviewOrder:'查看訂單',subtotal:'小計',vat:'未含 8/10% VAT',vatSentence:'價格未包括 8/10% VAT。',sending:'正在傳送…',confirmShisha:'確認水煙訂單',shishaSent:'水煙訂單已傳送',thankYou:'謝謝您',shishaSentHint:'您的水煙訂單已確認並傳送給我們的團隊。',orderMore:'加點飲品及其他項目',finish:'完成',addToOrder:'加入您的訂單',addToOrderHint:'加入飲品及其他項目；水煙訂單已經傳送給團隊。',drinkCategories:'飲品分類',add:'加入',reviewDrinkOrder:'查看飲品訂單',additionalOrder:'加點訂單',cat_Cocktails:'雞尾酒',cat_FrozenSeries:'冰沙系列',cat_86:'-86°C 冰凍咖啡',cat_Coffee:'咖啡',cat_Shooters:'Shot 酒',cat_Mocktails:'無酒精雞尾酒及軟飲',cat_Beer:'啤酒 · 燒酒 · 葡萄酒',cat_Bottle:'整瓶酒服務'},
 ko:{wantMore:'더 필요하신가요?',orderMoreTitle:'추가 주문',orderMoreHint:'시샤와 음료를 언제든지 추가로 주문하실 수 있습니다. 메뉴는 계속 열려 있습니다.',drinksBtn:'음료',shishaBtn:'시샤',back:'뒤로',table:'테이블',qrTable:'QR 테이블',step:'단계',welcome:'HANSUM에 오신 것을 환영합니다',chooseTable:'테이블을 선택하세요',chooseTableHint:'테이블을 선택하고 Hansum 경험을 시작하세요.',continue:'계속',shishaSelection:'시샤 선택',shishaHint:'원하시는 리프 경험을 선택하세요.',addons:'추가 옵션',reviewOrder:'주문 확인',subtotal:'소계',vat:'8/10% VAT 별도',vatSentence:'가격에는 8/10% VAT가 포함되어 있지 않습니다.',sending:'전송 중…',confirmShisha:'시샤 주문 확정',shishaSent:'시샤 주문 전송 완료',thankYou:'감사합니다',shishaSentHint:'시샤 주문이 확인되어 팀에 전송되었습니다.',orderMore:'음료 및 추가 메뉴 주문',finish:'완료',addToOrder:'주문에 추가',addToOrderHint:'음료와 추가 메뉴를 선택하세요. 시샤 주문은 이미 팀에 전송되었습니다.',drinkCategories:'음료 카테고리',add:'추가',reviewDrinkOrder:'음료 주문 확인',additionalOrder:'추가 주문',cat_Cocktails:'칵테일',cat_FrozenSeries:'프로즌 시리즈',cat_86:'-86°C 프로즌 커피',cat_Coffee:'커피',cat_Shooters:'슈터',cat_Mocktails:'목테일 & 소프트 드링크',cat_Beer:'맥주 · 소주 · 와인',cat_Bottle:'보틀 서비스'}
 },
-order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:''},
+order:{table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''},
 selectedDirections:[],
 flavorDirections:[],
+signatureFlavors:window.HANSUM_SIGNATURE_FLAVORS||[],
 specificFlavors:[
 {name:'DOUBLE APPLE',image:'images/flavor/double-apple.jpg'},{name:'MINT',image:'images/flavor/mint.jpg'},{name:'LOVE 66',image:'images/flavor/love66.jpg'},{name:'LADYKILLER',image:'images/flavor/ladykiller.jpg'}
 ],
@@ -118,9 +121,9 @@ moreCategories:[
  {label:'SHOTS',name:'Shooters',items:[
   {name:'Green Tea Shot',price:118000,img:'images/drinks/danang/shooters/green-tea-shot.webp'},{name:'Baby Guinness',price:98000,img:'images/drinks/saigon/shot-baby-guinness.webp'},{name:'B52',price:108000,img:'images/drinks/saigon/shot-b52.webp'},{name:'Duck Fart',price:118000,img:'images/drinks/saigon/shot-duck-fart.webp'},{name:'Jelly Fish',price:128000,img:'images/drinks/saigon/shot-jelly-fish.webp'}]},
  {label:'REFRESH',name:'Mocktails & Soft Drinks',items:[
-  {name:'Berry Cooler',price:108000,img:'images/drinks/danang/mocktails/berry-cooler.webp'},{name:'Tropical Sunset',price:108000,img:'images/drinks/danang/mocktails/tropical-sunset.webp'},{name:'Lychee Yakult',price:108000,img:'images/drinks/danang/mocktails/lychee-yakult.webp'},{name:'Blue Lagoon',price:108000,img:'images/drinks/danang/mocktails/blue-lagoon.webp'},{name:'Fresh Coconut',price:98000,img:'images/drinks/danang/mocktails/fresh-coconut.webp'},{name:'Coca-Cola',price:50000,img:'images/drinks/saigon/soft-coca-cola-original.webp'},{name:'Sprite',price:50000,img:'images/drinks/saigon/soft-sprite.webp'},{name:'Soda Water',price:50000,img:'images/drinks/saigon/soft-soda-water.webp'},{name:'Orange Juice',price:65000,img:'images/drinks/saigon/juice-orange.webp'},{name:'Pineapple Juice',price:65000,img:'images/drinks/saigon/juice-pineapple.webp'},{name:'Apple Juice',price:65000,img:'images/drinks/saigon/juice-apple.webp'},{name:'La Vie Still Water',price:65000,img:'images/drinks/saigon/water-lavie-still.webp'},{name:'La Vie Sparkling Water',price:65000,img:'images/drinks/saigon/water-lavie-sparkling.webp'}]},
+  {name:'Berry Cooler',price:108000,img:'images/drinks/danang/mocktails/berry-cooler.webp'},{name:'Tropical Sunset',price:108000,img:'images/drinks/danang/mocktails/tropical-sunset.webp'},{name:'Lychee Yakult',price:108000,img:'images/drinks/danang/mocktails/lychee-yakult.webp'},{name:'Blue Lagoon',price:108000,img:'images/drinks/danang/mocktails/blue-lagoon.webp'},{name:'Fresh Coconut',price:98000,img:'images/drinks/danang/mocktails/fresh-coconut.webp'},{name:'Red Bull',price:50000,img:'images/drinks/saigon/soft-red-bull.webp'},{name:'Coca-Cola Original',price:50000,img:'images/drinks/saigon/soft-coca-cola-original.webp'},{name:'Coca-Cola Zero',price:50000,img:'images/drinks/saigon/soft-coca-cola-zero.webp'},{name:'Sprite',price:50000,img:'images/drinks/saigon/soft-sprite.webp'},{name:'Tonic Water',price:50000,img:'images/drinks/saigon/soft-tonic-water.webp'},{name:'Soda Water',price:50000,img:'images/drinks/saigon/soft-soda-water.webp'},{name:'Ginger Ale',price:50000,img:'images/drinks/saigon/soft-ginger-ale.webp'},{name:'Orange Juice',price:65000,img:'images/drinks/saigon/juice-orange.webp'},{name:'Pineapple Juice',price:65000,img:'images/drinks/saigon/juice-pineapple.webp'},{name:'Apple Juice',price:65000,img:'images/drinks/saigon/juice-apple.webp'},{name:'La Vie Still Water',price:65000,img:'images/drinks/saigon/water-lavie-still.webp'},{name:'La Vie Sparkling Water',price:65000,img:'images/drinks/saigon/water-lavie-sparkling.webp'}]},
  {label:'NIGHT',name:'Beer · Soju · Wine',items:[
-  {name:'Tiger Draft',price:85000,img:'images/drinks/saigon/beer-tiger-draft.webp'},{name:'Kronenbourg 1664 Blanc',price:85000,img:'images/drinks/saigon/beer-kronenbourg-1664-blanc.webp'},{name:'Carlsberg',price:85000,img:'images/drinks/saigon/beer-carlsberg.webp'},{name:'Chamisul Fresh Soju',price:148000,img:'images/drinks/danang/night/chamisul-fresh-soju.webp',imgPos:'50% 20%'},{name:'Chamisul Original Soju',price:148000,img:'images/drinks/saigon/soju-chamisul-original.webp'},{name:'House Red',price:150000,img:'images/drinks/danang/night/house-red.webp'},{name:'House White',price:150000,img:'images/drinks/danang/night/house-white.webp'}]},
+  {name:'Tiger Draft',price:85000,img:'images/drinks/saigon/beer-tiger-draft.webp'},{name:'Kronenbourg 1664 Blanc',price:85000,img:'images/drinks/saigon/beer-kronenbourg-1664-blanc.webp'},{name:'Carlsberg',price:85000,img:'images/drinks/saigon/beer-carlsberg.webp'},{name:'Chamisul Original Soju',price:148000,img:'images/drinks/saigon/soju-chamisul-original.webp'},{name:'House Red',price:150000,img:'images/drinks/danang/night/house-red.webp'},{name:'House White',price:150000,img:'images/drinks/danang/night/house-white.webp'}]},
  {label:'PREMIUM',name:'Bottle Service',items:[
   {name:'Belvedere',price:3280000},{name:'Grey Goose',price:3280000},{name:'Ciroc',price:3080000},{name:'Absolut Blue',price:2280000},{name:'Johnnie Walker Blue Label',price:6880000},{name:'Chivas Regal 18 Years',price:3880000},{name:'Moët & Chandon Imperial',price:3980000},{name:'Veuve Clicquot Brut',price:4280000},]},
 ]
@@ -133,11 +136,13 @@ watch:{
 computed:{
 showSpecific(){return this.order.shishaType==='Classic'||this.order.shishaType==='Refill Blonde'},
 canContinueFlavor(){
+if(this.order.flavorType==='Signature')return !!this.order.signatureFlavorId;
 if(this.order.flavorType==='Other')return this.order.other.trim().length>0;
 if(this.order.flavorType==='Omakase'||this.order.flavorType==='Specific')return true;
 return this.selectedDirections.length>0
 },
 flavorSummary(){
+if(this.order.flavorType==='Signature')return this.order.signatureFlavorName;
 if(this.order.flavorType==='Specific')return this.order.specific;
 if(this.order.flavorType==='Other')return this.order.other;
 if(this.order.flavorType==='Omakase')return 'HANSUM OMAKASE';
@@ -201,14 +206,14 @@ this.flavorDirections=dark?[
 {name:'CREAMY',description:'Smooth and dessert-like.',image:'images/flavor/creamy.jpg'}
 ]},
 selectShisha(type,name,price,fruitHead){
-Object.assign(this.order,{shishaType:type,shishaName:name,price,bowl:'',flavorType:'',specific:'',other:''});
+Object.assign(this.order,{shishaType:type,shishaName:name,price,bowl:'',flavorType:'',specific:'',other:'',signatureFlavorId:'',signatureFlavorName:''});
 this.selectedDirections=[];
 this.setDirections(type!=='Classic');
 this.clampPreferences();
-this.step=fruitHead?3:2
+this.step=(fruitHead||type==='Signature')?3:2
 },
 selectRefill(name,price,leaf){
-Object.assign(this.order,{shishaType:leaf==='Blonde Leaf'?'Refill Blonde':'Refill Dark',shishaName:name,price,bowl:'',flavorType:'',specific:'',other:''});
+Object.assign(this.order,{shishaType:leaf==='Blonde Leaf'?'Refill Blonde':'Refill Dark',shishaName:name,price,bowl:'',flavorType:'',specific:'',other:'',signatureFlavorId:'',signatureFlavorName:''});
 this.selectedDirections=[];
 this.setDirections(leaf!=='Blonde Leaf');
 this.clampPreferences();
@@ -225,6 +230,7 @@ else this.say('You can blend up to three. Tap one to swap it out.')
 selectSpecific(f){this.order.flavorType='Specific';this.order.specific=f;this.order.other='';this.selectedDirections=[]},
 selectOther(){this.order.flavorType='Other';this.order.specific='';this.selectedDirections=[]},
 selectOmakase(){this.order.flavorType='Omakase';this.order.specific='';this.order.other='';this.selectedDirections=[]},
+selectSignature(f){Object.assign(this.order,{flavorType:'Signature',signatureFlavorId:f.id,signatureFlavorName:f.name,specific:'',other:''});this.selectedDirections=[];this.step=4},
 nextFromFlavor(){if(this.canContinueFlavor)this.step=4},
 toggleAddon(a){
 const i=this.order.addons.findIndex(x=>x.name===a.name);
@@ -277,7 +283,7 @@ if(this.step<=0)return;
 if(this.step===1){this.step=0;return}
 if(this.step===9){this.step=this.drinksFrom||0;return}
 if(this.step===10){this.step=9;return}
-if(this.step===3&&(this.order.shishaType==='Fruit Head'||this.order.shishaType==='Refill Blonde'||this.order.shishaType==='Refill Dark')){this.step=1;return}
+if(this.step===3&&(this.order.shishaType==='Fruit Head'||this.order.shishaType==='Refill Blonde'||this.order.shishaType==='Refill Dark'||this.order.shishaType==='Signature')){this.step=1;return}
 if(this.step===6){this.step=4;return}
 this.step--
 },
@@ -290,10 +296,10 @@ async confirmOrder(){
   let payload;
   if(additional){
     this.drinkOrderRef=this.additionalRef();
-    payload={type:'additional-order',orderRef:this.drinkOrderRef,parentOrderRef:this.shishaOrderRef,additionalNo:this.nextAdditionalNo(),table:this.order.table,order:{...this.order,addons:this.order.addons.map(a=>({...a})),flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+    payload={type:'additional-order',orderRef:this.drinkOrderRef,parentOrderRef:this.shishaOrderRef,additionalNo:this.nextAdditionalNo(),table:this.order.table,branch:this.L.name,order:{...this.order,addons:this.order.addons.map(a=>({...a})),flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
   }else{
     this.shishaOrderRef=this.generateRef('SH');
-    payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,order:{...this.order,flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
+    payload={type:'shisha',orderRef:this.shishaOrderRef,table:this.order.table,branch:this.L.name,order:{...this.order,flavorType:this.flavorSummary},subtotal:this.totalPrice,total:this.totalPrice,vatNote:'Prices are exclusive of 8/10% VAT.',createdAt:new Date().toISOString()};
   }
   try{
     await this.sendToTelegram(payload);
@@ -315,7 +321,7 @@ startMoreShisha(){
   this.step=1;
 },
 resetShishaSelection(){
-  Object.assign(this.order,{shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:''});
+  Object.assign(this.order,{shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''});
   this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.shishaMode='new';
 },
 nextAdditionalNo(){return (Number(this.additionalSeq)||0)+1},
@@ -356,7 +362,7 @@ initializeQrTable(){
       const saved=JSON.parse(raw);
       if(saved.order && saved.order.table && String(saved.order.table).toUpperCase()!==qrTable){
         localStorage.removeItem('hansumOrderV55');
-        this.order={table:qrTable,shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:''};
+        this.order={table:qrTable,shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''};
         this.basket=[];this.shishaSent=false;this.drinkSent=false;this.additionalSeq=0;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.sentLog=[];this.tableConfirmed=false;this.step=0;
       } else {
         this.restoreState();

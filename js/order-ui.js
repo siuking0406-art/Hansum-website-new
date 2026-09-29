@@ -38,12 +38,12 @@
 
   /* Customer-facing presentation of each production shishaType. Prices are NOT here. */
   var CATALOG = {
-    'Classic': { label: 'Blonde Leaf', tier: 'Classic', img: 'images/blonde-leaf.jpeg', pos: '50% 58%', notes: 'Al Fakher · Adalya · Jam', ceiling: 5 },
-    'Premium': { label: 'Dark Leaf', tier: 'Premium', img: 'images/dark-leaf.jpeg', pos: '50% 56%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 },
-    'Fruit Head': { label: 'Fruit Head', tier: 'Signature', img: 'images/fruit-head.jpeg', pos: '50% 20%', notes: 'Dragon Fruit · Pineapple · Apple etc.', ceiling: 10, fruit: true },
+    'Classic': { label: 'Blonde Leaf', tier: 'Classic', img: 'images/select-leaf/blonde-leaf.png', pos: '72% 50%', notes: 'Al Fakher · Adalya · Jam', ceiling: 5 },
+    'Premium': { label: 'Dark Leaf', tier: 'Premium', img: 'images/select-leaf/dark-leaf.png', pos: '72% 50%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 },
+    'Fruit Head': { label: 'Fruit Head', tier: 'Signature', img: 'images/select-leaf/fruit-head.png', pos: '74% 45%', notes: 'Dragon Fruit · Pineapple · Apple etc.', ceiling: 10, fruit: true },
     'Signature': { label: 'Hansum Signature', tier: 'Signature', img: 'images/signature/black-temple.webp', pos: '72% 50%', notes: '8 exclusive house blends', ceiling: 10, signature: true },
-    'Refill Blonde': { label: 'Blonde Leaf refill', tier: 'Refill', img: 'images/blonde-leaf.jpeg', pos: '50% 58%', notes: 'Al Fakher · Adalya · Jam', ceiling: 10 },
-    'Refill Dark': { label: 'Dark Leaf refill', tier: 'Refill', img: 'images/dark-leaf.jpeg', pos: '50% 56%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 }
+    'Refill Blonde': { label: 'Blonde Leaf refill', tier: 'Refill', img: 'images/select-leaf/blonde-leaf.png', pos: '72% 50%', notes: 'Al Fakher · Adalya · Jam', ceiling: 10 },
+    'Refill Dark': { label: 'Dark Leaf refill', tier: 'Refill', img: 'images/select-leaf/dark-leaf.png', pos: '72% 50%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 }
   };
 
   /* Bowls: `value` is the unchanged internal production value passed to selectBowl(). Never shown to customers. */
@@ -342,12 +342,18 @@
       },
       switchToDark: function () { this.go(1); },
 
+      /* Opening a category scrolls its header to just under the top bar. The target is where the header will
+         END UP: a category open above it collapses at the same time, so its body height is subtracted; the
+         top bar height is measured (it includes the iPhone safe-area inset). */
       toggleCat: function (i) {
-        var self = this;
+        var self = this, prev = this.openCat, shift = 0;
+        if (prev > -1 && prev < i) { var pb = document.getElementById('cat-' + prev); if (pb) shift = pb.offsetHeight; }
         this.openCat = this.openCat === i ? -1 : i;
         if (this.openCat === i) this.$nextTick(function () {
-          var el = document.getElementById('cathead-' + i);
-          if (el && self.$refs.stage) self.$refs.stage.scrollTo({ top: el.offsetTop - 64, behavior: reduced() ? 'auto' : 'smooth' });
+          var el = document.getElementById('cathead-' + i), st = self.$refs.stage, bar = document.querySelector('.top');
+          if (!el || !st) return;
+          var y = el.getBoundingClientRect().top - st.getBoundingClientRect().top + st.scrollTop - shift - (bar ? bar.offsetHeight : 64) - 8;
+          st.scrollTo({ top: Math.max(0, y), behavior: reduced() ? 'auto' : 'smooth' });
         });
       },
 

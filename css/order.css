@@ -603,3 +603,6 @@ img { display: block; max-width: 100%; }
   linear-gradient(180deg, rgba(5, 7, 13, .05) 30%, rgba(5, 7, 13, .86) 100%); }
 @media (max-width: 360px) { .sig__cap { max-width: 80%; } .sig__desc { font-size: 13px; } }
 @media (min-width: 700px) { .sig__name { font-size: 40px; } }
+/* Tasting line under the ingredients: third in the hierarchy (name > ingredients > tasting), muted gold-grey. */
+.sig__note { margin-top: 3px; font-size: 12px; line-height: 1.25; font-style: italic; letter-spacing: .015em; color: rgba(222, 208, 178, .72); }
+@media (max-width: 360px) { .sig__note { font-size: 11.5px; margin-top: 2px; } }

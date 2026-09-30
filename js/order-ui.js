@@ -509,6 +509,7 @@
               <span class="sig__name">{{f.name}}</span>
               <span class="sig__rule" aria-hidden="true"></span>
               <span class="sig__desc">{{f.description}}</span>
+              <span v-if="f.tasting" class="sig__note">{{f.tasting}}</span>
             </span>
             <span class="sig__tick" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
           </button>

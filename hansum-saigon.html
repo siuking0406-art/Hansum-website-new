@@ -10,7 +10,9 @@
 <script src="js/vue.global.js"></script>
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_SAIGON_TELEGRAM_ENDPOINT = 'https://hansum-telegram-saigon.siuking0406.workers.dev';</script>
 <link rel="stylesheet" href="css/order.css">
+<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. NOT live until this branch is merged to main. */ window.HANSUM_ORDER_API = 'https://pos.hansumshisha.com'; window.HANSUM_STORE_ID = 'hcmc';</script>
 <script src="js/signature-flavors.js"></script>
+<script src="js/order-api.js"></script>
 <script src="js/order-ui.js"></script>
 </head>
 <body>
@@ -48,7 +50,8 @@ const normalizeTable=(value)=>{
 };
 const qrTable=normalizeTable(rawQrTable);
 const allowedTables=['01','02','03','04','05','06','07','08','09','10','11','12'];
-const hasQrTable=allowedTables.includes(qrTable);
+/* Tables 01-12 are built in; with the Hansum POS on, any table set up in POS Settings is accepted (checked by the POS). */
+const hasQrTable=allowedTables.includes(qrTable)||!!(window.HansumOrderAPI&&HansumOrderAPI.acceptsTable(qrTable));
 /* Drink photos are display-only: keep them out of the basket, localStorage and Telegram payload. */
 const basketItem=({img,imgPos,...rest})=>rest;
 createApp({
@@ -167,7 +170,7 @@ totalPrice(){return this.order.price+this.addonTotal},
 grandTotal(){return this.order.price+this.addonTotal+this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
 basketTotal(){return this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
 basketCount(){return this.basket.reduce((s,i)=>s+i.qty,0)},
-  prefMax(){return this.order.shishaType==='Classic'?5:10},
+  prefMax(){const m=window.HansumOrderAPI&&HansumOrderAPI.prefMax(this.order.shishaType);return m!=null?m:(this.order.shishaType==='Classic'?5:10)},
   displayStep(){return this.step>=6?this.step-1:this.step},
   tableLocked(){return hasQrTable},
   vatLabel(){return this.t('vat')},
@@ -213,7 +216,8 @@ this.flavorDirections=dark?[
 {icon:'🍓',name:'FRUITY',description:'Sweet and easy to enjoy.'},
 {icon:'🍋',name:'CITRUS',description:'Bright and zesty.'},
 {icon:'🍦',name:'CREAMY',description:'Smooth and dessert-like.'}
-]},
+]
+if(window.HansumOrderAPI)this.flavorDirections=HansumOrderAPI.directions(dark,this.flavorDirections)},
 selectShisha(type,name,price,fruitHead){
 Object.assign(this.order,{shishaType:type,shishaName:name,price,bowl:'',flavorType:'',specific:'',other:'',signatureFlavorId:'',signatureFlavorName:''});
 this.selectedDirections=[];
@@ -319,7 +323,7 @@ async confirmOrder(){
       this.shishaSent=true;this.logSent('Shisha',this.shishaOrderRef,logTitle,this.totalPrice);this.sendMessage='';this.step=8;this.persistState();
     }
   }catch(e){
-    console.error(e);this.sendMessage='We could not send the order to our team. Please try again. Your selection is saved on this device.';
+    console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the order to our team. Please try again. Your selection is saved on this device.';
   }finally{this.sending=false}
 },
 /* A new additional order starts here: the previous additional order (if any) is finished, so its "sent" state is cleared. */
@@ -332,6 +336,7 @@ startMoreShisha(){
 resetShishaSelection(){
   Object.assign(this.order,{shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''});
   this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.shishaMode='new';
+  if(window.HansumOrderAPI)HansumOrderAPI.applyDefaults(this.order);
 },
 nextAdditionalNo(){return (Number(this.additionalSeq)||0)+1},
 additionalRef(){
@@ -353,10 +358,12 @@ async sendFinalOrder(){
     /* The items are now sent: empty the cart so they can never be sent again with the next additional order. */
     this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Drinks',this.drinkOrderRef,logTitle,logTotal);this.basket=[];this.sendMessage='';this.step=11;this.persistState();
   }catch(e){
-    console.error(e);this.sendMessage='We could not send the additional order to our team. Please try again. Your items are saved on this device.';
+    console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the additional order to our team. Please try again. Your items are saved on this device.';
   }finally{this.sending=false}
 },
 async sendToTelegram(payload){
+  /* Hansum POS first (saved in the POS database, which then notifies Telegram); old Telegram route if it fails. */
+  if(window.HansumOrderAPI&&HansumOrderAPI.enabled()){if(await HansumOrderAPI.send(payload))return;payload=HansumOrderAPI.fallbackPayload(payload);}
   const TELEGRAM_ENDPOINT=window.HANSUM_SAIGON_TELEGRAM_ENDPOINT||'';
   if(!TELEGRAM_ENDPOINT) throw new Error('Telegram endpoint is not configured');
   const res=await fetch(TELEGRAM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -387,6 +394,7 @@ mounted(){
   try{const savedLocale=localStorage.getItem('hansumLocale');if(['en','zh','ko'].includes(savedLocale))this.locale=savedLocale}catch(e){}
   if(hasQrTable)this.initializeQrTable();
   else this.restoreState();
+  if(window.HansumOrderAPI)HansumOrderAPI.attach(this);
 }
 }).mount('#app');
 </script>

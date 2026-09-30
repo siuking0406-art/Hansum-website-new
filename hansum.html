@@ -10,7 +10,7 @@
 <script src="js/vue.global.js"></script>
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_TELEGRAM_ENDPOINT='https://hansum-telegram.siuking0406.workers.dev';</script>
 <link rel="stylesheet" href="css/order.css">
-<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. NOT live until this branch is merged to main. */ window.HANSUM_ORDER_API = ''; /* Da Nang: set to 'https://pos.hansumshisha.com' once the Da Nang Telegram chat is set in the POS */ window.HANSUM_STORE_ID = 'danang';</script>
+<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. NOT live until this branch is merged to main. */ window.HANSUM_ORDER_API = 'https://pos.hansumshisha.com'; window.HANSUM_STORE_ID = 'danang';</script>
 <script src="js/signature-flavors.js"></script>
 <script src="js/order-api.js"></script>
 <script src="js/order-ui.js"></script>

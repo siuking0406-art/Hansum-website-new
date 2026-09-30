@@ -323,7 +323,7 @@ async confirmOrder(){
       this.shishaSent=true;this.logSent('Shisha',this.shishaOrderRef,logTitle,this.totalPrice);this.sendMessage='';this.step=8;this.persistState();
     }
   }catch(e){
-    console.error(e);this.sendMessage='We could not send the order to our team. Please try again. Your selection is saved on this device.';
+    console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the order to our team. Please try again. Your selection is saved on this device.';
   }finally{this.sending=false}
 },
 /* A new additional order starts here: the previous additional order (if any) is finished, so its "sent" state is cleared. */
@@ -358,7 +358,7 @@ async sendFinalOrder(){
     /* The items are now sent: empty the cart so they can never be sent again with the next additional order. */
     this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Drinks',this.drinkOrderRef,logTitle,logTotal);this.basket=[];this.sendMessage='';this.step=11;this.persistState();
   }catch(e){
-    console.error(e);this.sendMessage='We could not send the additional order to our team. Please try again. Your items are saved on this device.';
+    console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the additional order to our team. Please try again. Your items are saved on this device.';
   }finally{this.sending=false}
 },
 async sendToTelegram(payload){

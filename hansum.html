@@ -10,7 +10,7 @@
 <script src="js/vue.global.js"></script>
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_TELEGRAM_ENDPOINT='https://hansum-telegram.siuking0406.workers.dev';</script>
 <link rel="stylesheet" href="css/order.css">
-<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. NOT live until this branch is merged to main. */ window.HANSUM_ORDER_API = 'https://pos.hansumshisha.com'; window.HANSUM_STORE_ID = 'danang';</script>
+<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. NOT live until this branch is merged to main. */ window.HANSUM_ORDER_API = ''; /* Da Nang: set to 'https://pos.hansumshisha.com' once the Da Nang Telegram chat is set in the POS */ window.HANSUM_STORE_ID = 'danang';</script>
 <script src="js/signature-flavors.js"></script>
 <script src="js/order-api.js"></script>
 <script src="js/order-ui.js"></script>
@@ -314,7 +314,7 @@ async confirmOrder(){
       this.shishaSent=true;this.logSent('Shisha',this.shishaOrderRef,logTitle,this.totalPrice);this.sendMessage='';this.step=8;this.persistState();
     }
   }catch(e){
-    console.error(e);this.sendMessage='We could not send the order to our team. Please try again. Your selection is saved on this device.';
+    console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the order to our team. Please try again. Your selection is saved on this device.';
   }finally{this.sending=false}
 },
 /* A new additional order starts here: the previous additional order (if any) is finished, so its "sent" state is cleared. */
@@ -349,7 +349,7 @@ async sendFinalOrder(){
     /* The items are now sent: empty the cart so they can never be sent again with the next additional order. */
     this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Drinks',this.drinkOrderRef,logTitle,logTotal);this.basket=[];this.sendMessage='';this.step=11;this.persistState();
   }catch(e){
-    console.error(e);this.sendMessage='We could not send the additional order to our team. Please try again. Your items are saved on this device.';
+    console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the additional order to our team. Please try again. Your items are saved on this device.';
   }finally{this.sending=false}
 },
 async sendToTelegram(payload){

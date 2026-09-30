@@ -80,7 +80,8 @@
     // the POS database (so a table added in POS Settings works without editing this website).
     acceptsTable: function (code) { return api.enabled() && /^[0-9A-Z]{1,6}$/.test(String(code || '')); },
 
-    // Returns true if the POS saved the order; false = caller should use the old Telegram route.
+    // Returns true if the POS saved the order; false = POS unreachable/busy → caller uses the old Telegram route.
+    // Throws (with err.userMessage) if the POS refused the order as invalid — then nothing is sent anywhere.
     // Network errors / 5xx are retried with the SAME order ref (the POS ignores repeats), so a slow but
     // successful save is never followed by a Telegram fallback (no double messages).
     send: function (payload) {
@@ -91,6 +92,16 @@
           .then(function (r) {
             if (r.ok) return true;
             if (r.status >= 500 && n < 3) return wait(1000 * n).then(function () { return attempt(n + 1); });
+            if (r.status >= 400 && r.status < 500 && r.status !== 429) {
+              // The POS checked the order and refused it (item no longer available, unknown table, …).
+              // Do NOT send it another way: tell the guest instead.
+              return r.json().catch(function () { return {}; }).then(function (j) {
+                var err = new Error('POS refused the order: ' + r.status + ' ' + (j.code || '') + ' ' + (j.detail || j.error || ''));
+                err.userMessage = api.message(j.code);
+                console.warn('[Hansum] ' + err.message);
+                throw err;
+              });
+            }
             return r.text().then(function (t) { api.lastFailure = 'POS answered ' + r.status + ' ' + t.slice(0, 160); return false; });
           }, function (e) {
             if (n < 3) return wait(1000 * n).then(function () { return attempt(n + 1); });
@@ -98,6 +109,13 @@
           });
       };
       return attempt(1);
+    },
+
+    // What the guest reads when the POS refuses an order.
+    message: function (code) {
+      if (code === 'ITEM_UNAVAILABLE' || code === 'OPTION_UNAVAILABLE') return 'This item is no longer available. Please refresh the menu.';
+      if (code === 'INVALID_TABLE') return 'This table could not be found. Please ask our staff for help.';
+      return 'We could not send the order. Please ask our staff for help.';
     },
 
     // The copy sent by the old Telegram route when the POS could not take the order.

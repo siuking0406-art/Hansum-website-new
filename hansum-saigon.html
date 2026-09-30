@@ -10,7 +10,7 @@
 <script src="js/vue.global.js"></script>
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_SAIGON_TELEGRAM_ENDPOINT = 'https://hansum-telegram-saigon.siuking0406.workers.dev';</script>
 <link rel="stylesheet" href="css/order.css">
-<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. */ window.HANSUM_ORDER_API = ''; window.HANSUM_STORE_ID = 'hcmc';</script>
+<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. NOT live until this branch is merged to main. */ window.HANSUM_ORDER_API = 'https://pos.hansumshisha.com'; window.HANSUM_STORE_ID = 'hcmc';</script>
 <script src="js/signature-flavors.js"></script>
 <script src="js/order-api.js"></script>
 <script src="js/order-ui.js"></script>
@@ -50,7 +50,8 @@ const normalizeTable=(value)=>{
 };
 const qrTable=normalizeTable(rawQrTable);
 const allowedTables=['01','02','03','04','05','06','07','08','09','10','11','12'];
-const hasQrTable=allowedTables.includes(qrTable);
+/* Tables 01-12 are built in; with the Hansum POS on, any table set up in POS Settings is accepted (checked by the POS). */
+const hasQrTable=allowedTables.includes(qrTable)||!!(window.HansumOrderAPI&&HansumOrderAPI.acceptsTable(qrTable));
 /* Drink photos are display-only: keep them out of the basket, localStorage and Telegram payload. */
 const basketItem=({img,imgPos,...rest})=>rest;
 createApp({
@@ -362,7 +363,7 @@ async sendFinalOrder(){
 },
 async sendToTelegram(payload){
   /* Hansum POS first (saved in the POS database, which then notifies Telegram); old Telegram route if it fails. */
-  if(window.HansumOrderAPI&&HansumOrderAPI.enabled()&&await HansumOrderAPI.send(payload))return;
+  if(window.HansumOrderAPI&&HansumOrderAPI.enabled()){if(await HansumOrderAPI.send(payload))return;payload=HansumOrderAPI.fallbackPayload(payload);}
   const TELEGRAM_ENDPOINT=window.HANSUM_SAIGON_TELEGRAM_ENDPOINT||'';
   if(!TELEGRAM_ENDPOINT) throw new Error('Telegram endpoint is not configured');
   const res=await fetch(TELEGRAM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});

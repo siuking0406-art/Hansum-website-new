@@ -61,6 +61,7 @@
           vm.moreCategories = m.moreCategories.map(function (c) {
             return { label: c.label, name: c.name, items: c.items.map(function (i) { return i.img ? Object.assign({}, i, { img: img(i.img) }) : i; }) };
           });
+          if (m.tables && m.tables.length) vm.tables = m.tables;   // table chooser = tables from POS Settings
           if (m.bowls && m.bowls.length) {
             vm.BOWLS = m.bowls.map(function (b) {
               return { value: b.value, label: b.label, short: b.label.split(' ')[0], cls: /^egypt/i.test(b.label) ? 'egy' : /^phun/i.test(b.label) ? 'phu' : '', line: b.line };
@@ -75,18 +76,49 @@
         .catch(function (e) { console.warn('[Hansum] POS menu not loaded, using the menu in this page:', e.message); });
     },
 
+    // QR table codes: with the POS on, any simple table code is accepted here and checked against
+    // the POS database (so a table added in POS Settings works without editing this website).
+    acceptsTable: function (code) { return api.enabled() && /^[0-9A-Z]{1,6}$/.test(String(code || '')); },
+
     // Returns true if the POS saved the order; false = caller should use the old Telegram route.
+    // Network errors / 5xx are retried with the SAME order ref (the POS ignores repeats), so a slow but
+    // successful save is never followed by a Telegram fallback (no double messages).
     send: function (payload) {
       if (!api.enabled()) return Promise.resolve(false);
-      return fetch(base + '/api/orders/qr', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ store_id: storeId, payload: payload }), signal: withTimeout(10000)
-      }).then(function (r) {
-        if (r.ok) return true;
-        return r.text().then(function (t) { console.warn('[Hansum] POS refused the order, using Telegram fallback:', r.status, t); return false; });
-      }).catch(function (e) { console.warn('[Hansum] POS not reachable, using Telegram fallback:', e.message); return false; });
+      var body = JSON.stringify({ store_id: storeId, payload: payload });
+      var attempt = function (n) {
+        return fetch(base + '/api/orders/qr', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, signal: withTimeout(8000) })
+          .then(function (r) {
+            if (r.ok) return true;
+            if (r.status >= 500 && n < 3) return wait(1000 * n).then(function () { return attempt(n + 1); });
+            return r.text().then(function (t) { api.lastFailure = 'POS answered ' + r.status + ' ' + t.slice(0, 160); return false; });
+          }, function (e) {
+            if (n < 3) return wait(1000 * n).then(function () { return attempt(n + 1); });
+            api.lastFailure = 'POS not reachable: ' + (e && e.message); return false;
+          });
+      };
+      return attempt(1);
+    },
+
+    // The copy sent by the old Telegram route when the POS could not take the order.
+    // "NOT IN POS" appears next to the table in Telegram so staff know to enter it in the POS by hand.
+    fallbackPayload: function (payload) {
+      var reason = api.lastFailure || 'unknown';
+      console.warn('[Hansum] Order ' + payload.orderRef + ' sent by Telegram fallback, NOT saved in the POS. ' + reason);
+      try {
+        var log = JSON.parse(localStorage.getItem('hansumPosFallbacks') || '[]');
+        log.push({ ref: payload.orderRef, at: new Date().toISOString(), reason: reason });
+        localStorage.setItem('hansumPosFallbacks', JSON.stringify(log.slice(-20)));
+      } catch (e) { /* storage not available */ }
+      var copy = JSON.parse(JSON.stringify(payload));
+      copy.table = String(payload.table || (payload.order && payload.order.table) || '-') + ' ⚠ NOT IN POS';
+      if (copy.order) copy.order.table = copy.table;
+      copy.posFallback = { reason: reason };
+      return copy;
     }
   };
+
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
   window.HansumOrderAPI = api;
 })();

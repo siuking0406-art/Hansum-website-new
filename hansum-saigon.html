@@ -10,7 +10,9 @@
 <script src="js/vue.global.js"></script>
 <script>/* Paste your deployed Cloudflare Worker URL here to enable Telegram orders. */ window.HANSUM_SAIGON_TELEGRAM_ENDPOINT = 'https://hansum-telegram-saigon.siuking0406.workers.dev';</script>
 <link rel="stylesheet" href="css/order.css">
+<script>/* Hansum POS connection (js/order-api.js). '' = off: menu from this page, orders straight to Telegram. */ window.HANSUM_ORDER_API = ''; window.HANSUM_STORE_ID = 'hcmc';</script>
 <script src="js/signature-flavors.js"></script>
+<script src="js/order-api.js"></script>
 <script src="js/order-ui.js"></script>
 </head>
 <body>
@@ -167,7 +169,7 @@ totalPrice(){return this.order.price+this.addonTotal},
 grandTotal(){return this.order.price+this.addonTotal+this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
 basketTotal(){return this.basket.reduce((s,i)=>s+i.price*i.qty,0)},
 basketCount(){return this.basket.reduce((s,i)=>s+i.qty,0)},
-  prefMax(){return this.order.shishaType==='Classic'?5:10},
+  prefMax(){const m=window.HansumOrderAPI&&HansumOrderAPI.prefMax(this.order.shishaType);return m!=null?m:(this.order.shishaType==='Classic'?5:10)},
   displayStep(){return this.step>=6?this.step-1:this.step},
   tableLocked(){return hasQrTable},
   vatLabel(){return this.t('vat')},
@@ -213,7 +215,8 @@ this.flavorDirections=dark?[
 {icon:'🍓',name:'FRUITY',description:'Sweet and easy to enjoy.'},
 {icon:'🍋',name:'CITRUS',description:'Bright and zesty.'},
 {icon:'🍦',name:'CREAMY',description:'Smooth and dessert-like.'}
-]},
+]
+if(window.HansumOrderAPI)this.flavorDirections=HansumOrderAPI.directions(dark,this.flavorDirections)},
 selectShisha(type,name,price,fruitHead){
 Object.assign(this.order,{shishaType:type,shishaName:name,price,bowl:'',flavorType:'',specific:'',other:'',signatureFlavorId:'',signatureFlavorName:''});
 this.selectedDirections=[];
@@ -332,6 +335,7 @@ startMoreShisha(){
 resetShishaSelection(){
   Object.assign(this.order,{shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''});
   this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.shishaMode='new';
+  if(window.HansumOrderAPI)HansumOrderAPI.applyDefaults(this.order);
 },
 nextAdditionalNo(){return (Number(this.additionalSeq)||0)+1},
 additionalRef(){
@@ -357,6 +361,8 @@ async sendFinalOrder(){
   }finally{this.sending=false}
 },
 async sendToTelegram(payload){
+  /* Hansum POS first (saved in the POS database, which then notifies Telegram); old Telegram route if it fails. */
+  if(window.HansumOrderAPI&&HansumOrderAPI.enabled()&&await HansumOrderAPI.send(payload))return;
   const TELEGRAM_ENDPOINT=window.HANSUM_SAIGON_TELEGRAM_ENDPOINT||'';
   if(!TELEGRAM_ENDPOINT) throw new Error('Telegram endpoint is not configured');
   const res=await fetch(TELEGRAM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
@@ -387,6 +393,7 @@ mounted(){
   try{const savedLocale=localStorage.getItem('hansumLocale');if(['en','zh','ko'].includes(savedLocale))this.locale=savedLocale}catch(e){}
   if(hasQrTable)this.initializeQrTable();
   else this.restoreState();
+  if(window.HansumOrderAPI)HansumOrderAPI.attach(this);
 }
 }).mount('#app');
 </script>

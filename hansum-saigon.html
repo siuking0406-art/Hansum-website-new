@@ -54,6 +54,12 @@ const allowedTables=['01','02','03','04','05','06','07','08','09','10','11','12'
 const hasQrTable=allowedTables.includes(qrTable)||!!(window.HansumOrderAPI&&HansumOrderAPI.acceptsTable(qrTable));
 /* Drink photos are display-only: keep them out of the basket, localStorage and Telegram payload. */
 const basketItem=({img,imgPos,...rest})=>rest;
+/* The unfinished order is kept per browser TAB (sessionStorage): a refresh keeps it, but a new tab, a new visit or a new
+   QR scan always starts a fresh order (QR: for the table in the URL). It used to live in localStorage, shared by every tab
+   and kept forever, so an old step/selection came back: those copies are removed. The language stays in localStorage. */
+const ORDER_KEY='hansumOrderV55';
+const orderStore={get(){try{return sessionStorage.getItem(ORDER_KEY)}catch(e){return null}},set(v){try{sessionStorage.setItem(ORDER_KEY,v)}catch(e){}},remove(){try{sessionStorage.removeItem(ORDER_KEY)}catch(e){}}};
+try{localStorage.removeItem('hansumOrderV55');localStorage.removeItem('hansumOrderV53')}catch(e){}
 createApp({
 template:HansumOrderUI.template,
 mixins:[HansumOrderUI.mixin],
@@ -268,11 +274,11 @@ generateRef(prefix){
   return `${prefix}-${this.sessionRef}`;
 },
 persistState(){
-  try{localStorage.setItem('hansumOrderV55',JSON.stringify({step:this.step,order:this.order,selectedDirections:this.selectedDirections,basket:this.basket,shishaSent:this.shishaSent,drinkSent:this.drinkSent,additionalSeq:this.additionalSeq,sessionRef:this.sessionRef,shishaOrderRef:this.shishaOrderRef,drinkOrderRef:this.drinkOrderRef,otherAddonEnabled:this.otherAddonEnabled,sentLog:this.sentLog,tableConfirmed:this.tableConfirmed}));}catch(e){}
+  orderStore.set(JSON.stringify({step:this.step,order:this.order,selectedDirections:this.selectedDirections,basket:this.basket,shishaSent:this.shishaSent,drinkSent:this.drinkSent,additionalSeq:this.additionalSeq,sessionRef:this.sessionRef,shishaOrderRef:this.shishaOrderRef,drinkOrderRef:this.drinkOrderRef,otherAddonEnabled:this.otherAddonEnabled,sentLog:this.sentLog,tableConfirmed:this.tableConfirmed}));
 },
 restoreState(){
   try{
-    const raw=localStorage.getItem('hansumOrderV55') || localStorage.getItem('hansumOrderV53'); if(!raw)return;
+    const raw=orderStore.get(); if(!raw)return;
     const saved=JSON.parse(raw);
     if(saved.order)Object.assign(this.order,saved.order);
     if(Array.isArray(saved.selectedDirections))this.selectedDirections=saved.selectedDirections;
@@ -289,7 +295,7 @@ restoreState(){
     this.clampPreferences();
   }catch(e){console.warn('Could not restore order',e)}
 },
-clearSavedOrder(){try{localStorage.removeItem('hansumOrderV55')}catch(e){}},
+clearSavedOrder(){orderStore.remove()},
 formatPrice(n){return Number(n).toLocaleString('en-US')},
 back(){
 if(this.step<=0)return;
@@ -318,18 +324,18 @@ async confirmOrder(){
     await this.sendToTelegram(payload);
     if(additional){
       this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Additional shisha',this.drinkOrderRef,logTitle,this.totalPrice);this.resetShishaSelection();
-      this.sendMessage='';this.step=11;this.persistState();
+      this.sendMessage='';this.step=11;this.persistState();this.scheduleNewOrder();
     }else{
-      this.shishaSent=true;this.logSent('Shisha',this.shishaOrderRef,logTitle,this.totalPrice);this.sendMessage='';this.step=8;this.persistState();
+      this.shishaSent=true;this.logSent('Shisha',this.shishaOrderRef,logTitle,this.totalPrice);this.sendMessage='';this.step=8;this.persistState();this.scheduleNewOrder();
     }
   }catch(e){
     console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the order to our team. Please try again. Your selection is saved on this device.';
   }finally{this.sending=false}
 },
 /* A new additional order starts here: the previous additional order (if any) is finished, so its "sent" state is cleared. */
-startMoreOrder(){this.sendMessage='';this.drinkSent=false;this.drinkOrderRef='';this.drinksFrom=(this.step===8||this.step===11||this.step===0)?this.step:0;this.step=9},
+startMoreOrder(){clearTimeout(this._newOrderT);this.sendMessage='';this.drinkSent=false;this.drinkOrderRef='';this.drinksFrom=(this.step===8||this.step===11||this.step===0)?this.step:0;this.step=9},
 startMoreShisha(){
-  this.sendMessage='';this.drinkSent=false;this.drinkOrderRef='';
+  clearTimeout(this._newOrderT);this.sendMessage='';this.drinkSent=false;this.drinkOrderRef='';
   if(this.shishaSent)this.resetShishaSelection();
   this.step=1;
 },
@@ -337,6 +343,17 @@ resetShishaSelection(){
   Object.assign(this.order,{shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''});
   this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.shishaMode='new';
   if(window.HansumOrderAPI)HansumOrderAPI.applyDefaults(this.order);
+},
+/* Manual entry (table chooser, no QR table): after an order is sent, show the confirmation briefly, then start a fresh
+   order at Table Selection (shared device). With a QR table the confirmation and "Order more" stay as they are. */
+scheduleNewOrder(){if(this.tableLocked||!this.L.chooser)return;clearTimeout(this._newOrderT);this._newOrderT=setTimeout(()=>{if(this.step===8||this.step===11||this.step===0)this.newOrder()},6000)},
+newOrder(){
+  clearTimeout(this._newOrderT);this.clearSavedOrder();
+  this.order={table:hasQrTable?qrTable:'',shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''};
+  if(window.HansumOrderAPI)HansumOrderAPI.applyDefaults(this.order);
+  this.basket=[];this.shishaSent=false;this.drinkSent=false;this.additionalSeq=0;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';
+  this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.sentLog=[];this.sendMessage='';this.shishaMode='new';this.drinksFrom=0;this.openCat=0;
+  this.tableConfirmed=false;this.step=0;
 },
 nextAdditionalNo(){return (Number(this.additionalSeq)||0)+1},
 additionalRef(){
@@ -356,7 +373,7 @@ async sendFinalOrder(){
   try{
     await this.sendToTelegram(payload);
     /* The items are now sent: empty the cart so they can never be sent again with the next additional order. */
-    this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Drinks',this.drinkOrderRef,logTitle,logTotal);this.basket=[];this.sendMessage='';this.step=11;this.persistState();
+    this.additionalSeq=this.nextAdditionalNo();this.drinkSent=true;this.logSent('Drinks',this.drinkOrderRef,logTitle,logTotal);this.basket=[];this.sendMessage='';this.step=11;this.persistState();this.scheduleNewOrder();
   }catch(e){
     console.error(e);this.sendMessage=(e&&e.userMessage)||'We could not send the additional order to our team. Please try again. Your items are saved on this device.';
   }finally{this.sending=false}
@@ -373,11 +390,11 @@ finish(){this.clearSavedOrder();window.location.href='index.html'},
 initializeQrTable(){
   if(!hasQrTable)return;
   try{
-    const raw=localStorage.getItem('hansumOrderV55');
+    const raw=orderStore.get();
     if(raw){
       const saved=JSON.parse(raw);
       if(saved.order && saved.order.table && String(saved.order.table).toUpperCase()!==qrTable){
-        localStorage.removeItem('hansumOrderV55');
+        orderStore.remove();
         this.order={table:qrTable,shishaType:'',shishaName:'',price:0,bowl:'',flavorType:'',specific:'',other:'',intensity:5,mint:0,mintiness:0,addons:[],otherAddon:'',signatureFlavorId:'',signatureFlavorName:''};
         this.basket=[];this.shishaSent=false;this.drinkSent=false;this.additionalSeq=0;this.sessionRef='';this.shishaOrderRef='';this.drinkOrderRef='';this.selectedDirections=[];this.flavorDirections=[];this.otherAddonEnabled=false;this.sentLog=[];this.tableConfirmed=false;this.step=0;
       } else {
@@ -393,7 +410,7 @@ initializeQrTable(){
 mounted(){
   try{const savedLocale=localStorage.getItem('hansumLocale');if(['en','zh','ko'].includes(savedLocale))this.locale=savedLocale}catch(e){}
   if(hasQrTable)this.initializeQrTable();
-  else this.restoreState();
+  else{this.restoreState();if(this.step===8||this.step===11)this.newOrder();}
   if(window.HansumOrderAPI)HansumOrderAPI.attach(this);
 }
 }).mount('#app');

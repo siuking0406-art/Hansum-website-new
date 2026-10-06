@@ -13,7 +13,7 @@
     nav.hidden = !open;
     body.classList.toggle('menu-open', open);
     btn.setAttribute('aria-expanded', String(open));
-    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    btn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
     if (open) { var first = nav.querySelector('a'); if (first) first.focus(); }
   }
   if (btn && nav) {
@@ -23,11 +23,15 @@
     window.matchMedia('(min-width: 900px)').addEventListener('change', function (m) { if (m.matches) setMenu(false); });
   }
 
-  // past the hero: solid header + (on phones) the directions dock
+  // solid header as soon as the page moves (content never shows through it)
+  function solid() { if (header) header.classList.toggle('is-solid', window.scrollY > 8); }
+  solid();
+  window.addEventListener('scroll', solid, { passive: true });
+
+  // past the hero: the directions dock (phones)
   if (hero && 'IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
       var past = !entries[0].isIntersecting;
-      if (header) header.classList.toggle('is-solid', past);
       if (dock) {
         dock.classList.toggle('is-on', past);
         dock.setAttribute('aria-hidden', String(!past));

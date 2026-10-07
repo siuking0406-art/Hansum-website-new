@@ -3,192 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>HANSUM — Shisha Lounge</title>
-<meta name="description" content="HANSUM Shisha Lounge — Korean-inspired shisha, cocktails and coffee. Explore our spaces and find us on Google Maps.">
+<title>Hansum Shisha Lounge · Saigon &amp; Da Nang</title>
+<meta name="description" content="Korean-inspired shisha lounge in Saigon (District 1) and Da Nang. Hansum Signature blends, cocktails and late nights. Find us on Google Maps.">
 <meta name="theme-color" content="#07080d">
-<meta property="og:title" content="HANSUM Shisha Lounge">
-<meta property="og:description" content="Take a breath. Shisha, cocktails and coffee.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://hansumshisha.com/">
 <link rel="canonical" href="https://hansumshisha.com/">
-<link rel="icon" href="images/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hansum Shisha Lounge">
+<meta property="og:title" content="Hansum Shisha Lounge · Saigon & Da Nang">
+<meta property="og:description" content="Take a breath. Signature shisha blends, cocktails and late nights in Saigon and Da Nang.">
+<meta property="og:url" content="https://hansumshisha.com/">
+<meta property="og:image" content="https://hansumshisha.com/images/site/og-1200.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A guest exhales shisha smoke under pink Korean neon at Hansum">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="96x96" href="images/site/logo-96.png">
+<link rel="apple-touch-icon" href="images/site/logo-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/site/hero-720.webp" imagesrcset="images/site/hero-720.webp 720w, images/site/hero-1170.webp 1170w" imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://hansumshisha.com/#org",
+      "name": "Hansum Shisha Lounge",
+      "alternateName": "HANSUM 한숨",
+      "url": "https://hansumshisha.com/",
+      "logo": "https://hansumshisha.com/images/site/logo-192.png",
+      "foundingDate": "2018",
+      "sameAs": ["https://www.instagram.com/hansumshisha/"]
+    },
+    {
+      "@type": "BarOrPub",
+      "@id": "https://hansumshisha.com/#saigon",
+      "name": "Hansum Shisha Lounge Saigon",
+      "parentOrganization": { "@id": "https://hansumshisha.com/#org" },
+      "url": "https://hansumshisha.com/#saigon",
+      "image": "https://hansumshisha.com/images/site/saigon-1000.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "30B Ngô Đức Kế, Bến Nghé, District 1",
+        "addressLocality": "Ho Chi Minh City",
+        "addressCountry": "VN"
+      },
+      "hasMap": "https://www.google.com/maps/search/?api=1&query=Hansum%20Shisha%20Lounge%2C%2030B%20Ng%C3%B4%20%C4%90%E1%BB%A9c%20K%E1%BA%BF%2C%20District%201%2C%20Ho%20Chi%20Minh%20City",
+      "sameAs": ["https://www.instagram.com/hansum.saigon/"]
+    },
+    {
+      "@type": "BarOrPub",
+      "@id": "https://hansumshisha.com/#danang",
+      "name": "Hansum Shisha Lounge Da Nang",
+      "parentOrganization": { "@id": "https://hansumshisha.com/#org" },
+      "url": "https://hansumshisha.com/#danang",
+      "image": "https://hansumshisha.com/images/site/danang-707.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "2/F, 14 Lã Xuân Oai, Ngũ Hành Sơn",
+        "addressLocality": "Da Nang",
+        "addressCountry": "VN"
+      },
+      "hasMap": "https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng",
+      "sameAs": ["https://www.instagram.com/hansum.danang/"]
+    }
+  ]
+}
+</script>
 </head>
 <body>
-<div class="noise"></div>
+<a class="skip" href="#main">Skip to content</a>
 
 <header class="header">
-  <a class="brand" href="#home">
-    <img src="images/logo.png" alt="HANSUM Lounge">
-    <span>HANSUM <em>한숨</em></span>
+  <a class="brand" href="#top" aria-label="Hansum — back to top">
+    <img src="images/site/logo-96.png" alt="" width="36" height="36">
+    <span>HANSUM <em lang="ko">한숨</em></span>
   </a>
-  <nav>
-    <a href="#story">STORY</a>
-    <a href="hansum.html">SHISHA</a>
-    <a href="#coffee">COFFEE</a>
-    <a href="#cocktails">COCKTAILS</a>
-    <a href="#locations">LOCATIONS</a>
+  <nav class="nav" aria-label="Main">
+    <a href="#locations">Locations</a>
+    <a href="#menu">Menu</a>
+    <a href="#experience">Experience</a>
+    <a href="https://www.instagram.com/hansumshisha/" target="_blank" rel="noopener">Instagram</a>
   </nav>
-  <a class="header-cta" href="#locations">FIND US <span>↗</span></a>
-  <button class="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+  <a class="btn btn--line btn--small header-cta" href="#locations">Find us</a>
+  <button class="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span></button>
 </header>
 
-<nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation">
-  <a href="#story">STORY</a>
-  <a href="hansum.html">SHISHA</a>
-  <a href="#coffee">COFFEE</a>
-  <a href="#cocktails">COCKTAILS</a>
-  <a href="#locations">LOCATIONS</a>
-  <a class="mobile-nav-cta" href="#locations">FIND US <span>↗</span></a>
+<nav id="mobile-nav" class="mobile-nav" aria-label="Main" hidden>
+  <a href="#locations">Locations</a>
+  <a href="#menu">Menu</a>
+  <a href="#experience">Experience</a>
+  <a href="https://www.instagram.com/hansumshisha/" target="_blank" rel="noopener">Instagram</a>
+  <div class="mobile-nav__maps">
+    <a class="btn btn--gold" href="https://www.google.com/maps/search/?api=1&query=Hansum%20Shisha%20Lounge%2C%2030B%20Ng%C3%B4%20%C4%90%E1%BB%A9c%20K%E1%BA%BF%2C%20District%201%2C%20Ho%20Chi%20Minh%20City" target="_blank" rel="noopener">Saigon on Google Maps</a>
+    <a class="btn btn--gold" href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng" target="_blank" rel="noopener">Da Nang on Google Maps</a>
+  </div>
 </nav>
-<div class="mobile-nav-backdrop"></div>
 
-<main>
-<section id="home" class="hero hero-single">
-  <div class="hero-panel hero-single-panel">
-    <img class="hero-main-image" src="images/hero-smoke.jpeg" alt="HANSUM shisha lounge experience">
-  </div>
-  <div class="hero-shade"></div>
-  <div class="hero-content">
-    <p class="eyebrow">KOREAN-INSPIRED SHISHA LOUNGE</p>
-    <h1>TAKE A<br><i>BREATH.</i></h1>
-    <p class="hero-copy">Premium shisha, −86°C coffee and late-night cocktails — crafted in the HANSUM way.</p>
-    <div class="hero-actions">
-      <a class="btn primary" href="#shisha">EXPLORE HANSUM</a>
-      <a class="btn ghost" href="#locations">LOCATIONS</a>
-    </div>
-  </div>
-  <div class="hero-meta"><span>HANSUM · SINCE 2018</span><span>SCROLL ↓</span></div>
-</section>
-
-<section id="story" class="section story omakase-section">
-  <div class="section-top"><span>01 / HANSUM OMAKASE</span><span>THE HANSUM WAY</span></div>
-  <div class="story-head">
-    <div>
-      <p class="eyebrow">SHISHA OMAKASE</p>
-      <h2>HANSUM<br><i>OMAKASE.</i></h2>
-    </div>
-    <div class="story-copy">
-      <p>Tell us what you like — fruity, creamy, refreshing or dark. We will do the rest.</p>
-      <p>Hansum is more than a shisha lounge. It’s a space to slow down, connect, and enjoy the moment.</p>
-      <p>Inspired by Seoul energy and the laid-back spirit of Vietnam, we bring together premium shisha, crafted cocktails and signature coffee.</p>
+<main id="main">
+<section id="top" class="hero" aria-labelledby="hero-title">
+  <img class="hero__img" src="images/site/hero-720.webp" srcset="images/site/hero-720.webp 720w, images/site/hero-1170.webp 1170w" sizes="100vw" width="1170" height="1527" alt="A guest exhales shisha smoke under pink Korean neon at Hansum" fetchpriority="high">
+  <div class="hero__shade"></div>
+  <div class="hero__content">
+    <p class="hero__where">Shisha lounge · Saigon &amp; Da Nang</p>
+    <h1 id="hero-title">Take a breath.</h1>
+    <p class="hero__lede">Signature shisha blends, cocktails and long, easy nights — Korean-inspired, in the heart of Vietnam.</p>
+    <div class="hero__actions">
+      <a class="btn btn--gold" href="#locations">Choose your lounge</a>
+      <a class="btn btn--line" href="#menu">See the menu</a>
     </div>
   </div>
 </section>
 
-<section id="shisha" class="section shisha">
-  <div class="section-top"><span>02 / SHISHA EXPERIENCE</span><span>SHISHA OMAKASE</span></div>
-  <div class="shisha-head">
-    <div>
-      <h2>PACKED<br><i>YOUR WAY.</i></h2>
-    </div>
-    <p>Choose your bowl. Choose your flavour. Then let our team build the session around you — no fixed-price list, just the HANSUM experience.</p>
-  </div>
-
-  <div class="bowl-showcase website-bowls">
-    <div class="website-bowl-grid">
-      <div class="website-bowl-card">
-        <img src="images/cosmo-bowl.jpg" alt="Egyptian Bowl — Cosmo">
-        <div class="website-bowl-overlay"><span>EGYPTIAN BOWL</span><strong>COSMO</strong><em>Classic · Smooth</em></div>
-      </div>
-      <div class="website-bowl-card">
-        <img src="images/oblako-bowl.jpg" alt="Phunnel Bowl — Oblako">
-        <div class="website-bowl-overlay"><span>PHUNNEL BOWL</span><strong>OBLAKO</strong><em>Rich · Strong Intensity</em></div>
+<section class="why" aria-labelledby="why-title">
+  <div class="wrap">
+    <div class="why__intro">
+      <p class="hangul" lang="ko" aria-hidden="true">한숨</p>
+      <div>
+        <h2 id="why-title">Slow down. We’ll handle the rest.</h2>
+        <p class="lead">In Korean, <i>hansum</i> is the breath you let out when you finally relax. That’s the whole idea: good shisha, good drinks, good company — since 2018.</p>
       </div>
     </div>
+    <ul class="why__points">
+      <li><h3>Hansum Signature</h3><p>Eight house blends, from creamy Jade Bean to woody Black Temple.</p></li>
+      <li><h3>Your session, your way</h3><p>Pick the leaf, the bowl and how strong you like it. Our team packs it for you.</p></li>
+      <li><h3>Cocktails &amp; late nights</h3><p>Signature cocktails, Korean soju and a room made for staying a little longer.</p></li>
+    </ul>
   </div>
 </section>
 
-<section id="coffee" class="coffee">
-  <div class="coffee-copy section">
-    <div class="section-top"><span>03 / -86°C COFFEE</span><span>SIGNATURE</span></div>
-    <h2>−86°C<br><i>COFFEE</i></h2>
-    <div class="coffee-image-wrap coffee-image-below-title">
-      <img src="images/coffee-86-v5.jpeg" alt="HANSUM -86°C Coffee">
+<section id="locations" class="locations" aria-labelledby="loc-title">
+  <div class="wrap">
+    <h2 id="loc-title">Two lounges. Pick yours.</h2>
+    <div class="loc-grid">
+      <article id="saigon" class="loc" aria-labelledby="saigon-title">
+        <img class="loc__img" src="images/site/saigon-640.webp" srcset="images/site/saigon-640.webp 640w, images/site/saigon-1000.webp 1000w" sizes="(min-width: 1180px) 530px, (min-width: 600px) calc(50vw - 58px), calc(100vw - 40px)" width="1000" height="1311" alt="Hansum Saigon: the glowing moon and neon Hansum sign at the entrance" loading="lazy" decoding="async">
+        <div class="loc__body">
+          <h3 id="saigon-title">Saigon</h3>
+          <p class="loc__city">Ho Chi Minh City</p>
+          <address>30B Ngô Đức Kế, Bến Nghé, District 1</address>
+          <a class="btn btn--gold btn--block" href="https://www.google.com/maps/search/?api=1&query=Hansum%20Shisha%20Lounge%2C%2030B%20Ng%C3%B4%20%C4%90%E1%BB%A9c%20K%E1%BA%BF%2C%20District%201%2C%20Ho%20Chi%20Minh%20City" target="_blank" rel="noopener">Open in Google Maps</a>
+          <div class="loc__links">
+            <a href="#menu-saigon">Saigon menu highlights</a>
+            <a href="https://www.instagram.com/hansum.saigon/" target="_blank" rel="noopener">@hansum.saigon</a>
+          </div>
+        </div>
+      </article>
+      <article id="danang" class="loc" aria-labelledby="danang-title">
+        <img class="loc__img" src="images/site/danang-640.webp" srcset="images/site/danang-640.webp 640w, images/site/danang-707.webp 707w" sizes="(min-width: 1180px) 530px, (min-width: 600px) calc(50vw - 58px), calc(100vw - 40px)" width="707" height="945" alt="Hansum Da Nang: a bright lounge with sofas and a shisha on the table" loading="lazy" decoding="async">
+        <div class="loc__body">
+          <h3 id="danang-title">Da Nang</h3>
+          <p class="loc__city">Ngũ Hành Sơn</p>
+          <address>2/F, 14 Lã Xuân Oai, Ngũ Hành Sơn</address>
+          <a class="btn btn--gold btn--block" href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng" target="_blank" rel="noopener">Open in Google Maps</a>
+          <div class="loc__links">
+            <a href="#menu-danang">Da Nang menu highlights</a>
+            <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener">@hansum.danang</a>
+          </div>
+        </div>
+      </article>
     </div>
-    <p>A global coffee trend, brought to Vietnam and reimagined the HANSUM way. Cold, striking and made for the late-night crowd.</p>
-    <div class="coffee-list">
-      <span>−86° ESPRESSO</span><span>−86° DIRTY</span><span>−86° SAIGON</span>
-      <span>−86° SPANISH LATTE</span><span>−86° COCONUT</span>
+    <p class="loc__more">Hansum is also in
+      <a href="https://www.google.com/maps/search/?api=1&query=Hansum+Shisha+Lounge+Seoul" target="_blank" rel="noopener">Seoul</a>,
+      <a href="https://www.google.com/maps/search/?api=1&query=Hansum+Taipei+Shisha+Lounge" target="_blank" rel="noopener">Taipei</a>
+      (<a href="https://www.instagram.com/hansumtw/" target="_blank" rel="noopener">@hansumtw</a>) and
+      <a href="https://www.google.com/maps/search/?api=1&query=Hansum+Causeway+Bay+Hong+Kong" target="_blank" rel="noopener">Causeway Bay, Hong Kong</a>
+      (<a href="https://www.instagram.com/hansumhk/" target="_blank" rel="noopener">@hansumhk</a>).</p>
+  </div>
+</section>
+
+<section id="menu" class="menu" aria-labelledby="menu-title">
+  <div class="wrap">
+    <div class="menu__head">
+      <h2 id="menu-title">A taste of the menu</h2>
+      <p class="lead">A few favourites. The full menu and prices are at the lounge — scan the QR code on your table.</p>
+    </div>
+
+    <h3 class="menu__label">Hansum Signature — our eight house blends</h3>
+    <ul class="sig-strip">
+      <li><img src="images/site/sig-jade-bean-480.webp" srcset="images/site/sig-jade-bean-480.webp 480w, images/site/sig-jade-bean-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Jade Bean</h4><p>Green bean · coconut · vanilla</p></li>
+      <li><img src="images/site/sig-tropical-bazaar-480.webp" srcset="images/site/sig-tropical-bazaar-480.webp 480w, images/site/sig-tropical-bazaar-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Tropical Bazaar</h4><p>Mango · passion fruit · pineapple</p></li>
+      <li><img src="images/site/sig-golden-citrus-480.webp" srcset="images/site/sig-golden-citrus-480.webp 480w, images/site/sig-golden-citrus-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Golden Citrus</h4><p>Orange · lemon</p></li>
+      <li><img src="images/site/sig-silk-rose-480.webp" srcset="images/site/sig-silk-rose-480.webp 480w, images/site/sig-silk-rose-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Silk Rose</h4><p>Rose · lychee</p></li>
+      <li><img src="images/site/sig-jasmine-honey-garden-480.webp" srcset="images/site/sig-jasmine-honey-garden-480.webp 480w, images/site/sig-jasmine-honey-garden-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Jasmine Honey Garden</h4><p>Jasmine tea · pear · honey</p></li>
+      <li><img src="images/site/sig-saigon-velvet-480.webp" srcset="images/site/sig-saigon-velvet-480.webp 480w, images/site/sig-saigon-velvet-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Saigon Velvet</h4><p>Coffee · coconut · vanilla · caramel</p></li>
+      <li><img src="images/site/sig-mango-moon-480.webp" srcset="images/site/sig-mango-moon-480.webp 480w, images/site/sig-mango-moon-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Mango Moon</h4><p>Mango sticky rice</p></li>
+      <li><img src="images/site/sig-black-temple-480.webp" srcset="images/site/sig-black-temple-480.webp 480w, images/site/sig-black-temple-800.webp 800w" sizes="(min-width: 1180px) 256px, (min-width: 900px) 21vw, min(72vw, 280px)" width="480" height="270" alt="" loading="lazy" decoding="async"><h4>Black Temple</h4><p>Sandalwood · vanilla · black tea</p></li>
+    </ul>
+
+    <div class="menu__shisha">
+      <img src="images/site/bowls-640.webp" srcset="images/site/bowls-640.webp 640w, images/site/bowls-1000.webp 1000w" sizes="(min-width: 1180px) 520px, (min-width: 900px) 44vw, calc(100vw - 40px)" width="640" height="427" alt="Two shisha bowls side by side: a classic Egyptian bowl and a phunnel bowl" loading="lazy" decoding="async">
+      <div>
+        <h3 class="menu__label">Shisha, built around you</h3>
+        <p>Classic Blonde Leaf, Premium Dark Leaf, a fresh fruit head or a Hansum Signature blend. Choose an Egyptian bowl for a smooth, classic session or a phunnel bowl for a richer, stronger one.</p>
+      </div>
+    </div>
+
+    <div class="menu__branches">
+      <div id="menu-saigon" class="branch-menu">
+        <h3>In Saigon</h3>
+        <p class="branch-menu__kicker">Signature cocktails, named after the planets</p>
+        <p class="tags">Tokyo by Night · Fly to the Moon · Cocotini · Old But Gold · Sunny Sour · California Gold · Umamamia · Diamond Blossom</p>
+        <img src="images/site/cocktail-neon-640.webp" srcset="images/site/cocktail-neon-640.webp 640w, images/site/cocktail-neon-1000.webp 1000w" sizes="(min-width: 1180px) 490px, (min-width: 600px) calc(50vw - 100px), calc(100vw - 82px)" width="640" height="853" alt="A Hansum signature cocktail held up against the glowing Hansum neon logo" loading="lazy" decoding="async">
+      </div>
+      <div id="menu-danang" class="branch-menu">
+        <h3>In Da Nang</h3>
+        <p class="branch-menu__kicker">Signature cocktails</p>
+        <p class="tags">Fly to the Moon · Diamond Blossom · Midnight Sakura · Tamarind Sunset · Coconut Passion · Sea Breeze</p>
+        <p class="branch-menu__kicker">−86°C frozen coffee</p>
+        <p class="tags">Espresso · Dirty · Saigon · Spanish Latte · Coconut</p>
+        <img src="images/site/coffee-86-640.webp" srcset="images/site/coffee-86-640.webp 640w, images/site/coffee-86-1000.webp 1000w" sizes="(min-width: 1180px) 490px, (min-width: 600px) calc(50vw - 100px), calc(100vw - 82px)" width="640" height="960" alt="Three −86°C frozen coffees in frosted cups: dirty coffee, matcha and coffee" loading="lazy" decoding="async">
+      </div>
     </div>
   </div>
 </section>
 
-<section id="cocktails" class="section cocktails">
-  <div class="section-top"><span>04 / SIGNATURE COCKTAILS</span><span>LATE NIGHT</span></div>
-  <div class="cocktail-copy cocktail-title-block">
-    <h2>ONE MORE<br><i>DRINK.</i></h2>
-    <div class="cocktail-image cocktail-image-below-title"><img src="images/cocktail.jpg" alt="HANSUM signature cocktails"></div>
-    <p>Signature cocktails with a Korean-inspired edge — bright, floral, tropical and made for the HANSUM night.</p>
-    <div class="cocktail-tags"><span>FLY TO THE MOON</span><span>DIAMOND BLOSSOM</span><span>MIDNIGHT SAKURA</span><span>TAMARIND SUNSET</span><span>COCONUT PASSION</span></div>
-  </div>
-</section>
-
-<section class="manifesto">
-  <div class="manifesto-bg"></div>
-  <div class="manifesto-content">
-    <p>ONE MORE PUFF.<br>ONE MORE DRINK.<br><i>ONE MORE NIGHT.</i></p>
-    <span>HANSUM 한숨</span>
-  </div>
-</section>
-
-<section id="locations" class="section locations">
-  <div class="section-top"><span>05 / LOCATIONS</span><span>ASIA</span></div>
-  <h2>FIND YOUR<br><i>HANSUM.</i></h2>
-  <div class="location-list">
-    <div class="location-row"><a class="location-main" href="https://www.google.com/maps/search/?api=1&query=Hansum+Shisha+Lounge+Seoul" target="_blank" rel="noopener"><span>SEOUL</span><small>SEOUL, KOREA · GOOGLE MAPS ↗</small></a><span class="location-ig empty">—</span><b>01</b></div>
-    <div class="location-row"><a class="location-main" href="https://www.google.com/maps/search/?api=1&query=Hansum+Taipei+Shisha+Lounge" target="_blank" rel="noopener"><span>TAIPEI</span><small>TAIPEI, TAIWAN · GOOGLE MAPS ↗</small></a><a class="location-ig" href="https://www.instagram.com/hansumtw/" target="_blank" rel="noopener">@HANSUMTW ↗</a><b>02</b></div>
-    <div class="location-row"><a class="location-main" href="https://www.google.com/maps/search/?api=1&query=Hansum+Causeway+Bay+Hong+Kong" target="_blank" rel="noopener"><span>CAUSEWAY BAY</span><small>HONG KONG · GOOGLE MAPS ↗</small></a><a class="location-ig" href="https://www.instagram.com/hansumhk/" target="_blank" rel="noopener">@HANSUMHK ↗</a><b>03</b></div>
-    <div class="location-row location-photo location-saigon"><a class="location-main" href="https://www.google.com/maps/search/?api=1&query=Hansum+Shisha+Lounge+Ho+Chi+Minh+City" target="_blank" rel="noopener"><span>SAIGON</span><small>HO CHI MINH CITY · GOOGLE MAPS ↗</small></a><a class="location-ig" href="https://www.instagram.com/hansum.saigon/" target="_blank" rel="noopener">@HANSUM.SAIGON ↗</a><b>04</b></div>
-    <div class="location-row new location-photo location-danang"><a class="location-main" href="https://www.google.com/maps/search/?api=1&query=Hansum+Da+Nang+Lounge%2C+2F+14+La+Xuan+Oai%2C+Da+Nang" target="_blank" rel="noopener"><span>DANANG</span><small>2/F 14 LÀ XUÂN OAI · GOOGLE MAPS ↗</small></a><a class="location-ig" href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener">@HANSUM.DANANG ↗</a><b>05</b></div>
-  </div>
-</section>
-
-<section class="section reviews">
-  <div class="section-top"><span>06 / GOOGLE REVIEWS</span><span>REAL NIGHTS</span></div>
-  <div class="review-grid">
-    <div><div class="review-score">★★★★★</div><div class="stars">GOOGLE REVIEWS</div></div>
-    <div class="review-copy"><h2>HEAR IT FROM<br><i>THE GUESTS.</i></h2><p>See the latest guest photos, ratings and reviews for your nearest HANSUM location.</p><div class="review-links"><a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Hansum+Shisha+Lounge+Seoul" target="_blank" rel="noopener">SEOUL ↗</a><a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Hansum+Taipei+Shisha+Lounge" target="_blank" rel="noopener">TAIPEI ↗</a><a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Hansum+Causeway+Bay+Hong+Kong" target="_blank" rel="noopener">HONG KONG ↗</a><a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Hansum+Shisha+Lounge+Ho+Chi+Minh+City" target="_blank" rel="noopener">SAIGON ↗</a><a class="review-link" href="https://www.google.com/maps/search/?api=1&query=Hansum+Da+Nang+Lounge%2C+2F+14+La+Xuan+Oai%2C+Da+Nang" target="_blank" rel="noopener">DANANG ↗</a></div></div>
-  </div>
-</section>
-
-<section class="instagram">
-  <div class="section-top"><span>07 / INSTAGRAM</span><span>THE HANSUM NIGHT</span></div>
-  <div class="gallery-slideshow" aria-label="HANSUM gallery">
-    <button class="gallery-arrow gallery-prev" aria-label="Previous photo">‹</button>
-    <div class="gallery-stage">
-      <img class="gallery-slide active" src="images/gallery-01.jpeg" alt="HANSUM lounge atmosphere">
-      <img class="gallery-slide" src="images/gallery-02.jpeg" alt="HANSUM shisha and drinks">
-      <img class="gallery-slide" src="images/gallery-03.jpeg" alt="HANSUM lounge interior">
-      <img class="gallery-slide" src="images/gallery-04.jpeg" alt="HANSUM shisha lounge">
-      <img class="gallery-slide" src="images/gallery-05.jpeg" alt="HANSUM shisha experience">
-      <img class="gallery-slide" src="images/gallery-06.jpeg" alt="HANSUM interior">
-      <img class="gallery-slide" src="images/gallery-07.jpeg" alt="HANSUM lounge">
-      <img class="gallery-slide" src="images/gallery-08.jpeg" alt="HANSUM atmosphere">
-      <img class="gallery-slide" src="images/gallery-09.jpeg" alt="HANSUM shisha">
-      <img class="gallery-slide" src="images/gallery-10.jpeg" alt="HANSUM guests and shisha">
-      <img class="gallery-slide" src="images/gallery-11.jpeg" alt="HANSUM lounge atmosphere">
-      <img class="gallery-slide" src="images/gallery-12.jpeg" alt="HANSUM shisha lounge">
-      <img class="gallery-slide" src="images/gallery-13.jpeg" alt="HANSUM lounge night">
+<section id="experience" class="experience" aria-labelledby="exp-title">
+  <div class="wrap">
+    <h2 id="exp-title">What a Hansum night looks like</h2>
+    <div class="mosaic">
+      <img class="m1" src="images/site/friends-640.webp" srcset="images/site/friends-640.webp 640w, images/site/friends-1000.webp 1000w" sizes="(min-width: 1180px) 530px, (min-width: 900px) 46vw, calc(100vw - 40px)" width="1000" height="656" alt="A group of friends sharing shisha and drinks at Hansum" loading="lazy" decoding="async">
+      <img class="m2" src="images/site/moon-640.webp" srcset="images/site/moon-640.webp 640w, images/site/moon-1000.webp 1000w" sizes="(min-width: 1180px) 265px, (min-width: 900px) 23vw, calc(50vw - 25px)" width="1000" height="1310" alt="Shisha smoke drifting under a glowing moon lamp" loading="lazy" decoding="async">
+      <img class="m3" src="images/site/cocktail-glass-640.webp" srcset="images/site/cocktail-glass-640.webp 640w, images/site/cocktail-glass-768.webp 768w" sizes="(min-width: 1180px) 265px, (min-width: 900px) 23vw, calc(100vw - 40px)" width="768" height="523" alt="An orange cocktail with a dried citrus garnish in candlelight" loading="lazy" decoding="async">
+      <img class="m4" src="images/site/couch-640.webp" srcset="images/site/couch-640.webp 640w, images/site/couch-864.webp 864w" sizes="(min-width: 1180px) 265px, (min-width: 900px) 23vw, calc(50vw - 25px)" width="864" height="1536" alt="Three guests relaxing on a sofa with shisha" loading="lazy" decoding="async">
     </div>
-    <button class="gallery-arrow gallery-next" aria-label="Next photo">›</button>
-    <div class="gallery-dots" aria-hidden="true">
-      <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    <blockquote class="pull">One more puff. One more drink. One more night.</blockquote>
+    <p class="social">Follow the nights on Instagram:
+      <a href="https://www.instagram.com/hansumshisha/" target="_blank" rel="noopener">@hansumshisha</a>,
+      <a href="https://www.instagram.com/hansum.saigon/" target="_blank" rel="noopener">@hansum.saigon</a> and
+      <a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener">@hansum.danang</a></p>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="final-title">
+  <div class="wrap">
+    <h2 id="final-title">Choose your Hansum</h2>
+    <div class="final__actions">
+      <a class="final__btn" href="https://www.google.com/maps/search/?api=1&query=Hansum%20Shisha%20Lounge%2C%2030B%20Ng%C3%B4%20%C4%90%E1%BB%A9c%20K%E1%BA%BF%2C%20District%201%2C%20Ho%20Chi%20Minh%20City" target="_blank" rel="noopener"><b>Saigon</b><span>30B Ngô Đức Kế, District 1 · Directions</span></a>
+      <a class="final__btn" href="https://www.google.com/maps/search/?api=1&query=Hansum%20Da%20Nang%20Lounge%2C%202/F%2014%20%C4%90%C6%B0%E1%BB%9Dng%20L%C3%A3%20Xu%C3%A2n%20Oai%2C%20Ng%C5%A9%20H%C3%A0nh%20S%C6%A1n%2C%20%C4%90%C3%A0%20N%E1%BA%B5ng" target="_blank" rel="noopener"><b>Da Nang</b><span>2/F, 14 Lã Xuân Oai · Directions</span></a>
     </div>
   </div>
-  <a class="insta-link" href="https://www.instagram.com/hansumshisha/" target="_blank" rel="noopener">FOLLOW @HANSUMSHISHA ↗</a>
 </section>
 </main>
 
-<footer>
-  <div class="footer-brand"><img src="images/logo.png" alt=""><span>HANSUM</span></div>
-  <div class="footer-right"><span>KOREA · TAIWAN · HONG KONG · VIETNAM · DANANG</span><span>SHISHA · COCKTAILS · COFFEE</span><span>© 2026 HANSUM SHISHA LOUNGE</span></div>
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div class="footer__brand"><img src="images/site/logo-96.png" alt="" width="32" height="32" loading="lazy"><span>HANSUM <em lang="ko">한숨</em></span></div>
+    <div class="footer__cols">
+      <p><b>Saigon</b><br>30B Ngô Đức Kế, Bến Nghé, District 1, Ho Chi Minh City<br><a href="https://www.instagram.com/hansum.saigon/" target="_blank" rel="noopener">@hansum.saigon</a></p>
+      <p><b>Da Nang</b><br>2/F, 14 Lã Xuân Oai, Ngũ Hành Sơn, Da Nang<br><a href="https://www.instagram.com/hansum.danang/" target="_blank" rel="noopener">@hansum.danang</a></p>
+      <p><b>Also in</b><br>Seoul · Taipei · Hong Kong<br><a href="https://www.instagram.com/hansumshisha/" target="_blank" rel="noopener">@hansumshisha</a></p>
+    </div>
+    <p class="footer__legal">© 2026 Hansum Shisha Lounge · Since 2018</p>
+  </div>
 </footer>
 
-<div class="mobile-cta"><a class="find" href="#locations">FIND HANSUM ↗</a><a class="ig" href="https://www.instagram.com/hansumshisha/" target="_blank" rel="noopener">INSTAGRAM ↗</a></div>
-<script src="script.js"></script>
+<div class="dock" aria-hidden="true">
+  <a class="btn btn--gold" href="#locations" tabindex="-1">Get directions</a>
+  <a class="btn btn--line" href="#menu" tabindex="-1">Menu</a>
+</div>
+<script src="script.js" defer></script>
 </body>
 </html>

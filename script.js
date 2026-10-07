@@ -1,25 +1,42 @@
-(function(){
-  const slides=[...document.querySelectorAll('.gallery-slide')];
-  const dots=[...document.querySelectorAll('.dot')];
-  if(!slides.length)return;
-  let i=0,timer;
-  function show(n){i=(n+slides.length)%slides.length;slides.forEach((s,k)=>s.classList.toggle('active',k===i));dots.forEach((d,k)=>d.classList.toggle('active',k===i));}
-  document.querySelector('.gallery-prev')?.addEventListener('click',()=>{show(i-1);restart()});
-  document.querySelector('.gallery-next')?.addEventListener('click',()=>{show(i+1);restart()});
-  dots.forEach((d,k)=>d.addEventListener('click',()=>{show(k);restart()}));
-  function restart(){clearInterval(timer);timer=setInterval(()=>show(i+1),4500)}
-  restart();
-  const menu=document.querySelector('.menu-btn');
-  const backdrop=document.querySelector('.mobile-nav-backdrop');
-  const nav=document.querySelector('.mobile-nav');
-  function setMenu(open){
-    document.body.classList.toggle('menu-open',open);
-    if(menu){menu.textContent=open?'✕':'☰';menu.setAttribute('aria-expanded',open?'true':'false')}
+/* Hansum public website (index.html only): mobile menu, solid header after the hero, mobile directions dock. */
+(function () {
+  'use strict';
+  var body = document.body;
+  var header = document.querySelector('.header');
+  var btn = document.querySelector('.menu-btn');
+  var nav = document.getElementById('mobile-nav');
+  var hero = document.querySelector('.hero');
+  var dock = document.querySelector('.dock');
+
+  function setMenu(open) {
+    if (!btn || !nav) return;
+    nav.hidden = !open;
+    body.classList.toggle('menu-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    if (open) { var first = nav.querySelector('a'); if (first) first.focus(); }
   }
-  if(menu){
-    menu.addEventListener('click',()=>{setMenu(!document.body.classList.contains('menu-open'))});
-    backdrop?.addEventListener('click',()=>setMenu(false));
-    nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
-    document.addEventListener('keydown',(e)=>{if(e.key==='Escape')setMenu(false)});
+  if (btn && nav) {
+    btn.addEventListener('click', function () { setMenu(nav.hidden); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !nav.hidden) { setMenu(false); btn.focus(); } });
+    window.matchMedia('(min-width: 900px)').addEventListener('change', function (m) { if (m.matches) setMenu(false); });
+  }
+
+  // solid header as soon as the page moves (content never shows through it)
+  function solid() { if (header) header.classList.toggle('is-solid', window.scrollY > 8); }
+  solid();
+  window.addEventListener('scroll', solid, { passive: true });
+
+  // past the hero: the directions dock (phones)
+  if (hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      var past = !entries[0].isIntersecting;
+      if (dock) {
+        dock.classList.toggle('is-on', past);
+        dock.setAttribute('aria-hidden', String(!past));
+        dock.querySelectorAll('a').forEach(function (a) { a.tabIndex = past ? 0 : -1; });
+      }
+    }, { rootMargin: '-72px 0px 0px 0px', threshold: 0 }).observe(hero);
   }
 })();

@@ -27,29 +27,26 @@
   var reduced = function () { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); };
   var NB = String.fromCharCode(160);
 
-  /* Customer-facing wording that is easy to review in one place. */
-  var COPY = {
-    stepLeaf: 'Leaf',
-    headingLeaf: 'Choose your leaf',
-    hintLeaf: 'Tap a leaf to continue',
-    hintBowl: 'Tap a bowl to continue',
-    hintSignature: 'Tap a blend to continue'
-  };
+  /* Customer-facing wording per language lives in js/order-i18n.js (window.HANSUM_I18N). Display only:
+     the order payload keeps its production values. English falls back for any missing key. */
+  var I18N = window.HANSUM_I18N || { langs: [{ code: 'en', label: 'English', short: 'EN', html: 'en' }], en: {} };
+  var fill = function (s, vars) { return vars ? s.replace(/\{(\w+)\}/g, function (m, k) { return vars[k] != null ? vars[k] : m; }) : s; };
 
-  /* Customer-facing presentation of each production shishaType. Prices are NOT here. */
+  /* Customer-facing presentation of each production shishaType. Prices are NOT here.
+     label / tier are product names and stay the same in every language; noteKey / refillOf are translated. */
   var CATALOG = {
     'Classic': { label: 'Blonde Leaf', tier: 'Classic', img: 'images/select-leaf/blonde-leaf.png', pos: '72% 50%', notes: 'Al Fakher · Adalya · Jam', ceiling: 5 },
     'Premium': { label: 'Dark Leaf', tier: 'Premium', img: 'images/select-leaf/dark-leaf.png', pos: '72% 50%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 },
-    'Fruit Head': { label: 'Fruit Head', tier: 'Signature', img: 'images/select-leaf/fruit-head.png', pos: '74% 45%', notes: 'Dragon Fruit · Pineapple · Apple etc.', ceiling: 10, fruit: true },
-    'Signature': { label: 'Hansum Signature', tier: 'Signature', img: 'images/signature/black-temple.webp', pos: '72% 50%', notes: '8 exclusive house blends', ceiling: 10, signature: true },
-    'Refill Blonde': { label: 'Blonde Leaf refill', tier: 'Refill', img: 'images/select-leaf/blonde-leaf.png', pos: '72% 50%', notes: 'Al Fakher · Adalya · Jam', ceiling: 10 },
-    'Refill Dark': { label: 'Dark Leaf refill', tier: 'Refill', img: 'images/select-leaf/dark-leaf.png', pos: '72% 50%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 }
+    'Fruit Head': { label: 'Fruit Head', tier: 'Signature', img: 'images/select-leaf/fruit-head.png', pos: '74% 45%', notes: 'Dragon Fruit · Pineapple · Apple etc.', noteKey: 'note_fruit', ceiling: 10, fruit: true },
+    'Signature': { label: 'Hansum Signature', tier: 'Signature', img: 'images/signature/black-temple.webp', pos: '72% 50%', notes: '8 exclusive house blends', noteKey: 'note_sig', ceiling: 10, signature: true },
+    'Refill Blonde': { label: 'Blonde Leaf refill', refillOf: 'Blonde Leaf', tier: 'Refill', img: 'images/select-leaf/blonde-leaf.png', pos: '72% 50%', notes: 'Al Fakher · Adalya · Jam', ceiling: 10 },
+    'Refill Dark': { label: 'Dark Leaf refill', refillOf: 'Dark Leaf', tier: 'Refill', img: 'images/select-leaf/dark-leaf.png', pos: '72% 50%', notes: 'Darkside · MustHave · Element · Spectrum · Kismet · etc.', ceiling: 10 }
   };
 
   /* Bowls: `value` is the unchanged internal production value passed to selectBowl(). Never shown to customers. */
   var BOWLS = [
-    { value: 'Egyptian Bowl — Cosmo', label: 'Egyptian Bowl', short: 'Egyptian', cls: 'egy', line: 'Classic · Smooth' },
-    { value: 'Phunnel Bowl — Oblako', label: 'Phunnel Bowl', short: 'Phunnel', cls: 'phu', line: 'Rich · Smoky' }
+    { value: 'Egyptian Bowl — Cosmo', label: 'Egyptian Bowl', short: 'Egyptian', cls: 'egy', line: 'Classic · Smooth', lineKey: 'bowl_line_egy' },
+    { value: 'Phunnel Bowl — Oblako', label: 'Phunnel Bowl', short: 'Phunnel', cls: 'phu', line: 'Rich · Smoky', lineKey: 'bowl_line_phu' }
   ];
 
   /* Photo crops for the flavor menu. `s` = where the photo starts inside the source banner (0-1). */
@@ -68,7 +65,10 @@
   var OMAKASE_IMG = { img: 'images/flavor/omakase.jpg', s: 0.6 };
   var OTHER_IMG = { img: 'images/flavor/other.jpg', s: 0.55 };
 
-  var STEP_NAMES = { 1: COPY.stepLeaf, 2: 'Bowl', 3: 'Flavor', 4: 'Feel', 6: 'Extras', 7: 'Your order', 9: 'Drinks', 10: 'Your round' };
+  var STEP_NAMES = { 1: 'step_leaf', 2: 'step_bowl', 3: 'step_flavor', 4: 'step_feel', 6: 'step_extras', 7: 'step_review', 9: 'step_drinks', 10: 'step_round' };
+
+  /* bandInt / bandCool / bandMint return these English band names; BAND_KEY turns them into i18n keys */
+  var BAND_KEY = { 'Light': 'light', 'Balanced': 'balanced', 'Strong': 'strong', 'Soft': 'soft', 'Medium': 'medium', 'Icy': 'icy', 'Extreme icy': 'extreme', 'Extreme strong': 'extreme' };
 
   var mixin = {
     data: function () {
@@ -80,7 +80,7 @@
         /* Signature cards 3-8 get their src only after card 1 has loaded, so the first visible photo is not
            sharing bandwidth with the whole list (Chrome's lazy-load distance covers all 8 cards). */
         sigFirstDone: false,
-        BOWLS: BOWLS, OMAKASE_IMG: OMAKASE_IMG, OTHER_IMG: OTHER_IMG, COPY: COPY
+        BOWLS: BOWLS, OMAKASE_IMG: OMAKASE_IMG, OTHER_IMG: OTHER_IMG, LANGS: I18N.langs
       };
     },
 
@@ -89,10 +89,15 @@
       isRefill: function () { var t = this.order.shishaType; return t === 'Refill Blonde' || t === 'Refill Dark'; },
       bandList: function () {
         var src = this.shishaMode === 'refill' ? this.refillOptions : this.shishaOptions;
-        return src.map(function (o) { return Object.assign({}, o, CATALOG[o.type]); });
+        var self = this;
+        return src.map(function (o) {
+          var m = CATALOG[o.type];
+          return Object.assign({}, o, m, { label: self.leafLabel(o.type), notes: m.noteKey ? self.tr(m.noteKey) : m.notes, tierText: m.tier === 'Refill' ? self.tr('tier_Refill') : m.tier });
+        });
       },
       currentMeta: function () { return CATALOG[this.order.shishaType] || null; },
-      shishaDisplay: function () { var m = this.currentMeta; return m ? m.label : ''; },
+      shishaDisplay: function () { return this.currentMeta ? this.leafLabel(this.order.shishaType) : ''; },
+      langNow: function () { var c = this.locale; return I18N.langs.find(function (l) { return l.code === c; }) || I18N.langs[0]; },
       hasBowl: function () { var t = this.order.shishaType; return t === 'Classic' || t === 'Premium'; },
       hasMint: function () { var t = this.order.shishaType; return t === 'Classic' || t === 'Premium'; },
       bowlObj: function () { var v = this.order.bowl; return BOWLS.find(function (b) { return b.value === v; }) || null; },
@@ -102,15 +107,24 @@
       bowlArticle: function () { return /^[aeiou]/i.test(this.bowlLabel) ? 'an' : 'a'; },
 
       directionItems: function () {
-        return this.flavorDirections.map(function (f) { return Object.assign({}, FLAVOR_META[f.name], { name: f.name, desc: f.description }); });
+        var self = this;
+        return this.flavorDirections.map(function (f) { return Object.assign({}, FLAVOR_META[f.name], { name: f.name, label: self.flavorName(f.name), desc: self.trOr('dir_' + f.name, f.description) }); });
       },
       specificItems: function () {
-        return this.specificFlavors.map(function (f) { return Object.assign({}, FLAVOR_META[f.name], { name: f.name }); });
+        var self = this;
+        return this.specificFlavors.map(function (f) { return Object.assign({}, FLAVOR_META[f.name], { name: f.name, label: self.flavorName(f.name) }); });
       },
       flavorLabel: function () {
         var t = this.order.flavorType;
         if (!t) return '';
         if (t === 'Other') return this.flavorSummary.trim();
+        if (this.locale !== 'en') {
+          /* same content as the English line, built from translated names (the order itself is not touched) */
+          if (t === 'Direction') return this.selectedDirections.map(this.flavorName).join(', ');
+          if (t === 'Specific') return this.flavorName(this.order.specific);
+          if (t === 'Omakase') return 'Hansum Omakase';
+          if (t === 'Signature') return this.order.signatureFlavorName;
+        }
         return this.flavorSummary.toLowerCase().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); }).split(' · ').join(', ');
       },
       /* Compact phrase for the running summary. Never a list of names, so it can not truncate mid-word. */
@@ -118,27 +132,27 @@
         var t = this.order.flavorType, n = this.selectedDirections.length;
         if (t === 'Direction') {
           if (!n) return '';
-          return n === 1 ? FLAVOR_META[this.selectedDirections[0]].label : n + ' flavors';
+          return n === 1 ? this.flavorName(this.selectedDirections[0]) : this.trn('n_flavors', n);
         }
-        if (t === 'Specific') { var d = FLAVOR_META[this.order.specific]; return d ? d.label : ''; }
+        if (t === 'Specific') { var d = FLAVOR_META[this.order.specific]; return d ? this.flavorName(this.order.specific) : ''; }
         if (t === 'Omakase') return 'Omakase';
-        if (t === 'Other') return 'Custom flavor';
+        if (t === 'Other') return this.tr('custom_flavor');
         if (t === 'Signature') return this.order.signatureFlavorName;
         return '';
       },
       /* What the customer has composed so far, shown above the flavor list. */
       blend: function () {
-        var t = this.order.flavorType, sel = this.selectedDirections;
+        var t = this.order.flavorType, sel = this.selectedDirections, self = this;
         if (t === 'Direction' || !t) {
           var slots = [0, 1, 2].map(function (i) {
             var m = FLAVOR_META[sel[i]];
-            return m ? { key: sel[i], label: m.label, img: m.img } : null;
+            return m ? { key: sel[i], label: self.flavorName(sel[i]), img: m.img } : null;
           });
           return { mode: 'dir', slots: slots };
         }
-        if (t === 'Specific') { var d = FLAVOR_META[this.order.specific]; return { mode: 'one', slots: [{ key: this.order.specific, label: d.label, img: d.img, note: 'House signature' }] }; }
-        if (t === 'Omakase') return { mode: 'one', slots: [{ key: 'OM', label: 'Hansum Omakase', img: OMAKASE_IMG.img, note: 'Chef’s choice' }] };
-        return { mode: 'one', slots: [{ key: 'OT', label: this.order.other.trim() || 'Your own', img: OTHER_IMG.img, note: 'In your words' }] };
+        if (t === 'Specific') { var d = FLAVOR_META[this.order.specific]; return { mode: 'one', slots: [{ key: this.order.specific, label: this.flavorName(this.order.specific), img: d.img, note: this.tr('note_house') }] }; }
+        if (t === 'Omakase') return { mode: 'one', slots: [{ key: 'OM', label: 'Hansum Omakase', img: OMAKASE_IMG.img, note: this.tr('note_chef') }] };
+        return { mode: 'one', slots: [{ key: 'OT', label: this.order.other.trim() || this.tr('your_own'), img: OTHER_IMG.img, note: this.tr('note_words') }] };
       },
 
       /* progress model */
@@ -151,8 +165,8 @@
         if (this.step === 10) return 80;
         return 0;
       },
-      stepName: function () { return this.step === 3 && this.isSignature ? 'Signature' : STEP_NAMES[this.step] || ''; },
-      stepCount: function () { return this.journeyIndex >= 0 ? (this.journeyIndex + 1) + ' of ' + this.journey.length : ''; },
+      stepName: function () { return this.step === 3 && this.isSignature ? this.tr('step_signature') : STEP_NAMES[this.step] ? this.tr(STEP_NAMES[this.step]) : ''; },
+      stepCount: function () { return this.journeyIndex >= 0 ? this.tr('stepOf', { i: this.journeyIndex + 1, n: this.journey.length }) : ''; },
       clearTop: function () { return this.step === 0 || this.step === 8 || this.step === 11; },
       inShishaFlow: function () { return this.journeyIndex >= 0; },
 
@@ -165,74 +179,76 @@
           var text = parts.map(function (p) { return p.split(' ').join(NB); }).join(NB + '· ');
           var base = { show: true, parts: parts, text: text, summary: parts.join(' · '), price: o.shishaType ? this.totalPrice : 0, back: true };
           if (s === 1) {
-            if (!this.currentMeta) return Object.assign(base, { hint: COPY.hintLeaf });
-            return Object.assign(base, { label: 'Continue with ' + this.currentMeta.label, disabled: false, act: 'fromShisha' });
+            if (!this.currentMeta) return Object.assign(base, { hint: this.tr('hint_leaf') });
+            return Object.assign(base, { label: this.tr('cont_with', { x: this.shishaDisplay }), disabled: false, act: 'fromShisha' });
           }
           if (s === 2) {
-            if (!this.bowlObj) return Object.assign(base, { hint: COPY.hintBowl });
-            return Object.assign(base, { label: 'Continue with ' + this.bowlObj.short, disabled: false, act: 'fromBowl' });
+            if (!this.bowlObj) return Object.assign(base, { hint: this.tr('hint_bowl') });
+            return Object.assign(base, { label: this.tr('cont_with', { x: this.bowlObj.short }), disabled: false, act: 'fromBowl' });
           }
-          if (s === 3 && this.isSignature && !this.sigObj) return Object.assign(base, { hint: COPY.hintSignature });
-          if (s === 3) return Object.assign(base, { label: this.tx('continue', 'Continue'), disabled: !this.canContinueFlavor, act: 'nextFromFlavor' });
-          if (s === 4) return Object.assign(base, { label: this.tx('continue', 'Continue'), disabled: false, act: 'nextFromPreferences' });
-          if (s === 6) return Object.assign(base, { label: o.addons.length || o.otherAddon.trim() ? this.tx('reviewOrder', 'Review order') : 'Skip and review', disabled: false, act: 'toReview' });
-          if (s === 7) return Object.assign(base, { label: 'Confirm and send', disabled: this.sending, act: 'confirmOrder', note: 'Goes straight to our team at table ' + o.table + '.', summary: '', parts: [] });
+          if (s === 3 && this.isSignature && !this.sigObj) return Object.assign(base, { hint: this.tr('hint_sig') });
+          if (s === 3) return Object.assign(base, { label: this.tr('continue'), disabled: !this.canContinueFlavor, act: 'nextFromFlavor' });
+          if (s === 4) return Object.assign(base, { label: this.tr('continue'), disabled: false, act: 'nextFromPreferences' });
+          if (s === 6) return Object.assign(base, { label: o.addons.length || o.otherAddon.trim() ? this.tr('review_order') : this.tr('skip_review'), disabled: false, act: 'toReview' });
+          if (s === 7) return Object.assign(base, { label: this.tr('confirm_send'), disabled: this.sending, act: 'confirmOrder', note: this.tr('note_team', { n: o.table }), summary: '', parts: [] });
         }
         if (s === 9) {
-          var n = this.basketCount, w = n === 1 ? 'item' : 'items';
-          return { show: true, back: true, summary: n ? n + ' ' + w : '', text: n ? n + NB + w : '', price: this.basketTotal, label: n ? 'Review your round' : 'Choose something', disabled: !n, act: 'toRound' };
+          var n = this.basketCount, w = this.trn('items', n);
+          return { show: true, back: true, summary: n ? w : '', text: n ? w.split(' ').join(NB) : '', price: this.basketTotal, label: n ? this.tr('review_round') : this.tr('choose_something'), disabled: !n, act: 'toRound' };
         }
-        if (s === 10) return { show: true, back: true, summary: '', price: 0, label: 'Confirm and send', disabled: this.sending || !this.basketCount, act: 'sendFinalOrder', note: 'Sent as a separate order to table ' + o.table + '.' };
+        if (s === 10) return { show: true, back: true, summary: '', price: 0, label: this.tr('confirm_send'), disabled: this.sending || !this.basketCount, act: 'sendFinalOrder', note: this.tr('note_separate', { n: o.table }) };
         return { show: false };
       },
       refShown: function () { return this.step === 11 ? this.drinkOrderRef : this.shishaOrderRef; },
-      sentTitle: function () { return this.step === 8 ? 'Your order has been sent.' : 'Your additional order has been sent.'; },
-      sentText: function () {
-        return this.step === 8
-          ? 'Your shisha order for table ' + this.order.table + ' has been sent to our team.'
-          : 'Your additional order for table ' + this.order.table + ' has been sent to our team.';
-      },
+      sentTitle: function () { return this.step === 8 ? this.tr('sent_title') : this.tr('sent_title_more'); },
+      sentText: function () { return this.tr(this.step === 8 ? 'sent_text' : 'sent_text_more', { n: this.order.table }); },
       sendingLine: function () {
-        if (this.step === 10) return 'Table ' + this.order.table + ', ' + this.basketCount + (this.basketCount === 1 ? ' item' : ' items') + ', ' + this.formatPrice(this.basketTotal) + ' VND';
-        return ['Table ' + this.order.table, this.shishaDisplay, this.bowlObj ? this.bowlObj.short : '', this.flavorLabel].filter(Boolean).join(', ');
+        if (this.step === 10) return this.tr('tableN', { n: this.order.table }) + ', ' + this.trn('items', this.basketCount) + ', ' + this.formatPrice(this.basketTotal) + ' VND';
+        return [this.tr('tableN', { n: this.order.table }), this.shishaDisplay, this.bowlObj ? this.bowlObj.short : '', this.flavorLabel].filter(Boolean).join(', ');
       },
 
       /* Feel: descriptive wording only. Ranges, defaults and caps are production rules (order.*, prefMax). */
       feelSentence: function () {
         var o = this.order, i = o.intensity, c = o.mint, m = o.mintiness;
-        var s = i === 0 ? 'Barely any draw' : this.bandInt(i);
-        var coolTxt = c === 0 ? '' : { 'Soft': 'a soft chill', 'Medium': 'a medium chill', 'Icy': 'an icy chill', 'Extreme icy': 'an extreme icy chill' }[this.bandCool(c)];
-        var mintTxt = !this.hasMint || m === 0 ? '' : { 'Soft': 'a touch of mint', 'Medium': 'medium mint', 'Strong': 'strong mint', 'Extreme strong': 'extreme mint' }[this.bandMint(m)];
+        var s = i === 0 ? this.tr('fs_barely') : this.tr('fs_int_' + BAND_KEY[this.bandInt(i)]);
+        var coolTxt = c === 0 ? '' : this.tr('fs_cool_' + BAND_KEY[this.bandCool(c)]);
+        var mintTxt = !this.hasMint || m === 0 ? '' : this.tr('fs_mint_' + BAND_KEY[this.bandMint(m)]);
         var extra = [coolTxt, mintTxt].filter(Boolean);
-        return s + (extra.length ? ', with ' + extra.join(' and ') : ', no cooling') + '.';
+        return extra.length ? this.tr('fs_with', { base: s, list: extra.join(this.tr('fs_and')) }) : this.tr('fs_nocool', { base: s });
       },
       dials: function () {
         var o = this.order;
         var d = [
-          { field: 'intensity', name: 'Intensity', val: o.intensity, band: this.bandInt(o.intensity), tone: 'gold' },
-          { field: 'mint', name: 'Cool', val: o.mint, band: this.bandCool(o.mint), tone: 'cyan' }
+          { field: 'intensity', name: this.tr('d_int'), val: o.intensity, band: this.bandText('int', this.bandInt(o.intensity)), tone: 'gold' },
+          { field: 'mint', name: this.tr('d_cool'), val: o.mint, band: this.bandText('cool', this.bandCool(o.mint)), tone: 'cyan' }
         ];
-        if (this.hasMint) d.push({ field: 'mintiness', name: 'Mint', val: o.mintiness, band: this.bandMint(o.mintiness), tone: 'mint' });
+        if (this.hasMint) d.push({ field: 'mintiness', name: this.tr('d_mint'), val: o.mintiness, band: this.bandText('mint', this.bandMint(o.mintiness)), tone: 'mint' });
         return d;
       },
       feelShort: function () {
-        var o = this.order, t = 'Intensity ' + o.intensity + ' · Cool ' + o.mint;
-        if (this.hasMint) t += ' · Mint ' + o.mintiness;
+        var o = this.order, t = this.tr('d_int') + ' ' + o.intensity + ' · ' + this.tr('d_cool') + ' ' + o.mint;
+        if (this.hasMint) t += ' · ' + this.tr('d_mint') + ' ' + o.mintiness;
         return t;
       },
       orderRows: function () {
-        var o = this.order, rows = [];
-        rows.push({ k: 'Shisha', v: this.shishaDisplay, step: 1 });
-        if (this.hasBowl && o.bowl) rows.push({ k: 'Bowl', v: this.bowlLabel, step: 2 });
-        rows.push({ k: this.isSignature ? 'Signature' : 'Flavor', v: this.flavorLabel || 'Not chosen yet', step: 3 });
-        rows.push({ k: 'Feel', v: this.feelShort, step: 4 });
-        var ex = o.addons.map(function (a) { return a.name; }).concat(o.otherAddon.trim() ? [o.otherAddon.trim()] : []);
-        rows.push({ k: 'Extras', v: ex.length ? ex.join(', ') : 'None', step: 6 });
+        var o = this.order, rows = [], self = this;
+        rows.push({ k: this.tr('k_shisha'), v: this.shishaDisplay, step: 1 });
+        if (this.hasBowl && o.bowl) rows.push({ k: this.tr('k_bowl'), v: this.bowlLabel, step: 2 });
+        rows.push({ k: this.isSignature ? this.tr('k_signature') : this.tr('k_flavor'), v: this.flavorLabel || this.tr('not_chosen'), step: 3 });
+        rows.push({ k: this.tr('k_feel'), v: this.feelShort, step: 4 });
+        var ex = o.addons.map(function (a) { return self.locale === 'en' ? a.name : self.addonText(a.name); }).concat(o.otherAddon.trim() ? [o.otherAddon.trim()] : []);
+        rows.push({ k: this.tr('k_extras'), v: ex.length ? ex.join(', ') : this.tr('none'), step: 6 });
         return rows;
       }
     },
 
     watch: {
+      /* <html lang> follows the chosen language (screen readers, line breaking, fonts in css/order.css) */
+      locale: { immediate: true, handler: function (c) {
+        var l = I18N.langs.find(function (x) { return x.code === c; });
+        document.documentElement.lang = l ? l.html : 'en';
+        var skip = document.querySelector('a[href="#main"]'); if (skip) skip.textContent = this.tr('skip');   /* the page's static skip link */
+      } },
       /* runs in addition to the page's own step watcher (which persists state) */
       step: function (n, o) {
         var self = this;
@@ -247,20 +263,47 @@
     },
 
     methods: {
-      /* i18n: English uses the V2.1 wording; other languages use the page's existing translation when one exists. */
-      tx: function (key, en) {
-        if (this.locale === 'en') return en;
-        var d = this.translations && this.translations[this.locale];
-        return (d && d[key]) || en;
+      /* i18n (js/order-i18n.js). tr: key -> text in the chosen language, English when missing; {name} filled from vars. */
+      tr: function (key, vars) {
+        var d = I18N[this.locale] || {}, s = d[key];
+        if (s == null) s = I18N.en[key];
+        return s == null ? key : fill(s, vars);
       },
+      /* trOr: like tr, but `fallback` (a page / POS value) when no language has the key */
+      trOr: function (key, fallback, vars) {
+        var d = I18N[this.locale] || {};
+        if (d[key] != null) return fill(d[key], vars);
+        if (I18N.en[key] != null) return fill(I18N.en[key], vars);
+        return fallback;
+      },
+      /* plurals: key_one / key_few / key_many / key_other, chosen by Intl.PluralRules for the language */
+      trn: function (key, n) {
+        var d = I18N[this.locale] || {}, cat = 'other';
+        try { cat = new Intl.PluralRules(this.locale).select(n); } catch (x) { /* very old browser */ }
+        var s = d[key + '_' + cat] || d[key + '_other'] || I18N.en[key + '_' + (n === 1 ? 'one' : 'other')] || I18N.en[key + '_other'] || key;
+        return fill(s, { n: n });
+      },
+      /* page / POS messages arrive in English: show the translation when it is a known message */
+      trMsg: function (text) {
+        if (!text || this.locale === 'en') return text;
+        var en = I18N.en, k = Object.keys(en).find(function (x) { return (x.indexOf('err_') === 0 || x.indexOf('msg_') === 0) && en[x] === text; });
+        return k ? this.tr(k) : text;
+      },
+      leafLabel: function (type) { var m = CATALOG[type]; if (!m) return ''; return m.refillOf ? this.tr('refill_of', { leaf: m.refillOf }) : m.label; },
+      flavorName: function (key) { var m = FLAVOR_META[key]; return this.trOr('flavor_' + key, m ? m.label : key); },
+      sigText: function (f, part) { return this.trOr('sig_' + f.id + '_' + part, part === 'd' ? f.description : f.tasting); },
+      bandText: function (kind, band) { return band === 'None' ? this.tr('band_none') : this.tr(kind + '_' + BAND_KEY[band]); },
+      addonText: function (name) { return this.trOr('addon_' + name, name); },
+      kindText: function (k) { return this.trOr('kind_' + k, k); },
+      pickLang: function (code) { this.setLocale(code); this.sheet = ''; },
       bandInt: function (v) { return v === 0 ? 'None' : v <= 3 ? 'Light' : v <= 6 ? 'Balanced' : 'Strong'; },
       bandCool: function (v) { return v === 0 ? 'None' : v <= 3 ? 'Soft' : v <= 6 ? 'Medium' : v <= 9 ? 'Icy' : 'Extreme icy'; },
       bandMint: function (v) { return v === 0 ? 'None' : v <= 3 ? 'Soft' : v <= 6 ? 'Medium' : v <= 9 ? 'Strong' : 'Extreme strong'; },
-      addonName: function (a) { return cap(a.name.replace(/\s*\(.*\)\s*$/, '').toLowerCase()); },
-      addonNote: function (a) { return a.note || ''; },
+      addonName: function (a) { return this.trOr('addon_' + a.name, cap(a.name.replace(/\s*\(.*\)\s*$/, '').toLowerCase())); },
+      addonNote: function (a) { return a.note ? this.trOr('addon_note_' + a.note, a.note) : ''; },
       catTitle: function (cat) {
-        if (this.locale !== 'en') return this.categoryTitle(cat);
-        return cat.name === 'Cocktails' ? cap(cat.label.toLowerCase()) + ' cocktails' : cat.name;
+        if (this.locale === 'en') return cat.name === 'Cocktails' ? cap(cat.label.toLowerCase()) + ' cocktails' : cat.name;
+        return this.trOr(cat.name === 'Cocktails' ? 'cat_' + cat.label + '_Cocktails' : 'cat_' + cat.name, this.categoryTitle(cat));
       },
       catFrom: function (cat) { return Math.min.apply(null, cat.items.map(function (i) { return i.price; })); },
       isDirSel: function (n) { return this.selectedDirections.indexOf(n) > -1; },
@@ -379,6 +422,11 @@
       logSent: function (kind, ref, title, total) { this.sentLog.push({ ref: ref, kind: kind, title: title, total: total }); }
     },
 
+    /* a saved vi / ru choice is restored here too (the page itself restores only the languages it lists) */
+    created: function () {
+      try { var saved = localStorage.getItem('hansumLocale'); if (saved && I18N.langs.some(function (l) { return l.code === saved; })) this.locale = saved; } catch (x) { /* storage blocked */ }
+    },
+
     mounted: function () {
       var self = this;
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') self.sheet = ''; });
@@ -390,15 +438,18 @@
     <div class="pline" aria-hidden="true"><i :style="{width:progress+'%'}"></i></div>
 
     <header class="top" :class="{'top--clear':clearTop}">
-      <button class="mono" @click="sheet='lounge'" aria-label="Open table info: Wi-Fi and links"><span class="mono__g"></span></button>
+      <button class="mono" @click="sheet='lounge'" :aria-label="tr('tableInfoAria')"><span class="mono__g"></span></button>
       <div class="top__mid" aria-live="polite">
         <span class="top__name" v-if="stepName">{{stepName}}</span>
         <span class="top__count" v-if="stepCount">{{stepCount}}</span>
       </div>
-      <button class="tab-chip" @click="sheet='lounge'" :aria-label="(order.table?'Table '+order.table:'No table chosen yet')+', Hansum '+L.name">
-        <span class="tab-chip__dot" :class="{qr:tableLocked}"></span>
-        <span>Table {{order.table||'–'}}</span>
-      </button>
+      <div class="top__end">
+        <button class="lang-chip" @click="sheet='lang'" :aria-label="tr('language')+': '+langNow.label" :lang="langNow.html"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.6 3.6 5.6 3.6 9s-1.2 6.4-3.6 9c-2.4-2.6-3.6-5.6-3.6-9S9.6 5.6 12 3z"/></svg><span>{{langNow.short}}</span></button>
+        <button class="tab-chip" @click="sheet='lounge'" :aria-label="tr('tableChipAria',{table:order.table?tr('tableN',{n:order.table}):tr('noTable'),name:L.name})">
+          <span class="tab-chip__dot" :class="{qr:tableLocked}"></span>
+          <span>{{tr('tableN',{n:order.table||'–'})}}</span>
+        </button>
+      </div>
     </header>
 
     <main id="main" class="stage" ref="stage" tabindex="-1">
@@ -407,68 +458,68 @@
       <section v-if="needsTable" class="scr scr--table" :key="'table'">
         <div class="table__num" :class="{empty:!order.table}" aria-hidden="true">{{order.table||'00'}}</div>
         <div class="table__body">
-          <h1 class="h1" tabindex="-1" data-focus>Where are you sitting?</h1>
-          <p class="sub">Pick your table number so the team knows where to bring your order.</p>
-          <div class="table__grid" role="group" aria-label="Table number">
+          <h1 class="h1" tabindex="-1" data-focus>{{tr('tbl_h')}}</h1>
+          <p class="sub">{{tr('tbl_sub')}}</p>
+          <div class="table__grid" role="group" :aria-label="tr('tbl_grid')">
             <button v-for="t in tables" :key="t" class="tnum" :class="{on:order.table===t}" :aria-pressed="order.table===t" @click="chooseTable(t)">{{t}}</button>
           </div>
-          <button class="btn btn--gold btn--block" :disabled="!order.table" @click="confirmTable">{{order.table?'This is table '+order.table:'Choose a table'}}<svg class="ic"><use href="#i-arrow"/></svg></button>
+          <button class="btn btn--gold btn--block" :disabled="!order.table" @click="confirmTable">{{order.table?tr('tbl_confirm',{n:order.table}):tr('tbl_choose')}}<svg class="ic"><use href="#i-arrow"/></svg></button>
         </div>
       </section>
 
       <!-- 0b. Welcome -->
       <section v-else-if="step===0 && (tableLocked||L.chooser)" class="scr scr--welcome" :key="'welcome'">
-        <div class="welcome__photo" role="img" aria-label="Guest exhaling smoke under pink neon at Hansum"></div>
+        <div class="welcome__photo" role="img" :aria-label="tr('wel_photo')"></div>
         <div class="welcome__shade"></div>
         <div class="welcome__body">
-          <p class="where"><span class="where__dot"></span>Hansum {{L.name}}, table {{order.table}}</p>
-          <h1 class="display" tabindex="-1" data-focus>Take a<br><em>breath.</em></h1>
-          <p class="lede">Shisha, cocktails and coffee, ordered from your table.</p>
+          <p class="where"><span class="where__dot"></span>{{tr('wel_where',{name:L.name,n:order.table})}}</p>
+          <h1 class="display" tabindex="-1" data-focus>{{tr('wel_h1a')}}<br><em>{{tr('wel_h1b')}}</em></h1>
+          <p class="lede">{{tr('wel_lede')}}</p>
 
-          <div class="onyours" v-if="sentLog.length" aria-label="Orders sent from this table">
-            <p class="onyours__t">Sent from your table</p>
+          <div class="onyours" v-if="sentLog.length" :aria-label="tr('wel_sentAria')">
+            <p class="onyours__t">{{tr('wel_sent')}}</p>
             <ul>
-              <li v-for="s in sentLog" :key="s.ref"><span class="onyours__ref">{{s.ref}}</span><span class="onyours__k">{{s.kind}}</span></li>
+              <li v-for="s in sentLog" :key="s.ref"><span class="onyours__ref">{{s.ref}}</span><span class="onyours__k">{{kindText(s.kind)}}</span></li>
             </ul>
           </div>
 
           <div class="acts">
-            <button class="btn btn--gold btn--block" @click="startMoreShisha">{{shishaSent?'Order another shisha':'Start with shisha'}}<svg class="ic"><use href="#i-arrow"/></svg></button>
-            <button class="btn btn--line btn--block" @click="startMoreOrder">{{shishaSent||sentLog.length?'Order drinks':'Just drinks'}}</button>
+            <button class="btn btn--gold btn--block" @click="startMoreShisha">{{shishaSent?tr('wel_another'):tr('wel_start')}}<svg class="ic"><use href="#i-arrow"/></svg></button>
+            <button class="btn btn--line btn--block" @click="startMoreOrder">{{shishaSent||sentLog.length?tr('wel_drinks'):tr('wel_justDrinks')}}</button>
           </div>
-          <button class="link link--center" @click="sheet='lounge'">Wi-Fi, Instagram and map</button>
+          <button class="link link--center" @click="sheet='lounge'">{{tr('wel_links')}}</button>
         </div>
       </section>
 
       <!-- 1. Shisha: what experience am I buying? -->
       <section v-else-if="step===1" class="scr scr--shisha" :key="'shisha'">
         <div class="ph">
-          <h1 class="h1" tabindex="-1" data-focus>{{COPY.headingLeaf}}</h1>
-          <div class="seg" role="group" aria-label="Session type">
-            <button :class="{on:shishaMode==='new'}" :aria-pressed="shishaMode==='new'" @click="setShishaMode('new')">New session</button>
-            <button :class="{on:shishaMode==='refill'}" :aria-pressed="shishaMode==='refill'" @click="setShishaMode('refill')">Refill</button>
+          <h1 class="h1" tabindex="-1" data-focus>{{tr('leaf_h')}}</h1>
+          <div class="seg" role="group" :aria-label="tr('mode_aria')">
+            <button :class="{on:shishaMode==='new'}" :aria-pressed="shishaMode==='new'" @click="setShishaMode('new')">{{tr('mode_new')}}</button>
+            <button :class="{on:shishaMode==='refill'}" :aria-pressed="shishaMode==='refill'" @click="setShishaMode('refill')">{{tr('mode_refill')}}</button>
           </div>
-          <p class="sub sub--tight" v-if="shishaMode==='refill'">Continue your session with fresh tobacco.</p>
+          <p class="sub sub--tight" v-if="shishaMode==='refill'">{{tr('refill_sub')}}</p>
         </div>
-        <div class="bands bands--tap" role="group" aria-label="Shisha options">
+        <div class="bands bands--tap" role="group" :aria-label="tr('shisha_aria')">
           <button v-for="s in bandList" :key="s.type" class="band" :class="{on:order.shishaType===s.type,'band--sig':s.signature}" :aria-pressed="order.shishaType===s.type" @click="tapShisha(s)">
             <span class="band__img" :style="{backgroundImage:'url('+s.img+')',backgroundPosition:s.pos}"></span>
             <span class="band__shade"></span>
             <span class="band__in">
-              <span class="band__tier">{{s.tier}}</span>
+              <span class="band__tier">{{s.tierText}}</span>
               <span class="band__head">
                 <span class="band__name">{{s.label}}</span>
                 <span class="band__price"><b>{{formatPrice(s.price)}}</b> VND</span>
               </span>
               <span class="band__more">
                 <span class="band__notes">{{s.notes}}</span>
-                <span class="gauge" :aria-label="'Intensity up to '+(s.type==='Classic'?5:10)+' out of 10'">
-                  <span class="gauge__t">Intensity up to {{s.type==='Classic'?5:10}}</span>
+                <span class="gauge" :aria-label="tr('int_upto_aria',{n:s.type==='Classic'?5:10})">
+                  <span class="gauge__t">{{tr('int_upto',{n:s.type==='Classic'?5:10})}}</span>
                   <span class="gauge__b"><i v-for="n in 10" :key="n" :class="{on:n<=(s.type==='Classic'?5:10)}"></i></span>
                 </span>
-                <span class="band__path" v-if="s.fruit">Served in fresh fruit. No bowl to choose.</span>
-                <span class="band__path" v-else-if="s.tier==='Refill'">Straight to flavor.</span>
-                <span class="band__path" v-else-if="s.signature">House-crafted flavor combinations.</span>
+                <span class="band__path" v-if="s.fruit">{{tr('path_fruit')}}</span>
+                <span class="band__path" v-else-if="s.tier==='Refill'">{{tr('path_refill')}}</span>
+                <span class="band__path" v-else-if="s.signature">{{tr('path_sig')}}</span>
               </span>
             </span>
             <span class="band__tick" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
@@ -479,16 +530,16 @@
       <!-- 2. Bowl: which style? -->
       <section v-else-if="step===2" class="scr scr--bowl" :key="'bowl'">
         <div class="ph">
-          <h1 class="h1" tabindex="-1" data-focus>Which bowl?</h1>
-          <p class="sub">Different style, different experience.</p>
+          <h1 class="h1" tabindex="-1" data-focus>{{tr('bowl_h')}}</h1>
+          <p class="sub">{{tr('bowl_sub')}}</p>
         </div>
-        <div class="bowls" :class="{pick:order.bowl}" role="group" aria-label="Bowl style">
+        <div class="bowls" :class="{pick:order.bowl}" role="group" :aria-label="tr('bowl_aria')">
           <button v-for="b in BOWLS" :key="b.value" class="bowl" :class="[b.cls,{on:order.bowl===b.value}]" :aria-pressed="order.bowl===b.value" @click="tapBowl(b)">
             <span class="bowl__img" role="img" :aria-label="b.label"></span>
             <span class="bowl__shade"></span>
             <span class="bowl__cap">
               <span class="bowl__name">{{b.label}}</span>
-              <span class="bowl__line">{{b.line}}</span>
+              <span class="bowl__line">{{tr(b.lineKey)}}</span>
             </span>
             <span class="bowl__tick" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
           </button>
@@ -498,18 +549,18 @@
       <!-- 3s. Hansum Signature: one of the 8 house blends (no bowl, no blending) -->
       <section v-else-if="step===3 && isSignature" class="scr scr--sig" :key="'signature'">
         <div class="ph">
-          <h1 class="h1" tabindex="-1" data-focus>Choose your signature</h1>
-          <p class="sub">Eight house blends, one price. Tap to continue.</p>
+          <h1 class="h1" tabindex="-1" data-focus>{{tr('sig_h')}}</h1>
+          <p class="sub">{{tr('sig_sub')}}</p>
         </div>
-        <div class="sigs" :class="{pick:sigObj}" role="radiogroup" aria-label="Hansum Signature blends">
+        <div class="sigs" :class="{pick:sigObj}" role="radiogroup" :aria-label="tr('sig_aria')">
           <button v-for="(f,i) in signatureFlavors" :key="f.id" class="sig" :class="{on:order.signatureFlavorId===f.id}" role="radio" :aria-checked="order.signatureFlavorId===f.id" @click="selectSignature(f)">
             <img class="sig__img" :src="i<2||sigFirstDone?f.image:null" alt="" :loading="i<2?'eager':'lazy'" :fetchpriority="i<2?'high':'low'" decoding="async" @load="i===0&&(sigFirstDone=true)" @error="i===0&&(sigFirstDone=true)">
             <span class="sig__shade"></span>
             <span class="sig__cap">
               <span class="sig__name">{{f.name}}</span>
               <span class="sig__rule" aria-hidden="true"></span>
-              <span class="sig__desc">{{f.description}}</span>
-              <span v-if="f.tasting" class="sig__note">{{f.tasting}}</span>
+              <span class="sig__desc">{{sigText(f,'d')}}</span>
+              <span v-if="f.tasting" class="sig__note">{{sigText(f,'t')}}</span>
             </span>
             <span class="sig__tick" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
           </button>
@@ -519,28 +570,28 @@
       <!-- 3. Flavor: explore, blend -->
       <section v-else-if="step===3" class="scr scr--flavor" :key="'flavor'">
         <div class="ph">
-          <h1 class="h1" tabindex="-1" data-focus>What do you feel like?</h1>
-          <p class="sub sub--one">Blend up to three, or leave it to us.</p>
+          <h1 class="h1" tabindex="-1" data-focus>{{tr('fl_h')}}</h1>
+          <p class="sub sub--one">{{tr('fl_sub')}}</p>
         </div>
 
-        <div class="blend" role="group" aria-label="Your flavor blend">
+        <div class="blend" role="group" :aria-label="tr('blend_aria')">
           <template v-if="blend.mode==='dir'">
             <div v-for="(sl,i) in blend.slots" :key="i" class="slot">
-              <button v-if="sl" class="slot__disc filled" :style="{backgroundImage:'url('+sl.img+')'}" @click="toggleDirection(sl.key)" :aria-label="'Remove '+sl.label"><span class="slot__x" aria-hidden="true"><svg class="ic"><use href="#i-close"/></svg></span></button>
+              <button v-if="sl" class="slot__disc filled" :style="{backgroundImage:'url('+sl.img+')'}" @click="toggleDirection(sl.key)" :aria-label="tr('remove_x',{x:sl.label})"><span class="slot__x" aria-hidden="true"><svg class="ic"><use href="#i-close"/></svg></span></button>
               <span v-else class="slot__disc" aria-hidden="true">{{i+1}}</span>
-              <span class="slot__name" :class="{dim:!sl}">{{sl?sl.label:['First','Second','Third'][i]}}</span>
+              <span class="slot__name" :class="{dim:!sl}">{{sl?sl.label:tr('slot_'+(i+1))}}</span>
             </div>
           </template>
           <template v-else>
             <div class="slot slot--one">
-              <button class="slot__disc filled" :style="{backgroundImage:'url('+blend.slots[0].img+')'}" @click="clearFlavor" :aria-label="'Clear '+blend.slots[0].label"><span class="slot__x" aria-hidden="true"><svg class="ic"><use href="#i-close"/></svg></span></button>
+              <button class="slot__disc filled" :style="{backgroundImage:'url('+blend.slots[0].img+')'}" @click="clearFlavor" :aria-label="tr('clear_x',{x:blend.slots[0].label})"><span class="slot__x" aria-hidden="true"><svg class="ic"><use href="#i-close"/></svg></span></button>
               <span class="slot__txt"><span class="slot__name">{{blend.slots[0].label}}</span><span class="slot__note">{{blend.slots[0].note}}</span></span>
             </div>
           </template>
         </div>
 
-        <h2 class="h2">Directions</h2>
-        <div class="menu" role="group" aria-label="Flavor directions">
+        <h2 class="h2">{{tr('fl_dirs')}}</h2>
+        <div class="menu" role="group" :aria-label="tr('fl_dirs_aria')">
           <button v-for="f in directionItems" :key="f.name" class="frow" :class="{on:isDirSel(f.name)}" :aria-pressed="isDirSel(f.name)" @click="toggleDirection(f.name)">
             <span class="frow__img" :style="{backgroundImage:'url('+f.img+')','--s':f.s}"></span>
             <span class="frow__txt"><span class="frow__name">{{f.label}}</span><span class="frow__desc">{{f.desc}}</span></span>
@@ -549,8 +600,8 @@
         </div>
 
         <template v-if="showSpecific">
-          <h2 class="h2">House signatures <small>Pick one instead</small></h2>
-          <div class="menu" role="radiogroup" aria-label="House signatures">
+          <h2 class="h2">{{tr('house_h')}} <small>{{tr('house_small')}}</small></h2>
+          <div class="menu" role="radiogroup" :aria-label="tr('house_h')">
             <button v-for="f in specificItems" :key="f.name" class="frow frow--radio frow--tight" :class="{on:order.flavorType==='Specific'&&order.specific===f.name}" role="radio" :aria-checked="order.flavorType==='Specific'&&order.specific===f.name" @click="selectSpecific(f.name)">
               <span class="frow__img" :style="{backgroundImage:'url('+f.img+')','--s':f.s}"></span>
               <span class="frow__txt"><span class="frow__name">{{f.label}}</span></span>
@@ -559,21 +610,21 @@
           </div>
         </template>
 
-        <h2 class="h2">Or leave it to us</h2>
-        <div class="menu" role="radiogroup" aria-label="Chef's choice or your own">
+        <h2 class="h2">{{tr('leave_h')}}</h2>
+        <div class="menu" role="radiogroup" :aria-label="tr('leave_aria')">
           <button class="frow frow--radio" :class="{on:order.flavorType==='Omakase'}" role="radio" :aria-checked="order.flavorType==='Omakase'" @click="selectOmakase">
             <span class="frow__img" :style="{backgroundImage:'url('+OMAKASE_IMG.img+')','--s':OMAKASE_IMG.s}"></span>
-            <span class="frow__txt"><span class="frow__name">Hansum Omakase</span><span class="frow__desc">Let our shisha chef decide.</span></span>
+            <span class="frow__txt"><span class="frow__name">Hansum Omakase</span><span class="frow__desc">{{tr('omakase_desc')}}</span></span>
             <span class="frow__mark" aria-hidden="true"><svg v-if="order.flavorType==='Omakase'" class="ic"><use href="#i-check"/></svg><i v-else class="ring"></i></span>
           </button>
           <button class="frow frow--radio" :class="{on:order.flavorType==='Other'}" role="radio" :aria-checked="order.flavorType==='Other'" @click="pickOther">
             <span class="frow__img" :style="{backgroundImage:'url('+OTHER_IMG.img+')','--s':OTHER_IMG.s}"></span>
-            <span class="frow__txt"><span class="frow__name">Something else</span><span class="frow__desc">Tell us what you have in mind.</span></span>
+            <span class="frow__txt"><span class="frow__name">{{tr('other')}}</span><span class="frow__desc">{{tr('other_desc')}}</span></span>
             <span class="frow__mark" aria-hidden="true"><svg v-if="order.flavorType==='Other'" class="ic"><use href="#i-check"/></svg><i v-else class="ring"></i></span>
           </button>
           <div class="reveal" :class="{open:order.flavorType==='Other'}">
             <div class="reveal__in">
-              <textarea ref="otherText" v-model="order.other" class="field" rows="3" placeholder="Tell us your preferred flavor…" aria-label="Preferred flavor" :tabindex="order.flavorType==='Other'?0:-1"></textarea>
+              <textarea ref="otherText" v-model="order.other" class="field" rows="3" :placeholder="tr('other_ph')" :aria-label="tr('other_aria')" :tabindex="order.flavorType==='Other'?0:-1"></textarea>
             </div>
           </div>
         </div>
@@ -582,14 +633,14 @@
       <!-- 4. Feel: three faders -->
       <section v-else-if="step===4" class="scr scr--feel" :key="'feel'">
         <div class="ph">
-          <h1 class="h1" tabindex="-1" data-focus>How should it feel?</h1>
+          <h1 class="h1" tabindex="-1" data-focus>{{tr('feel_h')}}</h1>
           <p class="voice" aria-live="polite">{{feelSentence}}</p>
         </div>
         <div class="dials" :class="{'dials--two':dials.length===2}">
           <div v-for="d in dials" :key="d.field" class="dial" :class="['tone-'+d.tone,{active:activeDial===d.field}]">
             <div class="dial__val" aria-hidden="true"><span :key="d.val">{{d.val}}</span></div>
             <div class="dial__track" role="slider" tabindex="0" aria-orientation="vertical"
-                 :aria-label="d.name" aria-valuemin="0" :aria-valuemax="prefMax" :aria-valuenow="d.val" :aria-valuetext="d.val+' of '+prefMax+', '+d.band"
+                 :aria-label="d.name" aria-valuemin="0" :aria-valuemax="prefMax" :aria-valuenow="d.val" :aria-valuetext="tr('dial_valuetext',{v:d.val,max:prefMax,band:d.band})"
                  @pointerdown.prevent="dialDown(d.field,$event)" @pointermove="dialMove(d.field,$event)" @pointerup="dialUp" @pointercancel="dialUp" @keydown="dialKey(d.field,$event)">
               <i v-for="lv in levels" :key="lv" class="lv" :class="{on:lv>0&&lv<=d.val,tip:lv>0&&lv===d.val,zero:lv===0,sel:lv===d.val,lock:lv>prefMax}"><span>{{lv}}</span></i>
             </div>
@@ -599,52 +650,52 @@
         </div>
         <p class="capnote" :class="{hit:capHit}" v-if="prefMax===5" role="note">
           <svg class="ic"><use href="#i-lock"/></svg>
-          <span>Maximum intensity is 5. For stronger intensity, please select <button class="link link--inline" @click="switchToDark">Dark Leaf</button>.</span>
+          <span>{{tr('cap_a')}}<button class="link link--inline" @click="switchToDark">Dark Leaf</button>{{tr('cap_b')}}</span>
         </p>
       </section>
 
       <!-- 6. Extras: optional, light -->
       <section v-else-if="step===6" class="scr scr--extras" :key="'extras'">
         <div class="ph">
-          <h1 class="h1" tabindex="-1" data-focus>Make it yours</h1>
-          <p class="sub">Optional. Skip if you are happy as it is.</p>
+          <h1 class="h1" tabindex="-1" data-focus>{{tr('ex_h')}}</h1>
+          <p class="sub">{{tr('ex_sub')}}</p>
         </div>
-        <div class="chips" role="group" aria-label="Add-ons">
+        <div class="chips" role="group" :aria-label="tr('ex_aria')">
           <button v-for="a in addonOptions" :key="a.name" class="chip" :class="{on:isAddonSelected(a.name)}" :aria-pressed="isAddonSelected(a.name)" @click="toggleAddon(a)">
             <span class="chip__mark" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
             <span class="chip__txt"><span class="chip__name">{{addonName(a)}}</span><span class="chip__price">+{{formatPrice(a.price)}}<template v-if="addonNote(a)"> · {{addonNote(a)}}</template></span></span>
           </button>
           <button class="chip chip--other" :class="{on:otherAddonEnabled}" :aria-pressed="otherAddonEnabled" @click="pickOtherAddon">
             <span class="chip__mark" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
-            <span class="chip__txt"><span class="chip__name">Something else</span><span class="chip__price">Custom request</span></span>
+            <span class="chip__txt"><span class="chip__name">{{tr('ex_other')}}</span><span class="chip__price">{{tr('ex_custom')}}</span></span>
           </button>
         </div>
         <div class="reveal" :class="{open:otherAddonEnabled}">
           <div class="reveal__in">
-            <input ref="otherAddon" v-model="order.otherAddon" class="field" placeholder="Please specify…" aria-label="Other add-on" :tabindex="otherAddonEnabled?0:-1">
+            <input ref="otherAddon" v-model="order.otherAddon" class="field" :placeholder="tr('ex_ph')" :aria-label="tr('ex_other_aria')" :tabindex="otherAddonEnabled?0:-1">
           </div>
         </div>
-        <p class="fine fine--pad">{{addonTotal?'Extras add '+formatPrice(addonTotal)+' VND. ':''}}{{t('vatSentence')}}</p>
+        <p class="fine fine--pad">{{addonTotal?tr('ex_adds',{p:formatPrice(addonTotal)}):''}}{{tr('vatSentence')}}</p>
       </section>
 
       <!-- 7. Review: my Hansum order -->
       <section v-else-if="step===7" class="scr scr--review" :key="'review'">
         <article class="card" aria-labelledby="rv-title">
           <div class="card__photo" :style="{backgroundImage:'url('+(sigObj?sigObj.image:currentMeta?currentMeta.img:'')+')',backgroundPosition:sigObj?'72% 50%':currentMeta?currentMeta.pos:'50% 50%'}">
-            <span class="card__stamp">Table {{order.table}}</span>
+            <span class="card__stamp">{{tr('tableN',{n:order.table})}}</span>
           </div>
           <div class="card__body">
-            <h1 id="rv-title" class="card__title" tabindex="-1" data-focus>Your Hansum</h1>
-            <p class="card__on"><template v-if="bowlObj">{{shishaDisplay}} on {{bowlArticle}} {{bowlObj.label}}</template><template v-else-if="order.shishaType==='Fruit Head'">Fruit Head, served in fresh fruit</template><template v-else>{{shishaDisplay}}</template></p>
+            <h1 id="rv-title" class="card__title" tabindex="-1" data-focus>{{tr('rv_h')}}</h1>
+            <p class="card__on"><template v-if="bowlObj">{{tr(bowlArticle==='an'?'rv_on_an':'rv_on_a',{shisha:shishaDisplay,bowl:bowlObj.label})}}</template><template v-else-if="order.shishaType==='Fruit Head'">{{tr('rv_fruit')}}</template><template v-else>{{shishaDisplay}}</template></p>
 
             <dl class="lines">
               <div class="line">
-                <dt>{{isSignature?'Signature':'Flavor'}}</dt>
+                <dt>{{isSignature?tr('k_signature'):tr('k_flavor')}}</dt>
                 <dd>{{flavorLabel}}</dd>
-                <button class="edit" @click="go(3)" :aria-label="isSignature?'Edit signature':'Edit flavor'"><svg class="ic"><use href="#i-edit"/></svg></button>
+                <button class="edit" @click="go(3)" :aria-label="tr('edit_x',{x:isSignature?tr('k_signature'):tr('k_flavor')})"><svg class="ic"><use href="#i-edit"/></svg></button>
               </div>
               <div class="line line--feel">
-                <dt>Feel</dt>
+                <dt>{{tr('k_feel')}}</dt>
                 <dd>
                   <span class="mini" v-for="d in dials" :key="d.field" :class="'tone-'+d.tone">
                     <span class="mini__k">{{d.name}}</span>
@@ -652,26 +703,26 @@
                     <span class="mini__v">{{d.val}}</span>
                   </span>
                 </dd>
-                <button class="edit" @click="go(4)" aria-label="Edit feel"><svg class="ic"><use href="#i-edit"/></svg></button>
+                <button class="edit" @click="go(4)" :aria-label="tr('edit_x',{x:tr('k_feel')})"><svg class="ic"><use href="#i-edit"/></svg></button>
               </div>
               <div class="line" v-if="order.addons.length||order.otherAddon.trim()">
-                <dt>Extras</dt>
+                <dt>{{tr('k_extras')}}</dt>
                 <dd>
-                  <span class="xline" v-for="a in order.addons" :key="a.name"><span>{{a.name}}</span><span class="num">+{{formatPrice(a.price)}}</span></span>
-                  <span class="xline" v-if="order.otherAddon.trim()"><span>{{order.otherAddon}}</span><span class="num">Custom</span></span>
+                  <span class="xline" v-for="a in order.addons" :key="a.name"><span>{{locale==='en'?a.name:addonText(a.name)}}</span><span class="num">+{{formatPrice(a.price)}}</span></span>
+                  <span class="xline" v-if="order.otherAddon.trim()"><span>{{order.otherAddon}}</span><span class="num">{{tr('custom')}}</span></span>
                 </dd>
-                <button class="edit" @click="go(6)" aria-label="Edit extras"><svg class="ic"><use href="#i-edit"/></svg></button>
+                <button class="edit" @click="go(6)" :aria-label="tr('edit_x',{x:tr('k_extras')})"><svg class="ic"><use href="#i-edit"/></svg></button>
               </div>
             </dl>
 
             <div class="total">
-              <span>Total</span>
+              <span>{{tr('total')}}</span>
               <span class="total__n"><b>{{formatPrice(totalPrice)}}</b> VND</span>
             </div>
-            <p class="fine">{{t('vatSentence')}}</p>
+            <p class="fine">{{tr('vatSentence')}}</p>
           </div>
         </article>
-        <div class="alert" role="alert" v-if="sendMessage"><svg class="ic"><use href="#i-alert"/></svg><span>{{sendMessage}}</span></div>
+        <div class="alert" role="alert" v-if="sendMessage"><svg class="ic"><use href="#i-alert"/></svg><span>{{trMsg(sendMessage)}}</span></div>
       </section>
 
       <!-- 8 / 11. Sent + Order more -->
@@ -685,20 +736,20 @@
 
           <div class="stub">
             <div class="stub__main">
-              <span class="stub__k">Order reference</span>
+              <span class="stub__k">{{tr('ref')}}</span>
               <span class="stub__ref">{{refShown}}</span>
             </div>
-            <button class="stub__copy" @click="copy(refShown,'ref')" :aria-label="'Copy order reference '+refShown"><svg class="ic"><use :href="copied==='ref'?'#i-check':'#i-copy'"/></svg><span>{{copied==='ref'?'Copied':'Copy'}}</span></button>
+            <button class="stub__copy" @click="copy(refShown,'ref')" :aria-label="tr('copy_ref_aria',{ref:refShown})"><svg class="ic"><use :href="copied==='ref'?'#i-check':'#i-copy'"/></svg><span>{{copied==='ref'?tr('copied'):tr('copy')}}</span></button>
           </div>
 
           <section class="more" aria-labelledby="more-h">
-            <h2 id="more-h" class="h2 h2--flush">The menu is still open.</h2>
-            <p class="sub sub--tight">Order more shisha or drinks whenever you like. Each new order is sent separately.</p>
-            <button class="btn btn--gold btn--block" @click="startMoreOrder">Order drinks<svg class="ic"><use href="#i-arrow"/></svg></button>
-            <button class="btn btn--line btn--block" @click="startMoreShisha">Another shisha</button>
-            <button class="btn btn--ghost btn--block" @click="go(0)">Keep browsing</button>
+            <h2 id="more-h" class="h2 h2--flush">{{tr('more_h')}}</h2>
+            <p class="sub sub--tight">{{tr('more_sub')}}</p>
+            <button class="btn btn--gold btn--block" @click="startMoreOrder">{{tr('btn_drinks')}}<svg class="ic"><use href="#i-arrow"/></svg></button>
+            <button class="btn btn--line btn--block" @click="startMoreShisha">{{tr('btn_another')}}</button>
+            <button class="btn btn--ghost btn--block" @click="go(0)">{{tr('btn_browse')}}</button>
           </section>
-          <button class="link link--center link--dim" @click="finish">I’m done for tonight</button>
+          <button class="link link--center link--dim" @click="finish">{{tr('btn_done')}}</button>
         </div>
       </section>
 
@@ -708,9 +759,9 @@
           <div class="dhead__photo" :style="{backgroundImage:'url('+L.drinkPhoto+')',backgroundPosition:L.drinkPos}"></div>
           <div class="dhead__shade"></div>
           <div class="dhead__in">
-            <h1 class="h1 h1--l" tabindex="-1" data-focus>Drinks</h1>
-            <p class="sub sub--tight">{{shishaSent?'Your shisha order has already been sent. ':''}}{{tx('vat','Prices in VND. 8/10% VAT not included.')}}</p>
-            <p class="fine dhead__ref" v-if="moreCategories.some(c=>c.items.some(i=>i.img))">Picture just for reference</p>
+            <h1 class="h1 h1--l" tabindex="-1" data-focus>{{tr('drinks_h')}}</h1>
+            <p class="sub sub--tight">{{shishaSent?tr('drinks_already'):''}}{{tr('vat')}}</p>
+            <p class="fine dhead__ref" v-if="moreCategories.some(c=>c.items.some(i=>i.img))">{{tr('pic_ref')}}</p>
           </div>
         </header>
         <div class="cats">
@@ -718,7 +769,7 @@
             <h2 class="cat__h">
               <button :id="'cathead-'+ci" class="cat__btn" @click="toggleCat(ci)" :aria-expanded="openCat===ci" :aria-controls="'cat-'+ci">
                 <span class="cat__title">{{catTitle(cat)}}</span>
-                <span class="cat__meta">from {{formatPrice(catFrom(cat))}}</span>
+                <span class="cat__meta">{{tr('from_p',{p:formatPrice(catFrom(cat))})}}</span>
                 <svg class="ic cat__chev"><use href="#i-down"/></svg>
               </button>
             </h2>
@@ -732,11 +783,11 @@
                     <span class="item__price num">{{formatPrice(it.price)}}</span>
                   </div>
                   <div class="qty" v-if="itemQty(it.name)">
-                    <button @click="changeQty(it,-1)" :aria-label="'Remove one '+it.name"><svg class="ic"><use href="#i-minus"/></svg></button>
+                    <button @click="changeQty(it,-1)" :aria-label="tr('remove_one',{x:it.name})"><svg class="ic"><use href="#i-minus"/></svg></button>
                     <span class="qty__n" aria-live="polite">{{itemQty(it.name)}}</span>
-                    <button @click="changeQty(it,1)" :aria-label="'Add one more '+it.name"><svg class="ic"><use href="#i-plus"/></svg></button>
+                    <button @click="changeQty(it,1)" :aria-label="tr('add_one',{x:it.name})"><svg class="ic"><use href="#i-plus"/></svg></button>
                   </div>
-                  <button v-else class="add" @click="addMoreItem(it)" :aria-label="'Add '+it.name"><svg class="ic"><use href="#i-plus"/></svg></button>
+                  <button v-else class="add" @click="addMoreItem(it)" :aria-label="tr('add_x',{x:it.name})"><svg class="ic"><use href="#i-plus"/></svg></button>
                 </div>
               </div>
             </div>
@@ -748,104 +799,113 @@
       <section v-else-if="step===10" class="scr scr--round" :key="'round'">
         <article class="card card--slim">
           <div class="card__body">
-            <h1 class="card__title" tabindex="-1" data-focus>Your round</h1>
-            <p class="card__on">Table {{order.table}}. Sent as its own order, separate from your shisha.</p>
+            <h1 class="card__title" tabindex="-1" data-focus>{{tr('round_h')}}</h1>
+            <p class="card__on">{{tr('round_on',{n:order.table})}}</p>
             <ul class="round">
               <li v-for="it in basket" :key="it.name">
                 <div class="round__t"><span class="round__name">{{it.name}}</span><span class="round__sum num">{{formatPrice(it.price*it.qty)}}</span></div>
                 <div class="qty qty--s">
-                  <button @click="changeQty(it,-1)" :aria-label="'Remove one '+it.name"><svg class="ic"><use href="#i-minus"/></svg></button>
+                  <button @click="changeQty(it,-1)" :aria-label="tr('remove_one',{x:it.name})"><svg class="ic"><use href="#i-minus"/></svg></button>
                   <span class="qty__n">{{it.qty}}</span>
-                  <button @click="changeQty(it,1)" :aria-label="'Add one more '+it.name"><svg class="ic"><use href="#i-plus"/></svg></button>
+                  <button @click="changeQty(it,1)" :aria-label="tr('add_one',{x:it.name})"><svg class="ic"><use href="#i-plus"/></svg></button>
                 </div>
               </li>
-              <li v-if="!basket.length" class="round__empty">Nothing here yet. <button class="link link--inline" @click="go(9)">Choose drinks</button></li>
+              <li v-if="!basket.length" class="round__empty">{{tr('empty')}} <button class="link link--inline" @click="go(9)">{{tr('choose_drinks')}}</button></li>
             </ul>
-            <div class="total"><span>{{tx('subtotal','Subtotal')}}</span><span class="total__n"><b>{{formatPrice(basketTotal)}}</b> VND</span></div>
-            <p class="fine">Drinks per person: 1 drink minimum.<br>{{t('vatSentence')}}</p>
+            <div class="total"><span>{{tr('subtotal')}}</span><span class="total__n"><b>{{formatPrice(basketTotal)}}</b> VND</span></div>
+            <p class="fine">{{tr('min_drink')}}<br>{{tr('vatSentence')}}</p>
           </div>
         </article>
-        <div class="alert" role="alert" v-if="sendMessage"><svg class="ic"><use href="#i-alert"/></svg><span>{{sendMessage}}</span></div>
-        <button class="link link--center" @click="go(9)">Add more drinks</button>
+        <div class="alert" role="alert" v-if="sendMessage"><svg class="ic"><use href="#i-alert"/></svg><span>{{trMsg(sendMessage)}}</span></div>
+        <button class="link link--center" @click="go(9)">{{tr('add_more')}}</button>
       </section>
     </main>
 
     <!-- ===== Dock: one place for the primary action ===== -->
     <footer class="dock" v-if="dock.show">
-      <button class="dock__sum" v-if="dock.summary" @click="sheet='order'" :aria-label="'Order so far: '+dock.summary+'. Open details'">
+      <button class="dock__sum" v-if="dock.summary" @click="sheet='order'" :aria-label="tr('sofar_aria',{s:dock.summary})">
         <span class="dock__txt">{{dock.text}}</span>
         <span class="dock__price num" v-if="dock.price"><b>{{formatPrice(dock.price)}}</b> VND</span>
         <svg class="ic"><use href="#i-up"/></svg>
       </button>
       <p class="dock__note" v-else-if="dock.note">{{dock.note}}</p>
       <div class="dock__row">
-        <button class="dock__back" v-if="dock.back" @click="back" :aria-label="tx('back','Back')"><svg class="ic"><use href="#i-left"/></svg></button>
+        <button class="dock__back" v-if="dock.back" @click="back" :aria-label="tr('back')"><svg class="ic"><use href="#i-left"/></svg></button>
         <p class="dock__hint" v-if="dock.hint">{{dock.hint}}</p>
         <button v-else class="btn btn--gold btn--grow" :class="{busy:sending}" :disabled="dock.disabled" :aria-busy="sending" @click="dockAct">
-          <span>{{sending?tx('sending','Sending…'):dock.label}}</span><svg class="ic" v-if="!sending&&!dock.disabled"><use href="#i-arrow"/></svg>
+          <span>{{sending?tr('sending'):dock.label}}</span><svg class="ic" v-if="!sending&&!dock.disabled"><use href="#i-arrow"/></svg>
         </button>
       </div>
     </footer>
 
     <!-- ===== Sheets ===== -->
     <div class="scrim" v-if="sheet" @click="sheet=''"></div>
-    <section class="sheet" :class="{open:sheet}" role="dialog" aria-modal="true" :aria-label="sheet==='order'?'Order so far':'Table information'" :inert="!sheet">
-      <div class="sheet__grab"><button @click="sheet=''" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button></div>
+    <section class="sheet" :class="{open:sheet}" role="dialog" aria-modal="true" :aria-label="sheet==='order'?tr('sheet_order'):sheet==='lang'?tr('language'):tr('sheet_info')" :inert="!sheet">
+      <div class="sheet__grab"><button @click="sheet=''" :aria-label="tr('close')"><svg class="ic"><use href="#i-close"/></svg></button></div>
 
       <div v-if="sheet==='order'" class="sheet__in">
         <template v-if="inShishaFlow">
-          <h2 class="sheet__h">Your order so far</h2>
+          <h2 class="sheet__h">{{tr('sofar_h')}}</h2>
           <ul class="rows">
             <li v-for="r in orderRows" :key="r.k">
               <span class="rows__k">{{r.k}}</span><span class="rows__v">{{r.v}}</span>
-              <button class="edit edit--txt" @click="go(r.step)" :aria-label="'Change '+r.k">Change</button>
+              <button class="edit edit--txt" @click="go(r.step)" :aria-label="tr('change_x',{x:r.k})">{{tr('change')}}</button>
             </li>
           </ul>
-          <div class="total"><span>Total</span><span class="total__n"><b>{{formatPrice(totalPrice)}}</b> VND</span></div>
-          <p class="fine">{{t('vatSentence')}}</p>
+          <div class="total"><span>{{tr('total')}}</span><span class="total__n"><b>{{formatPrice(totalPrice)}}</b> VND</span></div>
+          <p class="fine">{{tr('vatSentence')}}</p>
         </template>
         <template v-else>
-          <h2 class="sheet__h">Your round</h2>
+          <h2 class="sheet__h">{{tr('round_h')}}</h2>
           <ul class="round">
             <li v-for="it in basket" :key="it.name">
               <div class="round__t"><span class="round__name">{{it.name}}</span><span class="round__sum num">{{formatPrice(it.price*it.qty)}}</span></div>
-              <div class="qty qty--s"><button @click="changeQty(it,-1)" :aria-label="'Remove one '+it.name"><svg class="ic"><use href="#i-minus"/></svg></button><span class="qty__n">{{it.qty}}</span><button @click="changeQty(it,1)" :aria-label="'Add one more '+it.name"><svg class="ic"><use href="#i-plus"/></svg></button></div>
+              <div class="qty qty--s"><button @click="changeQty(it,-1)" :aria-label="tr('remove_one',{x:it.name})"><svg class="ic"><use href="#i-minus"/></svg></button><span class="qty__n">{{it.qty}}</span><button @click="changeQty(it,1)" :aria-label="tr('add_one',{x:it.name})"><svg class="ic"><use href="#i-plus"/></svg></button></div>
             </li>
-            <li v-if="!basket.length" class="round__empty">Nothing here yet.</li>
+            <li v-if="!basket.length" class="round__empty">{{tr('empty')}}</li>
           </ul>
-          <div class="total"><span>{{tx('subtotal','Subtotal')}}</span><span class="total__n"><b>{{formatPrice(basketTotal)}}</b> VND</span></div>
-          <p class="fine">{{t('vatSentence')}}</p>
+          <div class="total"><span>{{tr('subtotal')}}</span><span class="total__n"><b>{{formatPrice(basketTotal)}}</b> VND</span></div>
+          <p class="fine">{{tr('vatSentence')}}</p>
         </template>
       </div>
 
       <div v-if="sheet==='lounge'" class="sheet__in">
         <h2 class="sheet__h">Hansum {{L.name}}</h2>
-        <p class="sheet__sub">Table {{order.table||'–'}}<template v-if="tableLocked"> · from your table’s QR</template></p>
+        <p class="sheet__sub">{{tr('tableN',{n:order.table||'–'})}}<template v-if="tableLocked">{{tr('from_qr')}}</template></p>
         <div class="wifi">
-          <div><span class="wifi__k">Wi-Fi</span><span class="wifi__v">{{L.wifi.ssid}}</span></div>
-          <div><span class="wifi__k">Password</span><span class="wifi__v">{{L.wifi.pass}}</span></div>
-          <button class="btn btn--line btn--sm" @click="copy(L.wifi.pass,'wifi')"><svg class="ic"><use :href="copied==='wifi'?'#i-check':'#i-copy'"/></svg>{{copied==='wifi'?'Copied':'Copy password'}}</button>
+          <div><span class="wifi__k">{{tr('wifi')}}</span><span class="wifi__v">{{L.wifi.ssid}}</span></div>
+          <div><span class="wifi__k">{{tr('password')}}</span><span class="wifi__v">{{L.wifi.pass}}</span></div>
+          <button class="btn btn--line btn--sm" @click="copy(L.wifi.pass,'wifi')"><svg class="ic"><use :href="copied==='wifi'?'#i-check':'#i-copy'"/></svg>{{copied==='wifi'?tr('copied'):tr('copy_pw')}}</button>
         </div>
-        <div class="seg seg--3" role="group" aria-label="Language"><button v-for="lg in languages" :key="lg.code" :class="{on:locale===lg.code}" :aria-pressed="locale===lg.code" @click="setLocale(lg.code)">{{lg.label}}</button></div>
+        <button class="lang-row" @click="sheet='lang'"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.6 3.6 5.6 3.6 9s-1.2 6.4-3.6 9c-2.4-2.6-3.6-5.6-3.6-9S9.6 5.6 12 3z"/></svg><span class="lang-row__k">{{tr('language')}}</span><span class="lang-row__v" :lang="langNow.html">{{langNow.label}}</span><svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
         <div class="links">
           <a :href="L.ig" target="_blank" rel="noopener"><img :src="L.qrIg" alt="" width="52" height="52"><span>Instagram<small>{{L.handle}}</small></span><svg class="ic"><use href="#i-out"/></svg></a>
           <a :href="L.map" target="_blank" rel="noopener"><img :src="L.qrMap" alt="" width="52" height="52"><span>Google Maps<small>{{L.city}}</small></span><svg class="ic"><use href="#i-out"/></svg></a>
           <a href="https://hansumshisha.com/" target="_blank" rel="noopener"><span class="links__web">hansumshisha.com</span><svg class="ic"><use href="#i-out"/></svg></a>
         </div>
       </div>
+
+      <div v-if="sheet==='lang'" class="sheet__in">
+        <h2 class="sheet__h">{{tr('language')}}</h2>
+        <div class="langs" role="radiogroup" :aria-label="tr('language')">
+          <button v-for="lg in LANGS" :key="lg.code" class="langs__opt" :class="{on:locale===lg.code}" role="radio" :aria-checked="locale===lg.code" :lang="lg.html" @click="pickLang(lg.code)">
+            <span>{{lg.label}}</span><svg class="ic" aria-hidden="true" v-if="locale===lg.code"><use href="#i-check"/></svg>
+          </button>
+        </div>
+      </div>
     </section>
 
     <!-- ===== Confirm: sending moment ===== -->
-    <div class="sending" v-if="sending" role="alertdialog" aria-live="assertive" aria-label="Sending your order">
+    <div class="sending" v-if="sending" role="alertdialog" aria-live="assertive" :aria-label="tr('sending_aria')">
       <div class="sending__in">
-        <p class="sending__k">Sending to our team</p>
+        <p class="sending__k">{{tr('sending_k')}}</p>
         <p class="sending__t">{{sendingLine}}</p>
         <div class="sending__bar"><i></i></div>
-        <p class="sending__s">Keep this screen open for a moment.</p>
+        <p class="sending__s">{{tr('sending_s')}}</p>
       </div>
     </div>
 
-    <div class="toast" v-if="toast" role="status">{{toast}}</div>
+    <div class="toast" v-if="toast" role="status">{{trMsg(toast)}}</div>
   </div>
 `, mixin: mixin };
 })();
